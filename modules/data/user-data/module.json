@@ -1,0 +1,86 @@
+{
+  "id": "user-data",
+  "name": "User Data",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Database schema, migrations and queries for user management. Includes PostgreSQL table definitions, RLS policies, indexes, and reusable SQL queries for Supabase.",
+  "exports": {
+    "schemas": [
+      {
+        "name": "users_table",
+        "path": "./schemas/users.sql",
+        "description": "Complete users table schema with RLS policies, indexes and triggers"
+      }
+    ],
+    "migrations": [
+      {
+        "name": "001_create_users_table",
+        "path": "./migrations/001_create_users_table.sql",
+        "description": "Initial migration to create users table"
+      }
+    ],
+    "queries": [
+      {
+        "name": "user_queries",
+        "path": "./queries/users.sql",
+        "description": "Reusable SQL queries for user operations"
+      }
+    ]
+  },
+  "dependencies": {
+    "modules": [],
+    "packages": []
+  },
+  "ai": {
+    "summary": "Complete database layer for user management with PostgreSQL schemas, RLS policies, indexes, migrations and reusable queries. Designed for Supabase with security-first approach.",
+    "keywords": [
+      "database",
+      "sql",
+      "postgresql",
+      "supabase",
+      "schema",
+      "migration",
+      "rls",
+      "users",
+      "queries"
+    ],
+    "use_cases": [
+      "Create users table in Supabase",
+      "Apply RLS policies for user data",
+      "Run migrations for user schema",
+      "Use reusable queries for common operations",
+      "Set up indexes for performance"
+    ],
+    "reusable": {
+      "schemas": ["users_table"],
+      "types": []
+    },
+    "examples": [
+      "-- Execute schema in Supabase SQL Editor",
+      "\\i modules/data/user-data/schemas/users.sql",
+      "-- Run migration",
+      "\\i modules/data/user-data/migrations/001_create_users_table.sql"
+    ]
+  },
+  "status": "stable",
+  "createdAt": "2025-01-11T17:00:00.000Z",
+  "updatedAt": "2025-01-11T17:00:00.000Z",
+  "author": "Bebarter Team",
+  "license": "MIT",
+  "tags": [
+    "database",
+    "postgresql",
+    "supabase",
+    "sql",
+    "schema",
+    "migration",
+    "users"
+  ],
+  "relatedFiles": [
+    {
+      "path": "database/setup.sql",
+      "type": "REFERENCE",
+      "description": "Main database setup file (this module integrates here)"
+    }
+  ]
+}

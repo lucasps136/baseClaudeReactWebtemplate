@@ -1,0 +1,98 @@
+{
+  "id": "user-logic",
+  "name": "User Logic",
+  "version": "1.0.0",
+  "category": "logic",
+  "description": "Business logic layer for user management following SOLID principles. Includes UserService with dependency injection, repository interfaces, and validation logic.",
+  "exports": {
+    "services": [
+      {
+        "name": "UserService",
+        "path": "./src/services/user.service",
+        "description": "Main service for user business logic with CRUD operations",
+        "example": "const userService = new UserService(repository, validation)"
+      }
+    ],
+    "types": [
+      {
+        "name": "IUserRepository",
+        "path": "./src/repositories/user.repository.interface",
+        "description": "Repository interface for user data access"
+      },
+      {
+        "name": "IUserValidation",
+        "path": "./src/services/user.service",
+        "description": "Validation interface for user operations"
+      },
+      {
+        "name": "UserProfile",
+        "path": "./src/types",
+        "description": "User profile domain type"
+      },
+      {
+        "name": "CreateUserInput",
+        "path": "./src/types",
+        "description": "Input type for creating users"
+      },
+      {
+        "name": "UpdateUserInput",
+        "path": "./src/types",
+        "description": "Input type for updating users"
+      }
+    ]
+  },
+  "dependencies": {
+    "modules": [],
+    "packages": []
+  },
+  "ai": {
+    "summary": "Business logic module for user management implementing SOLID principles. Provides UserService with dependency injection, interface segregation, and single responsibility. Includes repository and validation interfaces for extensibility.",
+    "keywords": [
+      "user",
+      "service",
+      "business-logic",
+      "solid",
+      "dependency-injection",
+      "repository",
+      "validation",
+      "crud"
+    ],
+    "use_cases": [
+      "Get user by ID",
+      "List users with filters",
+      "Create new user with validation",
+      "Update user profile",
+      "Delete user",
+      "Implement custom user repository",
+      "Add custom validation rules"
+    ],
+    "reusable": {
+      "services": ["UserService"],
+      "types": ["IUserRepository", "IUserValidation", "UserProfile"]
+    },
+    "examples": [
+      "import { UserService, IUserRepository } from '@/modules/logic/user-logic'",
+      "const userService = new UserService(myRepository, myValidation)",
+      "const user = await userService.getUserById('123')"
+    ]
+  },
+  "status": "stable",
+  "createdAt": "2025-01-11T16:30:00.000Z",
+  "updatedAt": "2025-01-11T16:30:00.000Z",
+  "author": "Bebarter Team",
+  "license": "MIT",
+  "tags": [
+    "business-logic",
+    "service",
+    "solid",
+    "dependency-injection",
+    "user"
+  ],
+  "relatedFiles": [
+    {
+      "path": "src/features/users/services",
+      "type": "REFERENCE",
+      "description": "Original user service implementation (being replaced)"
+    }
+  ]
+}

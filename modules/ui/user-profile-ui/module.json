@@ -1,0 +1,101 @@
+{
+  "id": "user-profile-ui",
+  "name": "User Profile UI",
+  "version": "1.0.0",
+  "category": "ui",
+  "description": "UI components, hooks and stores for user profile management. Includes user list display, user detail view, and state management for user operations.",
+  "exports": {
+    "components": [
+      {
+        "name": "UserList",
+        "path": "./src/components/UserList",
+        "props": {
+          "className": "string (optional)"
+        },
+        "description": "Displays a list of users with delete functionality",
+        "example": "<UserList />"
+      }
+    ],
+    "hooks": [
+      {
+        "name": "useUser",
+        "path": "./src/hooks/useUser",
+        "description": "Hook for managing single user state and operations",
+        "example": "const { currentUser, fetchUser, isLoadingUser } = useUser()"
+      },
+      {
+        "name": "useUsers",
+        "path": "./src/hooks/useUsers",
+        "description": "Hook for managing user list state and CRUD operations",
+        "example": "const { users, fetchUsers, createUser, updateUser, deleteUser } = useUsers()"
+      }
+    ],
+    "stores": [
+      {
+        "name": "useUserStore",
+        "path": "./src/stores/user.store",
+        "description": "Zustand store for user state management",
+        "example": "const { users, currentUser, setUsers } = useUserStore()"
+      }
+    ],
+    "types": [
+      {
+        "name": "UserProfile",
+        "path": "./src/types",
+        "description": "User profile interface with id, email, name, avatar, bio"
+      },
+      {
+        "name": "UserListFilter",
+        "path": "./src/types",
+        "description": "Filter options for user list (search, sortBy, sortOrder, limit, offset)"
+      }
+    ]
+  },
+  "dependencies": {
+    "modules": [],
+    "packages": ["react", "zustand"]
+  },
+  "ai": {
+    "summary": "Complete UI module for user profile management with components, hooks, stores and types. Includes UserList component, useUser/useUsers hooks for state management, and Zustand store for global user state.",
+    "keywords": [
+      "user",
+      "profile",
+      "list",
+      "crud",
+      "zustand",
+      "hooks",
+      "ui",
+      "component"
+    ],
+    "use_cases": [
+      "Display list of users",
+      "Fetch single user details",
+      "Create, update, delete users",
+      "Filter and sort user lists",
+      "Manage user state globally"
+    ],
+    "reusable": {
+      "components": ["UserList"],
+      "hooks": ["useUser", "useUsers"],
+      "types": ["UserProfile", "UserListFilter"]
+    },
+    "examples": [
+      "import { UserList } from '@/modules/ui/user-profile-ui'",
+      "import { useUsers } from '@/modules/ui/user-profile-ui'",
+      "const { users, fetchUsers } = useUsers()"
+    ]
+  },
+  "status": "stable",
+  "createdAt": "2025-01-11T16:00:00.000Z",
+  "updatedAt": "2025-01-11T16:00:00.000Z",
+  "author": "Bebarter Team",
+  "license": "MIT",
+  "tags": ["user-management", "profile", "ui", "react", "zustand"],
+  "relatedFiles": [
+    {
+      "path": "src/features/users",
+      "type": "REFERENCE",
+      "description": "Original user feature code (being replaced by this module)"
+    }
+  ]
+}

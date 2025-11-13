@@ -1,0 +1,86 @@
+{
+  "version": "1.0.0",
+  "updated": "2025-11-12T02:17:44.248Z",
+  "categories": {
+    "ui": [
+      {
+        "id": "user-profile-ui",
+        "name": "User Profile UI",
+        "version": "1.0.0",
+        "category": "ui",
+        "path": "modules/ui/user-profile-ui",
+        "description": "UI components, hooks and stores for user profile management. Includes user list display, user detail view, and state management for user operations.",
+        "keywords": [
+          "user",
+          "profile",
+          "list",
+          "crud",
+          "zustand",
+          "hooks",
+          "ui",
+          "component"
+        ],
+        "status": "stable",
+        "updatedAt": "2025-01-11T16:00:00.000Z",
+        "reusableCount": 5
+      }
+    ],
+    "logic": [
+      {
+        "id": "user-logic",
+        "name": "User Logic",
+        "version": "1.0.0",
+        "category": "logic",
+        "path": "modules/logic/user-logic",
+        "description": "Business logic layer for user management following SOLID principles. Includes UserService with dependency injection, repository interfaces, and validation logic.",
+        "keywords": [
+          "user",
+          "service",
+          "business-logic",
+          "solid",
+          "dependency-injection",
+          "repository",
+          "validation",
+          "crud"
+        ],
+        "status": "stable",
+        "updatedAt": "2025-01-11T16:30:00.000Z",
+        "reusableCount": 4
+      }
+    ],
+    "data": [
+      {
+        "id": "user-data",
+        "name": "User Data",
+        "version": "1.0.0",
+        "category": "data",
+        "path": "modules/data/user-data",
+        "description": "Database schema, migrations and queries for user management. Includes PostgreSQL table definitions, RLS policies, indexes, and reusable SQL queries for Supabase.",
+        "keywords": [
+          "database",
+          "sql",
+          "postgresql",
+          "supabase",
+          "schema",
+          "migration",
+          "rls",
+          "users",
+          "queries"
+        ],
+        "status": "stable",
+        "updatedAt": "2025-01-11T17:00:00.000Z",
+        "reusableCount": 1
+      }
+    ],
+    "integration": []
+  },
+  "stats": {
+    "total_modules": 3,
+    "ui": 1,
+    "logic": 1,
+    "data": 1,
+    "integration": 0,
+    "reusability_score": 85,
+    "last_sync": "2025-11-12T02:17:44.248Z"
+  }
+}

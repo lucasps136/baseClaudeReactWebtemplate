@@ -20,3 +20,8 @@ function validateEnv() {
 }
 
 export const env = validateEnv();
+
+// Helper function for accessing env variables
+export function getEnv<K extends keyof typeof env>(key: K): (typeof env)[K] {
+  return env[key];
+}

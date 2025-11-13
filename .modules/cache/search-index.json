@@ -1,0 +1,324 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2025-11-12T02:33:53.587Z",
+  "modules": {
+    "user-profile-ui": {
+      "id": "user-profile-ui",
+      "name": "User Profile UI",
+      "version": "1.0.0",
+      "category": "ui",
+      "path": "modules/ui/user-profile-ui",
+      "description": "UI components, hooks and stores for user profile management. Includes user list display, user detail view, and state management for user operations.",
+      "keywords": [
+        "user",
+        "profile",
+        "list",
+        "crud",
+        "zustand",
+        "hooks",
+        "ui",
+        "component"
+      ],
+      "status": "stable",
+      "updatedAt": "2025-01-11T16:00:00.000Z",
+      "reusableCount": 5,
+      "ai": {
+        "summary": "Complete UI module for user profile management with components, hooks, stores and types. Includes UserList component, useUser/useUsers hooks for state management, and Zustand store for global user state.",
+        "keywords": [
+          "user",
+          "profile",
+          "list",
+          "crud",
+          "zustand",
+          "hooks",
+          "ui",
+          "component"
+        ],
+        "use_cases": [
+          "Display list of users",
+          "Fetch single user details",
+          "Create, update, delete users",
+          "Filter and sort user lists",
+          "Manage user state globally"
+        ],
+        "reusable": {
+          "components": ["UserList"],
+          "hooks": ["useUser", "useUsers"],
+          "types": ["UserProfile", "UserListFilter"]
+        },
+        "examples": [
+          "import { UserList } from '@/modules/ui/user-profile-ui'",
+          "import { useUsers } from '@/modules/ui/user-profile-ui'",
+          "const { users, fetchUsers } = useUsers()"
+        ]
+      },
+      "exports": {
+        "components": [
+          {
+            "name": "UserList",
+            "path": "./components/UserList",
+            "props": {
+              "className": "string (optional)"
+            },
+            "description": "Displays a list of users with delete functionality",
+            "example": "<UserList />"
+          }
+        ],
+        "hooks": [
+          {
+            "name": "useUser",
+            "path": "./hooks/useUser",
+            "description": "Hook for managing single user state and operations",
+            "example": "const { currentUser, fetchUser, isLoadingUser } = useUser()"
+          },
+          {
+            "name": "useUsers",
+            "path": "./hooks/useUsers",
+            "description": "Hook for managing user list state and CRUD operations",
+            "example": "const { users, fetchUsers, createUser, updateUser, deleteUser } = useUsers()"
+          }
+        ],
+        "stores": [
+          {
+            "name": "useUserStore",
+            "path": "./stores/user.store",
+            "description": "Zustand store for user state management",
+            "example": "const { users, currentUser, setUsers } = useUserStore()"
+          }
+        ],
+        "types": [
+          {
+            "name": "UserProfile",
+            "path": "./types",
+            "description": "User profile interface with id, email, name, avatar, bio"
+          },
+          {
+            "name": "UserListFilter",
+            "path": "./types",
+            "description": "Filter options for user list (search, sortBy, sortOrder, limit, offset)"
+          }
+        ]
+      }
+    },
+    "user-logic": {
+      "id": "user-logic",
+      "name": "User Logic",
+      "version": "1.0.0",
+      "category": "logic",
+      "path": "modules/logic/user-logic",
+      "description": "Business logic layer for user management following SOLID principles. Includes UserService with dependency injection, repository interfaces, and validation logic.",
+      "keywords": [
+        "user",
+        "service",
+        "business-logic",
+        "solid",
+        "dependency-injection",
+        "repository",
+        "validation",
+        "crud"
+      ],
+      "status": "stable",
+      "updatedAt": "2025-01-11T16:30:00.000Z",
+      "reusableCount": 4,
+      "ai": {
+        "summary": "Business logic module for user management implementing SOLID principles. Provides UserService with dependency injection, interface segregation, and single responsibility. Includes repository and validation interfaces for extensibility.",
+        "keywords": [
+          "user",
+          "service",
+          "business-logic",
+          "solid",
+          "dependency-injection",
+          "repository",
+          "validation",
+          "crud"
+        ],
+        "use_cases": [
+          "Get user by ID",
+          "List users with filters",
+          "Create new user with validation",
+          "Update user profile",
+          "Delete user",
+          "Implement custom user repository",
+          "Add custom validation rules"
+        ],
+        "reusable": {
+          "services": ["UserService"],
+          "types": ["IUserRepository", "IUserValidation", "UserProfile"]
+        },
+        "examples": [
+          "import { UserService, IUserRepository } from '@/modules/logic/user-logic'",
+          "const userService = new UserService(myRepository, myValidation)",
+          "const user = await userService.getUserById('123')"
+        ]
+      },
+      "exports": {
+        "services": [
+          {
+            "name": "UserService",
+            "path": "./services/user.service",
+            "description": "Main service for user business logic with CRUD operations",
+            "example": "const userService = new UserService(repository, validation)"
+          }
+        ],
+        "types": [
+          {
+            "name": "IUserRepository",
+            "path": "./repositories/user.repository.interface",
+            "description": "Repository interface for user data access"
+          },
+          {
+            "name": "IUserValidation",
+            "path": "./services/user.service",
+            "description": "Validation interface for user operations"
+          },
+          {
+            "name": "UserProfile",
+            "path": "./types",
+            "description": "User profile domain type"
+          },
+          {
+            "name": "CreateUserInput",
+            "path": "./types",
+            "description": "Input type for creating users"
+          },
+          {
+            "name": "UpdateUserInput",
+            "path": "./types",
+            "description": "Input type for updating users"
+          }
+        ]
+      }
+    },
+    "user-data": {
+      "id": "user-data",
+      "name": "User Data",
+      "version": "1.0.0",
+      "category": "data",
+      "path": "modules/data/user-data",
+      "description": "Database schema, migrations and queries for user management. Includes PostgreSQL table definitions, RLS policies, indexes, and reusable SQL queries for Supabase.",
+      "keywords": [
+        "database",
+        "sql",
+        "postgresql",
+        "supabase",
+        "schema",
+        "migration",
+        "rls",
+        "users",
+        "queries"
+      ],
+      "status": "stable",
+      "updatedAt": "2025-01-11T17:00:00.000Z",
+      "reusableCount": 1,
+      "ai": {
+        "summary": "Complete database layer for user management with PostgreSQL schemas, RLS policies, indexes, migrations and reusable queries. Designed for Supabase with security-first approach.",
+        "keywords": [
+          "database",
+          "sql",
+          "postgresql",
+          "supabase",
+          "schema",
+          "migration",
+          "rls",
+          "users",
+          "queries"
+        ],
+        "use_cases": [
+          "Create users table in Supabase",
+          "Apply RLS policies for user data",
+          "Run migrations for user schema",
+          "Use reusable queries for common operations",
+          "Set up indexes for performance"
+        ],
+        "reusable": {
+          "schemas": ["users_table"],
+          "types": []
+        },
+        "examples": [
+          "-- Execute schema in Supabase SQL Editor",
+          "\\i modules/data/user-data/schemas/users.sql",
+          "-- Run migration",
+          "\\i modules/data/user-data/migrations/001_create_users_table.sql"
+        ]
+      },
+      "exports": {
+        "schemas": [
+          {
+            "name": "users_table",
+            "path": "./schemas/users.sql",
+            "description": "Complete users table schema with RLS policies, indexes and triggers"
+          }
+        ],
+        "migrations": [
+          {
+            "name": "001_create_users_table",
+            "path": "./migrations/001_create_users_table.sql",
+            "description": "Initial migration to create users table"
+          }
+        ],
+        "queries": [
+          {
+            "name": "user_queries",
+            "path": "./queries/users.sql",
+            "description": "Reusable SQL queries for user operations"
+          }
+        ]
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "UserList",
+      "moduleId": "user-profile-ui",
+      "category": "ui",
+      "description": "Displays a list of users with delete functionality"
+    }
+  ],
+  "hooks": [
+    {
+      "name": "useUser",
+      "moduleId": "user-profile-ui",
+      "category": "ui",
+      "description": "Hook for managing single user state and operations"
+    },
+    {
+      "name": "useUsers",
+      "moduleId": "user-profile-ui",
+      "category": "ui",
+      "description": "Hook for managing user list state and CRUD operations"
+    }
+  ],
+  "services": [
+    {
+      "name": "UserService",
+      "moduleId": "user-logic",
+      "category": "logic",
+      "description": "Main service for user business logic with CRUD operations"
+    }
+  ],
+  "keywords": {
+    "user": ["user-profile-ui", "user-logic"],
+    "profile": ["user-profile-ui"],
+    "list": ["user-profile-ui"],
+    "crud": ["user-profile-ui", "user-logic"],
+    "zustand": ["user-profile-ui"],
+    "hooks": ["user-profile-ui"],
+    "ui": ["user-profile-ui"],
+    "component": ["user-profile-ui"],
+    "service": ["user-logic"],
+    "business-logic": ["user-logic"],
+    "solid": ["user-logic"],
+    "dependency-injection": ["user-logic"],
+    "repository": ["user-logic"],
+    "validation": ["user-logic"],
+    "database": ["user-data"],
+    "sql": ["user-data"],
+    "postgresql": ["user-data"],
+    "supabase": ["user-data"],
+    "schema": ["user-data"],
+    "migration": ["user-data"],
+    "rls": ["user-data"],
+    "users": ["user-data"],
+    "queries": ["user-data"]
+  }
+}
