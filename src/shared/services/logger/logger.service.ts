@@ -1,10 +1,10 @@
-import type { ILogger, LoggerConfig, LogLevel } from "./logger.types";
+import type { ILogger, ILoggerConfig, LogLevel } from "./logger.types";
 import { ConsoleLoggerProvider } from "./providers/console-logger.provider";
 
 let loggerInstance: ILogger | null = null;
 
-export function createLogger(config?: LoggerConfig): ILogger {
-  const defaultConfig: LoggerConfig = {
+export function createLogger(config?: ILoggerConfig): ILogger {
+  const defaultConfig: ILoggerConfig = {
     minLevel: getDefaultMinLevel(),
     enableColors: true,
     enableTimestamp: true,

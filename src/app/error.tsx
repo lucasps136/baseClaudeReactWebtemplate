@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-interface ErrorProps {
+interface IErrorProps {
   error: Error & { digest?: string };
   reset: () => void;
 }
@@ -18,7 +18,7 @@ interface ErrorProps {
  * Global error boundary component
  * Catches and displays errors in the application
  */
-export default function Error({ error, reset }: ErrorProps) {
+export default function Error({ error, reset }: IErrorProps) {
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">

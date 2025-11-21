@@ -1,14 +1,14 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 
-interface SessionState {
+interface ISessionState {
   sessionId: string | null;
   lastActivity: Date | null;
   expiresAt: Date | null;
   isActive: boolean;
 }
 
-interface SessionActions {
+interface ISessionActions {
   createSession: (sessionId: string, expiresAt: Date) => void;
   refreshSession: (expiresAt: Date) => void;
   updateActivity: () => void;
@@ -16,7 +16,7 @@ interface SessionActions {
   isSessionValid: () => boolean;
 }
 
-export type SessionStore = SessionState & SessionActions;
+export type SessionStore = ISessionState & ISessionActions;
 
 export const useSessionStore = create<SessionStore>()(
   devtools(

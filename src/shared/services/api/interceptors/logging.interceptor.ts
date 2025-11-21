@@ -2,10 +2,10 @@
 // Logs requests and responses for debugging and monitoring
 
 import type {
-  ApiRequest,
+  IApiRequest,
   IApiResponse,
   RequestInterceptor,
-  ResponseInterceptor,
+  IResponseInterceptor,
 } from "../api.types";
 
 export class LoggingInterceptor {
@@ -14,7 +14,7 @@ export class LoggingInterceptor {
   ) {}
 
   createRequestInterceptor(): RequestInterceptor {
-    return (request: ApiRequest): ApiRequest => {
+    return (request: IApiRequest): IApiRequest => {
       if (this.enabled) {
         console.log(`🚀 API Request: ${request.method} ${request.url}`, {
           headers: request.headers,
@@ -35,7 +35,7 @@ export class LoggingInterceptor {
     };
   }
 
-  createResponseInterceptor(): ResponseInterceptor {
+  createResponseInterceptor(): IResponseInterceptor {
     return {
       onFulfilled: (response: IApiResponse): IApiResponse => {
         if (this.enabled) {

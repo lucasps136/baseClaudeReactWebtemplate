@@ -7,18 +7,18 @@ export { ApiService, createApiService } from "./api.service";
 // Core types and interfaces
 export type {
   IApiService,
-  ApiRequest,
+  IApiRequest,
   IApiResponse,
-  RequestConfig,
+  IRequestConfig,
   HttpMethod,
   RequestInterceptor,
-  ResponseInterceptor,
-  InterceptorConfig,
+  IResponseInterceptor,
+  IInterceptorConfig,
   ApiProviderType,
-  ApiProviderConfig,
+  IApiProviderConfig,
   IApiProvider,
-  ApiServiceDependencies,
-  ApiErrorResponse,
+  IApiServiceDependencies,
+  IApiErrorResponse,
 } from "./api.types";
 
 // Error classes

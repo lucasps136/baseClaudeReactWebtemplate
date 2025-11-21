@@ -17,23 +17,23 @@ import {
 } from "@/shared/services/database/database-factory";
 
 // Context (Dependency Inversion)
-interface DatabaseContextType {
+interface IDatabaseContextType {
   provider: IDatabaseProvider | null;
   isConnected: boolean;
   isLoading: boolean;
   error: string | null;
 }
 
-const DatabaseContext = createContext<DatabaseContextType | null>(null);
+const DatabaseContext = createContext<IDatabaseContextType | null>(null);
 
 // Provider Props
-interface DatabaseProviderProps {
+interface IDatabaseProviderProps {
   children: ReactNode;
   config?: IDatabaseProviderConfig;
 }
 
 // Hook para usar o contexto (Interface Segregation)
-export const useDatabase = (): DatabaseContextType => {
+export const useDatabase = (): IDatabaseContextType => {
   const context = useContext(DatabaseContext);
   if (!context) {
     throw new Error("useDatabase must be used within a DatabaseProvider");
@@ -120,7 +120,7 @@ export const useDatabaseStatus = () => {
 export const DatabaseProvider = ({
   children,
   config = { type: "supabase", options: {} },
-}: DatabaseProviderProps) => {
+}: IDatabaseProviderProps) => {
   const [provider, setProvider] = useState<IDatabaseProvider | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -211,7 +211,7 @@ export const DatabaseProvider = ({
   }, [provider]);
 
   // Context value (Single Responsibility)
-  const contextValue: DatabaseContextType = {
+  const contextValue: IDatabaseContextType = {
     provider,
     isConnected,
     isLoading,
@@ -251,7 +251,7 @@ export function withDatabase<P extends object>(
 }
 
 // Componente para verificação de conexão (Single Responsibility)
-interface DatabaseStatusProps {
+interface IDatabaseStatusProps {
   children: ReactNode;
   fallback?: ReactNode;
   requireConnection?: boolean;
@@ -261,7 +261,7 @@ export const DatabaseStatus = ({
   children,
   fallback = <div>Loading database...</div>,
   requireConnection = true,
-}: DatabaseStatusProps) => {
+}: IDatabaseStatusProps) => {
   const { isConnected, isLoading, error } = useDatabaseStatus();
 
   if (isLoading) {

@@ -7,7 +7,7 @@ export type StorageProviderType =
   | "memory"
   | "cookie";
 
-export interface StorageOptions {
+export interface IStorageOptions {
   /** Storage provider to use */
   provider?: StorageProviderType;
 
@@ -21,7 +21,7 @@ export interface StorageOptions {
   sync?: boolean;
 }
 
-export interface SecureStorageOptions extends StorageOptions {
+export interface ISecureStorageOptions extends IStorageOptions {
   /** Enable encryption (default: true) */
   encrypt?: boolean;
 
@@ -29,7 +29,7 @@ export interface SecureStorageOptions extends StorageOptions {
   keyId?: string;
 }
 
-export interface StorageItem<T = unknown> {
+export interface IStorageItem<T = unknown> {
   /** Storage key */
   key: string;
 
@@ -49,7 +49,7 @@ export interface StorageItem<T = unknown> {
   encrypted?: boolean;
 }
 
-export interface SecureStorageItem {
+export interface ISecureStorageItem {
   /** Encrypted data string */
   data: string;
 
@@ -66,7 +66,7 @@ export interface SecureStorageItem {
   keyId?: string;
 }
 
-export interface StorageUsage {
+export interface IStorageUsage {
   /** Bytes currently used */
   used: number;
 
@@ -80,7 +80,7 @@ export interface StorageUsage {
   provider: StorageProviderType;
 }
 
-export interface StorageEvent<T = unknown> {
+export interface IStorageEvent<T = unknown> {
   /** Storage key that changed */
   key: string;
 
@@ -100,9 +100,9 @@ export interface StorageEvent<T = unknown> {
   source: "local" | "remote";
 }
 
-export type StorageEventCallback = <T>(event: StorageEvent<T>) => void;
+export type StorageEventCallback = <T>(event: IStorageEvent<T>) => void;
 
-export interface CrossTabMessage<T = unknown> {
+export interface ICrossTabMessage<T = unknown> {
   /** Message type identifier */
   type: "storage-change";
 
@@ -119,7 +119,7 @@ export interface CrossTabMessage<T = unknown> {
   signature?: string;
 }
 
-export interface CleanupStrategy {
+export interface ICleanupStrategy {
   /** Cleanup strategy type */
   type: "lru" | "ttl" | "percentage" | "manual";
 
@@ -136,7 +136,7 @@ export interface CleanupStrategy {
   keysToRemove?: string[];
 }
 
-export interface StorageProvider {
+export interface IStorageProvider {
   /** Store item in provider */
   setItem(key: string, value: string): void | Promise<void>;
 
@@ -153,10 +153,10 @@ export interface StorageProvider {
   keys(): string[] | Promise<string[]>;
 
   /** Get usage statistics */
-  getUsage(): StorageUsage | Promise<StorageUsage>;
+  getUsage(): IStorageUsage | Promise<IStorageUsage>;
 }
 
-export interface EncryptionConfig {
+export interface IEncryptionConfig {
   /** Must be AES-GCM */
   algorithm: "AES-GCM";
 
@@ -170,7 +170,7 @@ export interface EncryptionConfig {
   tagLength: 16;
 }
 
-export interface EncryptedData {
+export interface IEncryptedData {
   /** Base64 encoded encrypted data */
   data: string;
 
@@ -183,10 +183,10 @@ export interface EncryptedData {
 
 export interface IEncryptionService {
   /** Encrypt data with optional key ID */
-  encrypt(data: string, keyId?: string): Promise<EncryptedData>;
+  encrypt(data: string, keyId?: string): Promise<IEncryptedData>;
 
   /** Decrypt data with optional key ID */
-  decrypt(encryptedData: EncryptedData, keyId?: string): Promise<string>;
+  decrypt(encryptedData: IEncryptedData, keyId?: string): Promise<string>;
 
   /** Generate new encryption key */
   generateKey(keyId: string): Promise<CryptoKey>;
@@ -198,7 +198,7 @@ export interface IEncryptionService {
 // Main Storage Service interface
 export interface IStorageService {
   // Basic storage operations
-  set<T>(key: string, value: T, options?: StorageOptions): Promise<void>;
+  set<T>(key: string, value: T, options?: IStorageOptions): Promise<void>;
   get<T>(key: string, defaultValue?: T): Promise<T | null>;
   remove(key: string): Promise<void>;
   clear(): Promise<void>;
@@ -208,7 +208,7 @@ export interface IStorageService {
   setSecure<T>(
     key: string,
     value: T,
-    options?: SecureStorageOptions,
+    options?: ISecureStorageOptions,
   ): Promise<void>;
   getSecure<T>(key: string, defaultValue?: T): Promise<T | null>;
 
@@ -216,8 +216,8 @@ export interface IStorageService {
   subscribe(callback: StorageEventCallback): () => void;
 
   // Quota management
-  getUsage(): Promise<StorageUsage>;
-  cleanup(strategy?: CleanupStrategy): Promise<void>;
+  getUsage(): Promise<IStorageUsage>;
+  cleanup(strategy?: ICleanupStrategy): Promise<void>;
 }
 
 // Error classes
@@ -248,7 +248,7 @@ export class EncryptionError extends StorageError {
 }
 
 // Service dependencies
-export interface StorageServiceDependencies {
+export interface IStorageServiceDependencies {
   supabaseService: ISupabaseService;
 }
 

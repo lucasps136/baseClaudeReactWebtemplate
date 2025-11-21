@@ -22,12 +22,12 @@ export type { IValidationService } from "./validation.service";
 export { ApiService, createApiService } from "./api";
 export type {
   IApiService,
-  RequestConfig,
+  IRequestConfig,
   ResponseData,
   ApiError,
-  ApiServiceDependencies,
+  IApiServiceDependencies,
   RequestInterceptor,
-  ResponseInterceptor,
+  IResponseInterceptor,
   ErrorInterceptor,
 } from "./api";
 
@@ -43,21 +43,21 @@ export {
 } from "./storage";
 export type {
   IStorageService,
-  StorageOptions,
-  SecureStorageOptions,
-  StorageItem,
-  SecureStorageItem,
-  StorageUsage,
-  StorageEvent,
+  IStorageOptions,
+  ISecureStorageOptions,
+  IStorageItem,
+  ISecureStorageItem,
+  IStorageUsage,
+  IStorageEvent,
   StorageEventCallback,
-  CrossTabMessage,
-  CleanupStrategy,
-  StorageProvider,
+  ICrossTabMessage,
+  ICleanupStrategy,
+  IStorageProvider,
   StorageProviderType,
-  StorageServiceDependencies,
+  IStorageServiceDependencies,
   IEncryptionService,
-  EncryptedData,
-  EncryptionConfig,
+  IEncryptedData,
+  IEncryptionConfig,
 } from "./storage";
 
 // Dependency injection

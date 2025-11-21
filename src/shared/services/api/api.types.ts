@@ -10,7 +10,7 @@ export type HttpMethod =
   | "HEAD"
   | "OPTIONS";
 
-export interface RequestConfig {
+export interface IRequestConfig {
   /** Custom headers to include in request */
   headers?: Record<string, string>;
 
@@ -30,7 +30,7 @@ export interface RequestConfig {
   validateStatus?: (status: number) => boolean;
 }
 
-export interface ApiRequest {
+export interface IApiRequest {
   /** Request URL (must be valid URL) */
   url: string;
 
@@ -70,10 +70,10 @@ export interface IApiResponse<T = unknown> {
   headers: Headers;
 
   /** Original request configuration */
-  config: ApiRequest;
+  config: IApiRequest;
 }
 
-export interface ApiErrorResponse {
+export interface IApiErrorResponse {
   error: string;
   message: string;
   status: number;
@@ -83,11 +83,11 @@ export interface ApiErrorResponse {
 
 // Request interceptor function
 export type RequestInterceptor = (
-  request: ApiRequest,
-) => ApiRequest | Promise<ApiRequest>;
+  request: IApiRequest,
+) => IApiRequest | Promise<IApiRequest>;
 
 // Response interceptor configuration
-export interface ResponseInterceptor {
+export interface IResponseInterceptor {
   /** Handler for successful responses */
   onFulfilled?: (
     response: IApiResponse,
@@ -97,39 +97,39 @@ export interface ResponseInterceptor {
   onRejected?: (error: ApiError) => ApiError | Promise<ApiError>;
 }
 
-export interface InterceptorConfig {
+export interface IInterceptorConfig {
   id: string;
   type: "request" | "response";
-  handler: RequestInterceptor | ResponseInterceptor;
+  handler: RequestInterceptor | IResponseInterceptor;
 }
 
 // Main API Service interface
 export interface IApiService {
   // Core HTTP methods
-  get<T>(url: string, config?: RequestConfig): Promise<IApiResponse<T>>;
+  get<T>(url: string, config?: IRequestConfig): Promise<IApiResponse<T>>;
   post<T>(
     url: string,
     data?: unknown,
-    config?: RequestConfig,
+    config?: IRequestConfig,
   ): Promise<IApiResponse<T>>;
   put<T>(
     url: string,
     data?: unknown,
-    config?: RequestConfig,
+    config?: IRequestConfig,
   ): Promise<IApiResponse<T>>;
   patch<T>(
     url: string,
     data?: unknown,
-    config?: RequestConfig,
+    config?: IRequestConfig,
   ): Promise<IApiResponse<T>>;
-  delete<T>(url: string, config?: RequestConfig): Promise<IApiResponse<T>>;
+  delete<T>(url: string, config?: IRequestConfig): Promise<IApiResponse<T>>;
 
   // Low-level request method
-  request<T>(request: ApiRequest): Promise<IApiResponse<T>>;
+  request<T>(request: IApiRequest): Promise<IApiResponse<T>>;
 
   // Interceptor management
   addRequestInterceptor(interceptor: RequestInterceptor): string;
-  addResponseInterceptor(interceptor: ResponseInterceptor): string;
+  addResponseInterceptor(interceptor: IResponseInterceptor): string;
   removeInterceptor(id: string): void;
 }
 
@@ -139,8 +139,8 @@ export class ApiError extends Error {
     message: string,
     public status: number,
     public statusText: string,
-    public response?: ApiErrorResponse,
-    public request?: ApiRequest,
+    public response?: IApiErrorResponse,
+    public request?: IApiRequest,
   ) {
     super(message);
     this.name = "ApiError";
@@ -148,14 +148,14 @@ export class ApiError extends Error {
 }
 
 export class NetworkError extends ApiError {
-  constructor(message: string, request?: ApiRequest) {
+  constructor(message: string, request?: IApiRequest) {
     super(message, 0, "Network Error", undefined, request);
     this.name = "NetworkError";
   }
 }
 
 export class TimeoutError extends ApiError {
-  constructor(timeout: number, request?: ApiRequest) {
+  constructor(timeout: number, request?: IApiRequest) {
     super(
       `Request timeout after ${timeout}ms`,
       0,
@@ -170,7 +170,7 @@ export class TimeoutError extends ApiError {
 // Provider types
 export type ApiProviderType = "fetch" | "axios";
 
-export interface ApiProviderConfig {
+export interface IApiProviderConfig {
   type: ApiProviderType;
   baseURL?: string;
   timeout?: number;
@@ -179,12 +179,12 @@ export interface ApiProviderConfig {
 }
 
 export interface IApiProvider {
-  request<T>(request: ApiRequest): Promise<IApiResponse<T>>;
-  createInstance(config: ApiProviderConfig): IApiProvider;
+  request<T>(request: IApiRequest): Promise<IApiResponse<T>>;
+  createInstance(config: IApiProviderConfig): IApiProvider;
 }
 
 // Service dependencies
-export interface ApiServiceDependencies {
+export interface IApiServiceDependencies {
   supabaseService: ISupabaseService;
   validationService: IValidationService;
 }

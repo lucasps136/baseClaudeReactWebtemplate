@@ -1,10 +1,10 @@
 // Session Storage Provider
-// Implements StorageProvider interface for sessionStorage
+// Implements IStorageProvider interface for sessionStorage
 
-import type { StorageProvider, StorageUsage } from "../storage.types";
+import type { IStorageProvider, IStorageUsage } from "../storage.types";
 import { StorageError, StorageQuotaError } from "../storage.types";
 
-export class SessionStorageProvider implements StorageProvider {
+export class SessionStorageProvider implements IStorageProvider {
   private readonly storageKey = "bebarter-session";
 
   async setItem(key: string, value: string): Promise<void> {
@@ -78,7 +78,7 @@ export class SessionStorageProvider implements StorageProvider {
     }
   }
 
-  async getUsage(): Promise<StorageUsage> {
+  async getUsage(): Promise<IStorageUsage> {
     try {
       // sessionStorage typically has the same quota as localStorage
       const keys = await this.keys();

@@ -18,7 +18,7 @@ import {
 } from "@/shared/services/auth/auth-factory";
 
 // Context (Dependency Inversion)
-interface AuthContextType extends IAuthState {
+interface IAuthContextType extends IAuthState {
   provider: IAuthProvider | null;
   login: IAuthProvider["login"];
   register: IAuthProvider["register"];
@@ -28,16 +28,16 @@ interface AuthContextType extends IAuthState {
   refreshSession: IAuthProvider["refreshSession"];
 }
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<IAuthContextType | null>(null);
 
 // Provider Props
-interface AuthProviderProps {
+interface IAuthProviderProps {
   children: ReactNode;
   config?: IAuthProviderConfig;
 }
 
 // Hook para usar o contexto (Interface Segregation)
-export const useAuth = (): AuthContextType => {
+export const useAuth = (): IAuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
@@ -75,7 +75,7 @@ export const useAuthActions = () => {
 export const AuthProvider = ({
   children,
   config = { type: "supabase", options: {} },
-}: AuthProviderProps) => {
+}: IAuthProviderProps) => {
   const [provider, setProvider] = useState<IAuthProvider | null>(null);
   const [authState, setAuthState] = useState<IAuthState>({
     user: null,
@@ -147,7 +147,7 @@ export const AuthProvider = ({
   }, [provider]);
 
   // Context value (Single Responsibility)
-  const contextValue: AuthContextType = {
+  const contextValue: IAuthContextType = {
     // Estado
     ...authState,
     provider,
@@ -191,7 +191,7 @@ export const AuthProvider = ({
 };
 
 // Componente para proteção de rotas (Single Responsibility)
-interface ProtectedRouteProps {
+interface IProtectedRouteProps {
   children: ReactNode;
   fallback?: ReactNode;
   requireAuth?: boolean;
@@ -201,7 +201,7 @@ export const ProtectedRoute = ({
   children,
   fallback = <div>Loading...</div>,
   requireAuth = true,
-}: ProtectedRouteProps) => {
+}: IProtectedRouteProps) => {
   const { isAuthenticated, isLoading } = useAuthState();
 
   if (isLoading) {

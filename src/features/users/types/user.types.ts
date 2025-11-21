@@ -1,5 +1,5 @@
 // IUser domain types - specific to user feature
-export interface UserProfile {
+export interface IUserProfile {
   id: string;
   email: string;
   name: string;
@@ -9,19 +9,19 @@ export interface UserProfile {
   updatedAt: Date;
 }
 
-export interface CreateUserInput {
+export interface ICreateUserInput {
   email: string;
   name: string;
   bio?: string;
 }
 
-export interface UpdateUserInput {
+export interface IUpdateUserInput {
   name?: string;
   bio?: string;
   avatar?: string;
 }
 
-export interface UserListFilter {
+export interface IUserListFilter {
   search?: string;
   sortBy?: "name" | "email" | "createdAt";
   sortOrder?: "asc" | "desc";
@@ -29,8 +29,8 @@ export interface UserListFilter {
   offset?: number;
 }
 
-export interface UserListResponse {
-  users: UserProfile[];
+export interface IUserListResponse {
+  users: IUserProfile[];
   total: number;
   hasMore: boolean;
 }

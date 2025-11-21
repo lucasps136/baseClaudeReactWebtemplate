@@ -90,12 +90,12 @@ export function ThemeSelector() {
 }
 
 // Componente para preview de cores do tema (Single Responsibility)
-interface ThemePreviewProps {
+interface IThemePreviewProps {
   themeId: string;
   className?: string;
 }
 
-export function ThemePreview({ themeId, className }: ThemePreviewProps) {
+export function ThemePreview({ themeId, className }: IThemePreviewProps) {
   const { availableThemes } = useExtendedTheme();
   const theme = availableThemes.find((t) => t.id === themeId);
 

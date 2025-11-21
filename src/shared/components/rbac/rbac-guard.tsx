@@ -7,7 +7,7 @@
 import { type ReactNode } from "react";
 import { useRBAC } from "@/shared/hooks/use-rbac";
 
-interface RBACGuardProps {
+interface IRBACGuardProps {
   children: ReactNode;
   // IPermission-based access
   permissions?: string[];
@@ -73,7 +73,7 @@ export function RBACGuard({
   fallback = null,
   loadingFallback = null,
   render,
-}: RBACGuardProps) {
+}: IRBACGuardProps) {
   const { hasPermission, hasRole, canAccess, loading } =
     useRBAC(organizationId);
 
@@ -158,7 +158,7 @@ function checkAccess({
 
 // Specialized guard components (Single Responsibility)
 
-interface AdminGuardProps {
+interface IAdminGuardProps {
   children: ReactNode;
   organizationId?: string;
   fallback?: ReactNode;
@@ -173,7 +173,7 @@ export function AdminGuard({
   organizationId,
   fallback,
   loadingFallback,
-}: AdminGuardProps) {
+}: IAdminGuardProps) {
   return (
     <RBACGuard
       roles={["admin", "super_admin", "owner"]}
@@ -186,7 +186,7 @@ export function AdminGuard({
   );
 }
 
-interface OwnerGuardProps {
+interface IOwnerGuardProps {
   children: ReactNode;
   organizationId?: string;
   fallback?: ReactNode;
@@ -201,7 +201,7 @@ export function OwnerGuard({
   organizationId,
   fallback,
   loadingFallback,
-}: OwnerGuardProps) {
+}: IOwnerGuardProps) {
   return (
     <RBACGuard
       roles={["owner", "super_admin"]}
@@ -214,7 +214,7 @@ export function OwnerGuard({
   );
 }
 
-interface SuperAdminGuardProps {
+interface ISuperAdminGuardProps {
   children: ReactNode;
   fallback?: ReactNode;
   loadingFallback?: ReactNode;
@@ -227,7 +227,7 @@ export function SuperAdminGuard({
   children,
   fallback,
   loadingFallback,
-}: SuperAdminGuardProps) {
+}: ISuperAdminGuardProps) {
   return (
     <RBACGuard
       roles={["super_admin"]}
@@ -242,7 +242,7 @@ export function SuperAdminGuard({
 // HOC pattern for page-level protection
 export function withRBACGuard<P extends object>(
   Component: React.ComponentType<P>,
-  guardProps: Omit<RBACGuardProps, "children">,
+  guardProps: Omit<IRBACGuardProps, "children">,
 ) {
   return function ProtectedComponent(props: P) {
     return (
@@ -255,7 +255,7 @@ export function withRBACGuard<P extends object>(
 
 // Utility components for common UI patterns
 
-interface PermissionGateProps {
+interface IPermissionGateProps {
   permission: string;
   organizationId?: string;
   children: ReactNode;
@@ -270,7 +270,7 @@ export function PermissionGate({
   organizationId,
   children,
   fallback,
-}: PermissionGateProps) {
+}: IPermissionGateProps) {
   return (
     <RBACGuard
       permissions={[permission]}
@@ -282,7 +282,7 @@ export function PermissionGate({
   );
 }
 
-interface ResourceGateProps {
+interface IResourceGateProps {
   resource: string;
   action: string;
   organizationId?: string;
@@ -299,7 +299,7 @@ export function ResourceGate({
   organizationId,
   children,
   fallback,
-}: ResourceGateProps) {
+}: IResourceGateProps) {
   return (
     <RBACGuard
       resource={resource}

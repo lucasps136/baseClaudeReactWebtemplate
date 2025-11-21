@@ -4,13 +4,13 @@
 import { z } from "zod";
 import type {
   IApiService,
-  ApiRequest,
+  IApiRequest,
   IApiResponse,
-  RequestConfig,
+  IRequestConfig,
   RequestInterceptor,
-  ResponseInterceptor,
+  IResponseInterceptor,
   HttpMethod,
-  ApiServiceDependencies,
+  IApiServiceDependencies,
   ISupabaseService,
   IValidationService,
 } from "./api.types";
@@ -53,7 +53,7 @@ export class ApiService implements IApiService {
   }
 
   // Core HTTP methods
-  async get<T>(url: string, config?: RequestConfig): Promise<IApiResponse<T>> {
+  async get<T>(url: string, config?: IRequestConfig): Promise<IApiResponse<T>> {
     return this.request<T>({
       url,
       method: "GET",
@@ -64,7 +64,7 @@ export class ApiService implements IApiService {
   async post<T>(
     url: string,
     data?: unknown,
-    config?: RequestConfig,
+    config?: IRequestConfig,
   ): Promise<IApiResponse<T>> {
     return this.request<T>({
       url,
@@ -77,7 +77,7 @@ export class ApiService implements IApiService {
   async put<T>(
     url: string,
     data?: unknown,
-    config?: RequestConfig,
+    config?: IRequestConfig,
   ): Promise<IApiResponse<T>> {
     return this.request<T>({
       url,
@@ -90,7 +90,7 @@ export class ApiService implements IApiService {
   async patch<T>(
     url: string,
     data?: unknown,
-    config?: RequestConfig,
+    config?: IRequestConfig,
   ): Promise<IApiResponse<T>> {
     return this.request<T>({
       url,
@@ -102,7 +102,7 @@ export class ApiService implements IApiService {
 
   async delete<T>(
     url: string,
-    config?: RequestConfig,
+    config?: IRequestConfig,
   ): Promise<IApiResponse<T>> {
     return this.request<T>({
       url,
@@ -112,7 +112,7 @@ export class ApiService implements IApiService {
   }
 
   // Low-level request method
-  async request<T>(request: ApiRequest): Promise<IApiResponse<T>> {
+  async request<T>(request: IApiRequest): Promise<IApiResponse<T>> {
     // Validate request
     await this.validateRequest(request);
 
@@ -146,7 +146,7 @@ export class ApiService implements IApiService {
     return this.interceptorManager.addRequestInterceptor(interceptor);
   }
 
-  addResponseInterceptor(interceptor: ResponseInterceptor): string {
+  addResponseInterceptor(interceptor: IResponseInterceptor): string {
     return this.interceptorManager.addResponseInterceptor(interceptor);
   }
 
@@ -156,7 +156,7 @@ export class ApiService implements IApiService {
 
   // Private methods
   private async executeRequest<T>(
-    request: ApiRequest,
+    request: IApiRequest,
   ): Promise<IApiResponse<T>> {
     const { url, method, headers, body, timeout, signal, cache, credentials } =
       request;
@@ -272,7 +272,7 @@ export class ApiService implements IApiService {
 
   private async createApiError(
     response: Response,
-    request: ApiRequest,
+    request: IApiRequest,
   ): Promise<ApiError> {
     let errorResponse: any;
 
@@ -307,7 +307,7 @@ export class ApiService implements IApiService {
     );
   }
 
-  private normalizeError(error: any, request: ApiRequest): ApiError {
+  private normalizeError(error: any, request: IApiRequest): ApiError {
     if (error instanceof ApiError) {
       return error;
     }
@@ -327,7 +327,7 @@ export class ApiService implements IApiService {
   }
 
   private getValidateStatusFunction(
-    request: ApiRequest,
+    request: IApiRequest,
   ): (status: number) => boolean {
     // Check if request config has custom validateStatus
     const customValidateStatus = (request as any).validateStatus;
@@ -339,7 +339,7 @@ export class ApiService implements IApiService {
     return (status: number) => status >= 200 && status < 300;
   }
 
-  private mergeConfig(config?: RequestConfig): Partial<ApiRequest> {
+  private mergeConfig(config?: IRequestConfig): Partial<IApiRequest> {
     if (!config) return {};
 
     return {
@@ -352,7 +352,7 @@ export class ApiService implements IApiService {
     } as any;
   }
 
-  private async validateRequest(request: ApiRequest): Promise<void> {
+  private async validateRequest(request: IApiRequest): Promise<void> {
     try {
       await this.validationService.validate(apiRequestSchema, request);
     } catch (error) {

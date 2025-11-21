@@ -4,17 +4,17 @@
 import { z } from "zod";
 import type {
   IStorageService,
-  StorageOptions,
-  SecureStorageOptions,
+  IStorageOptions,
+  ISecureStorageOptions,
   StorageEventCallback,
-  StorageUsage,
-  CleanupStrategy,
-  StorageEvent,
-  StorageItem,
-  SecureStorageItem,
-  StorageProvider,
+  IStorageUsage,
+  ICleanupStrategy,
+  IStorageEvent,
+  IStorageItem,
+  ISecureStorageItem,
+  IStorageProvider,
   StorageProviderType,
-  StorageServiceDependencies,
+  IStorageServiceDependencies,
   ISupabaseService,
 } from "./storage.types";
 import {
@@ -52,7 +52,7 @@ const cleanupStrategySchema = z.object({
 });
 
 export class StorageService implements IStorageService {
-  private providers = new Map<StorageProviderType, StorageProvider>();
+  private providers = new Map<StorageProviderType, IStorageProvider>();
   private encryptionService: EncryptionService;
   private crossTabSync: CrossTabSyncService;
   private eventListeners = new Set<StorageEventCallback>();
@@ -69,7 +69,7 @@ export class StorageService implements IStorageService {
   async set<T>(
     key: string,
     value: T,
-    options: StorageOptions = {},
+    options: IStorageOptions = {},
   ): Promise<void> {
     this.validateKey(key);
 
@@ -90,7 +90,7 @@ export class StorageService implements IStorageService {
       this.accessTimes.set(key, Date.now());
 
       // Trigger events
-      const event: StorageEvent<T> = {
+      const event: IStorageEvent<T> = {
         key,
         oldValue: null, // We don't track old values for performance
         newValue: value,
@@ -135,11 +135,11 @@ export class StorageService implements IStorageService {
         if (!rawData) continue;
 
         // Try to parse the stored item
-        let storageItem: StorageItem<T>;
+        let storageItem: IStorageItem<T>;
         try {
           // Check if data is compressed
           const decompressedData = await this.tryDecompress(rawData);
-          storageItem = JSON.parse(decompressedData) as StorageItem<T>;
+          storageItem = JSON.parse(decompressedData) as IStorageItem<T>;
         } catch {
           // If parsing fails, assume it's raw data (backward compatibility)
           return rawData as unknown as T;
@@ -193,7 +193,7 @@ export class StorageService implements IStorageService {
         this.accessTimes.delete(key);
 
         // Trigger events
-        const event: StorageEvent = {
+        const event: IStorageEvent = {
           key,
           oldValue: null,
           newValue: null,
@@ -227,7 +227,7 @@ export class StorageService implements IStorageService {
 
       // Trigger events for each removed key
       for (const key of keys) {
-        const event: StorageEvent = {
+        const event: IStorageEvent = {
           key,
           oldValue: null,
           newValue: null,
@@ -268,7 +268,7 @@ export class StorageService implements IStorageService {
   async setSecure<T>(
     key: string,
     value: T,
-    options: SecureStorageOptions = {},
+    options: ISecureStorageOptions = {},
   ): Promise<void> {
     if (!EncryptionService.isSupported()) {
       throw new EncryptionError("Web Crypto API not supported", "encrypt");
@@ -280,7 +280,7 @@ export class StorageService implements IStorageService {
         options.keyId,
       );
 
-      const secureItem: SecureStorageItem = {
+      const secureItem: ISecureStorageItem = {
         data: encryptedData.data,
         iv: encryptedData.iv,
         timestamp: Date.now(),
@@ -310,7 +310,7 @@ export class StorageService implements IStorageService {
     }
 
     try {
-      const secureItem = await this.get<SecureStorageItem>(`secure:${key}`);
+      const secureItem = await this.get<ISecureStorageItem>(`secure:${key}`);
       if (!secureItem) {
         return defaultValue || null;
       }
@@ -344,7 +344,7 @@ export class StorageService implements IStorageService {
   }
 
   // Quota management
-  async getUsage(): Promise<StorageUsage> {
+  async getUsage(): Promise<IStorageUsage> {
     try {
       // Use localStorage as primary storage for usage calculation
       const provider = this.getProvider("localStorage");
@@ -357,7 +357,7 @@ export class StorageService implements IStorageService {
     }
   }
 
-  async cleanup(strategy: CleanupStrategy = { type: "ttl" }): Promise<void> {
+  async cleanup(strategy: ICleanupStrategy = { type: "ttl" }): Promise<void> {
     try {
       await this.validateCleanupStrategy(strategy);
 
@@ -398,7 +398,7 @@ export class StorageService implements IStorageService {
     this.providers.set("memory", new MemoryStorageProvider());
   }
 
-  private getProvider(type: StorageProviderType): StorageProvider {
+  private getProvider(type: StorageProviderType): IStorageProvider {
     const provider = this.providers.get(type);
     if (!provider) {
       // Fallback to memory provider
@@ -410,8 +410,8 @@ export class StorageService implements IStorageService {
   private createStorageItem<T>(
     key: string,
     value: T,
-    options: StorageOptions,
-  ): StorageItem<T> {
+    options: IStorageOptions,
+  ): IStorageItem<T> {
     return {
       key,
       value,
@@ -422,7 +422,7 @@ export class StorageService implements IStorageService {
     };
   }
 
-  private isExpired<T>(item: StorageItem<T>): boolean {
+  private isExpired<T>(item: IStorageItem<T>): boolean {
     if (!item.ttl) return false;
     return Date.now() - item.timestamp > item.ttl;
   }
@@ -485,7 +485,7 @@ export class StorageService implements IStorageService {
   }
 
   private async validateCleanupStrategy(
-    strategy: CleanupStrategy,
+    strategy: ICleanupStrategy,
   ): Promise<void> {
     try {
       cleanupStrategySchema.parse(strategy);
@@ -497,7 +497,7 @@ export class StorageService implements IStorageService {
     }
   }
 
-  private notifyListeners<T>(event: StorageEvent<T>): void {
+  private notifyListeners<T>(event: IStorageEvent<T>): void {
     for (const listener of this.eventListeners) {
       try {
         listener(event);
@@ -524,7 +524,7 @@ export class StorageService implements IStorageService {
         const rawData = await this.getProvider("localStorage").getItem(key);
         if (!rawData) continue;
 
-        const item = JSON.parse(rawData) as StorageItem<any>;
+        const item = JSON.parse(rawData) as IStorageItem<any>;
         if (item.timestamp && item.timestamp < cutoffTime) {
           await this.remove(key);
         } else if (this.isExpired(item)) {

@@ -19,7 +19,7 @@ import {
 import type { IRBACProvider, IRBACError } from "@/shared/types/rbac";
 import { getEnv } from "@/config/env";
 
-interface RBACContextValue {
+interface IRBACContextValue {
   provider: IRBACProvider | null;
   isInitialized: boolean;
   error: IRBACError | null;
@@ -27,9 +27,9 @@ interface RBACContextValue {
   reinitialize: () => Promise<void>;
 }
 
-const RBACContext = createContext<RBACContextValue | null>(null);
+const RBACContext = createContext<IRBACContextValue | null>(null);
 
-interface RBACProviderProps {
+interface IRBACProviderProps {
   children: ReactNode;
   // Optional custom configuration
   config?: {
@@ -56,7 +56,7 @@ interface RBACProviderProps {
  *   <App />
  * </RBACProvider>
  */
-export function RBACProvider({ children, config }: RBACProviderProps) {
+export function RBACProvider({ children, config }: IRBACProviderProps) {
   const [provider, setProvider] = useState<IRBACProvider | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [error, setError] = useState<IRBACError | null>(null);
@@ -110,7 +110,7 @@ export function RBACProvider({ children, config }: RBACProviderProps) {
     };
   }, []);
 
-  const contextValue: RBACContextValue = {
+  const contextValue: IRBACContextValue = {
     provider,
     isInitialized,
     error,
@@ -124,7 +124,7 @@ export function RBACProvider({ children, config }: RBACProviderProps) {
 }
 
 // Hook to access RBAC context
-export function useRBACContext(): RBACContextValue {
+export function useRBACContext(): IRBACContextValue {
   const context = useContext(RBACContext);
 
   if (!context) {
@@ -154,7 +154,7 @@ function createDefaultConfig() {
 }
 
 // Error boundary for RBAC
-interface RBACErrorBoundaryProps {
+interface IRBACErrorBoundaryProps {
   children: ReactNode;
   fallback?: ReactNode;
 }
@@ -162,7 +162,7 @@ interface RBACErrorBoundaryProps {
 export function RBACErrorBoundary({
   children,
   fallback = <div>RBAC Error: Unable to load permissions</div>,
-}: RBACErrorBoundaryProps) {
+}: IRBACErrorBoundaryProps) {
   const { error, loading } = useRBACContext();
 
   if (loading) {
@@ -179,7 +179,7 @@ export function RBACErrorBoundary({
 // HOC pattern for automatic RBAC setup
 export function withRBACProvider<P extends object>(
   Component: React.ComponentType<P>,
-  providerProps?: Omit<RBACProviderProps, "children">,
+  providerProps?: Omit<IRBACProviderProps, "children">,
 ) {
   return function ComponentWithRBAC(props: P) {
     return (

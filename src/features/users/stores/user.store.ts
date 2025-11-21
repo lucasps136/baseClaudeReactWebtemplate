@@ -1,36 +1,36 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import type { UserProfile, UserListFilter } from "../types/user.types";
+import type { IUserProfile, IUserListFilter } from "../types/user.types";
 
-interface UserState {
+interface IUserState {
   // Single user state
-  currentUser: UserProfile | null;
+  currentUser: IUserProfile | null;
   isLoadingUser: boolean;
   userError: string | null;
 
   // List state
-  users: UserProfile[];
+  users: IUserProfile[];
   isLoadingUsers: boolean;
   usersError: string | null;
-  filter: UserListFilter;
+  filter: IUserListFilter;
   hasMore: boolean;
   total: number;
 }
 
-interface UserActions {
+interface IUserActions {
   // Single user actions
-  setCurrentUser: (user: UserProfile | null) => void;
+  setCurrentUser: (user: IUserProfile | null) => void;
   setUserLoading: (loading: boolean) => void;
   setUserError: (error: string | null) => void;
 
   // List actions
-  setUsers: (users: UserProfile[]) => void;
-  addUser: (user: UserProfile) => void;
-  updateUser: (id: string, updates: Partial<UserProfile>) => void;
+  setUsers: (users: IUserProfile[]) => void;
+  addUser: (user: IUserProfile) => void;
+  updateUser: (id: string, updates: Partial<IUserProfile>) => void;
   removeUser: (id: string) => void;
   setUsersLoading: (loading: boolean) => void;
   setUsersError: (error: string | null) => void;
-  setFilter: (filter: Partial<UserListFilter>) => void;
+  setFilter: (filter: Partial<IUserListFilter>) => void;
   setHasMore: (hasMore: boolean) => void;
   setTotal: (total: number) => void;
 
@@ -38,9 +38,9 @@ interface UserActions {
   reset: () => void;
 }
 
-export type UserStore = UserState & UserActions;
+export type UserStore = IUserState & IUserActions;
 
-const initialState: UserState = {
+const initialState: IUserState = {
   currentUser: null,
   isLoadingUser: false,
   userError: null,

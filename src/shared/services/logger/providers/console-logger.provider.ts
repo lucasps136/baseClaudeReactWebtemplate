@@ -1,7 +1,7 @@
 import type {
   ILogger,
   LogLevel,
-  /* LogEntry, */ LoggerConfig,
+  /* ILogEntry, */ ILoggerConfig,
 } from "../logger.types";
 
 const LOG_LEVELS: Record<LogLevel, number> = {
@@ -26,7 +26,7 @@ export class ConsoleLoggerProvider implements ILogger {
   private enableColors: boolean;
   private enableTimestamp: boolean;
 
-  constructor(config: LoggerConfig = {}) {
+  constructor(config: ILoggerConfig = {}) {
     this.minLevel = config.minLevel || "debug";
     this.enableColors = config.enableColors ?? true;
     this.enableTimestamp = config.enableTimestamp ?? true;

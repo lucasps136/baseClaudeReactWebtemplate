@@ -7,26 +7,26 @@ export { StorageService, createStorageService } from "./storage.service";
 // Core types and interfaces
 export type {
   IStorageService,
-  StorageOptions,
-  SecureStorageOptions,
-  StorageItem,
-  SecureStorageItem,
-  StorageUsage,
-  StorageEvent,
+  IStorageOptions,
+  ISecureStorageOptions,
+  IStorageItem,
+  ISecureStorageItem,
+  IStorageUsage,
+  IStorageEvent,
   StorageEventCallback,
-  CrossTabMessage,
-  CleanupStrategy,
-  StorageProvider,
+  ICrossTabMessage,
+  ICleanupStrategy,
+  IStorageProvider,
   StorageProviderType,
-  StorageServiceDependencies,
+  IStorageServiceDependencies,
 } from "./storage.types";
 
 // Encryption service and types
 export { EncryptionService } from "./encryption.service";
 export type {
   IEncryptionService,
-  EncryptedData,
-  EncryptionConfig,
+  IEncryptedData,
+  IEncryptionConfig,
 } from "./storage.types";
 
 // Cross-tab synchronization

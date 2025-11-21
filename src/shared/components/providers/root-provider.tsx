@@ -4,7 +4,7 @@ import { ThemeProvider } from "./theme-provider";
 import { AuthProvider } from "./auth-provider";
 import { DatabaseProvider } from "./database-provider";
 
-interface RootProviderProps {
+interface IRootProviderProps {
   children: React.ReactNode;
 }
 
@@ -14,7 +14,7 @@ interface RootProviderProps {
  * SOLID: Single Responsibility (composição de providers)
  * DIP: Providers podem ser trocados via configuração
  */
-export function RootProvider({ children }: RootProviderProps) {
+export function RootProvider({ children }: IRootProviderProps) {
   return (
     <ThemeProvider
       attribute="class"

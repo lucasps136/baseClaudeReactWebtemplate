@@ -167,7 +167,7 @@ class ThemeManager {
 }
 
 // Provider Props
-interface ExtendedThemeProviderProps {
+interface IExtendedThemeProviderProps {
   children: React.ReactNode;
   config?: Partial<IThemeConfig>;
 }
@@ -176,7 +176,7 @@ interface ExtendedThemeProviderProps {
 export function ExtendedThemeProvider({
   children,
   config = {},
-}: ExtendedThemeProviderProps) {
+}: IExtendedThemeProviderProps) {
   const defaultConfig: IThemeConfig = {
     defaultTheme: "default",
     enableSystem: true,
@@ -226,7 +226,7 @@ export function ExtendedThemeProvider({
 }
 
 // Provider interno que usa next-themes
-interface ExtendedThemeProviderInnerProps {
+interface IExtendedThemeProviderInnerProps {
   children: React.ReactNode;
   themeManager: ThemeManager;
   availableThemes: ICustomTheme[];
@@ -236,7 +236,7 @@ function ExtendedThemeProviderInner({
   children,
   themeManager,
   availableThemes,
-}: ExtendedThemeProviderInnerProps) {
+}: IExtendedThemeProviderInnerProps) {
   const {
     theme: currentTheme,
     setTheme,

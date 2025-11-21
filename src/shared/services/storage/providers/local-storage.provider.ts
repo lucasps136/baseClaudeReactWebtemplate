@@ -1,10 +1,10 @@
 // Local Storage Provider
-// Implements StorageProvider interface for localStorage
+// Implements IStorageProvider interface for localStorage
 
-import type { StorageProvider, StorageUsage } from "../storage.types";
+import type { IStorageProvider, IStorageUsage } from "../storage.types";
 import { StorageError, StorageQuotaError } from "../storage.types";
 
-export class LocalStorageProvider implements StorageProvider {
+export class LocalStorageProvider implements IStorageProvider {
   private readonly storageKey = "bebarter-storage";
 
   async setItem(key: string, value: string): Promise<void> {
@@ -78,7 +78,7 @@ export class LocalStorageProvider implements StorageProvider {
     }
   }
 
-  async getUsage(): Promise<StorageUsage> {
+  async getUsage(): Promise<IStorageUsage> {
     try {
       if ("storage" in navigator && "estimate" in navigator.storage) {
         // Use modern Storage API if available

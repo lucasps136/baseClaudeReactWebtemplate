@@ -1,10 +1,10 @@
 // Memory Storage Provider
 // In-memory storage provider for testing and fallback scenarios
 
-import type { StorageProvider, StorageUsage } from "../storage.types";
+import type { IStorageProvider, IStorageUsage } from "../storage.types";
 import { StorageError } from "../storage.types";
 
-export class MemoryStorageProvider implements StorageProvider {
+export class MemoryStorageProvider implements IStorageProvider {
   private storage = new Map<string, string>();
   private readonly maxSize = 5 * 1024 * 1024; // 5MB limit
 
@@ -79,7 +79,7 @@ export class MemoryStorageProvider implements StorageProvider {
     }
   }
 
-  async getUsage(): Promise<StorageUsage> {
+  async getUsage(): Promise<IStorageUsage> {
     try {
       const used = this.calculateSize();
 

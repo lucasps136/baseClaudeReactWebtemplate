@@ -1,24 +1,24 @@
 // IUser service following SOLID principles
 import type {
-  UserProfile,
-  CreateUserInput,
-  UpdateUserInput,
-  UserListFilter,
-  UserListResponse,
+  IUserProfile,
+  ICreateUserInput,
+  IUpdateUserInput,
+  IUserListFilter,
+  IUserListResponse,
 } from "../types/user.types";
 
 // Interface Segregation - specific interfaces for user operations
 export interface IUserRepository {
-  findById(id: string): Promise<UserProfile | null>;
-  findMany(filter: UserListFilter): Promise<UserListResponse>;
-  create(input: CreateUserInput): Promise<UserProfile>;
-  update(id: string, input: UpdateUserInput): Promise<UserProfile>;
+  findById(id: string): Promise<IUserProfile | null>;
+  findMany(filter: IUserListFilter): Promise<IUserListResponse>;
+  create(input: ICreateUserInput): Promise<IUserProfile>;
+  update(id: string, input: IUpdateUserInput): Promise<IUserProfile>;
   delete(id: string): Promise<void>;
 }
 
 export interface IUserValidation {
-  validateCreateInput(input: CreateUserInput): Promise<void>;
-  validateUpdateInput(input: UpdateUserInput): Promise<void>;
+  validateCreateInput(input: ICreateUserInput): Promise<void>;
+  validateUpdateInput(input: IUpdateUserInput): Promise<void>;
   validateEmail(email: string): boolean;
 }
 
@@ -29,14 +29,14 @@ export class UserService {
     private userValidation: IUserValidation,
   ) {}
 
-  async getUserById(id: string): Promise<UserProfile | null> {
+  async getUserById(id: string): Promise<IUserProfile | null> {
     if (!id) throw new Error("User ID is required");
     return this.userRepository.findById(id);
   }
 
-  async getUsers(filter: UserListFilter = {}): Promise<UserListResponse> {
+  async getUsers(filter: IUserListFilter = {}): Promise<IUserListResponse> {
     // Set defaults
-    const normalizedFilter: UserListFilter = {
+    const normalizedFilter: IUserListFilter = {
       limit: 20,
       offset: 0,
       sortBy: "createdAt",
@@ -47,12 +47,12 @@ export class UserService {
     return this.userRepository.findMany(normalizedFilter);
   }
 
-  async createUser(input: CreateUserInput): Promise<UserProfile> {
+  async createUser(input: ICreateUserInput): Promise<IUserProfile> {
     await this.userValidation.validateCreateInput(input);
     return this.userRepository.create(input);
   }
 
-  async updateUser(id: string, input: UpdateUserInput): Promise<UserProfile> {
+  async updateUser(id: string, input: IUpdateUserInput): Promise<IUserProfile> {
     if (!id) throw new Error("User ID is required");
 
     const existingUser = await this.userRepository.findById(id);

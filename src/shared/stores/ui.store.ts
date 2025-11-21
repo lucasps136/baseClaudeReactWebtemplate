@@ -1,11 +1,11 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-interface UIState {
+interface IUIState {
   theme: "light" | "dark" | "system";
   sidebarOpen: boolean;
   loading: boolean;
-  notifications: Notification[];
+  notifications: INotification[];
   modal: {
     isOpen: boolean;
     type: string | null;
@@ -13,7 +13,7 @@ interface UIState {
   };
 }
 
-interface Notification {
+interface INotification {
   id: string;
   type: "success" | "error" | "warning" | "info";
   title: string;
@@ -22,13 +22,13 @@ interface Notification {
   autoClose?: boolean;
 }
 
-interface UIActions {
-  setTheme: (theme: UIState["theme"]) => void;
+interface IUIActions {
+  setTheme: (theme: IUIState["theme"]) => void;
   toggleSidebar: () => void;
   setSidebarOpen: (open: boolean) => void;
   setLoading: (loading: boolean) => void;
   addNotification: (
-    notification: Omit<Notification, "id" | "timestamp">,
+    notification: Omit<INotification, "id" | "timestamp">,
   ) => void;
   removeNotification: (id: string) => void;
   clearNotifications: () => void;
@@ -36,7 +36,7 @@ interface UIActions {
   closeModal: () => void;
 }
 
-export type UIStore = UIState & UIActions;
+export type UIStore = IUIState & IUIActions;
 
 export const useUIStore = create<UIStore>()(
   devtools(
@@ -69,7 +69,7 @@ export const useUIStore = create<UIStore>()(
 
       addNotification: (notification) => {
         const id = crypto.randomUUID();
-        const newNotification: Notification = {
+        const newNotification: INotification = {
           ...notification,
           id,
           timestamp: new Date(),

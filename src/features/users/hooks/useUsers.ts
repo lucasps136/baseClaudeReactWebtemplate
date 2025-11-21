@@ -1,9 +1,9 @@
 import { useCallback } from "react";
 import { useUserStore } from "../stores/user.store";
 import type {
-  UserListFilter,
-  CreateUserInput,
-  UpdateUserInput,
+  IUserListFilter,
+  ICreateUserInput,
+  IUpdateUserInput,
 } from "../types/user.types";
 
 // Custom hook following Single Responsibility
@@ -28,7 +28,7 @@ export const useUsers = () => {
   } = useUserStore();
 
   const fetchUsers = useCallback(
-    async (newFilter?: Partial<UserListFilter>) => {
+    async (newFilter?: Partial<IUserListFilter>) => {
       try {
         setUsersLoading(true);
         setUsersError(null);
@@ -71,7 +71,7 @@ export const useUsers = () => {
   );
 
   const createUser = useCallback(
-    async (input: CreateUserInput) => {
+    async (input: ICreateUserInput) => {
       try {
         setUsersLoading(true);
         setUsersError(null);
@@ -103,7 +103,7 @@ export const useUsers = () => {
   );
 
   const updateUserById = useCallback(
-    async (id: string, input: UpdateUserInput) => {
+    async (id: string, input: IUpdateUserInput) => {
       try {
         setUsersLoading(true);
         setUsersError(null);

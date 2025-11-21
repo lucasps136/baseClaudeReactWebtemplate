@@ -15,14 +15,14 @@ interface IAuthState {
   error: string | null;
 }
 
-interface AuthActions {
+interface IAuthActions {
   setUser: (user: IUser) => void;
   clearUser: () => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
 }
 
-export type AuthStore = IAuthState & AuthActions;
+export type AuthStore = IAuthState & IAuthActions;
 
 export const useAuthStore = create<AuthStore>()(
   devtools(

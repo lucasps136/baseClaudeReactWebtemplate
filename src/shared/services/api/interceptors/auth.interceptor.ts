@@ -2,7 +2,7 @@
 // Automatically injects Supabase auth tokens into requests
 
 import type {
-  ApiRequest,
+  IApiRequest,
   ISupabaseService,
   RequestInterceptor,
 } from "../api.types";
@@ -11,7 +11,7 @@ export class AuthInterceptor {
   constructor(private supabaseService: ISupabaseService) {}
 
   createRequestInterceptor(): RequestInterceptor {
-    return async (request: ApiRequest): Promise<ApiRequest> => {
+    return async (request: IApiRequest): Promise<IApiRequest> => {
       try {
         // Get current session from Supabase
         const {

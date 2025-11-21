@@ -2,8 +2,8 @@
 // Uses BroadcastChannel API for secure cross-tab communication
 
 import type {
-  CrossTabMessage,
-  StorageEvent,
+  ICrossTabMessage,
+  IStorageEvent,
   StorageEventCallback,
 } from "./storage.types";
 
@@ -26,14 +26,14 @@ export class CrossTabSyncService {
   }
 
   // Broadcast storage change to other tabs
-  broadcast<T>(event: StorageEvent<T>): void {
+  broadcast<T>(event: IStorageEvent<T>): void {
     if (!this.channel || event.source === "remote") {
       // Don't broadcast remote events to avoid loops
       return;
     }
 
     try {
-      const message: CrossTabMessage<T> = {
+      const message: ICrossTabMessage<T> = {
         type: "storage-change",
         key: event.key,
         value: event.newValue,
@@ -72,7 +72,7 @@ export class CrossTabSyncService {
 
   private handleMessage(event: MessageEvent): void {
     try {
-      const message = event.data as CrossTabMessage;
+      const message = event.data as ICrossTabMessage;
 
       if (message.type !== "storage-change") {
         return;
@@ -85,7 +85,7 @@ export class CrossTabSyncService {
       }
 
       // Create storage event for listeners
-      const storageEvent: StorageEvent = {
+      const storageEvent: IStorageEvent = {
         key: message.key,
         oldValue: null, // We don't track old values in cross-tab messages
         newValue: message.value,
@@ -101,7 +101,7 @@ export class CrossTabSyncService {
     }
   }
 
-  private notifyListeners<T>(event: StorageEvent<T>): void {
+  private notifyListeners<T>(event: IStorageEvent<T>): void {
     for (const listener of this.listeners) {
       try {
         listener(event);
@@ -111,14 +111,14 @@ export class CrossTabSyncService {
     }
   }
 
-  private createSignature<T>(event: StorageEvent<T>): string {
+  private createSignature<T>(event: IStorageEvent<T>): string {
     // Simple signature for message authenticity
     // In production, you might want to use HMAC or similar
     const data = `${event.key}:${JSON.stringify(event.newValue)}:${event.timestamp}`;
     return btoa(data).slice(0, 16); // Simple hash-like signature
   }
 
-  private validateMessage<T>(message: CrossTabMessage<T>): boolean {
+  private validateMessage<T>(message: ICrossTabMessage<T>): boolean {
     try {
       // Basic validation
       if (!message.key || typeof message.timestamp !== "number") {

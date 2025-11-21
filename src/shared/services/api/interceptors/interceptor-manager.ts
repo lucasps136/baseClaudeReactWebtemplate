@@ -2,17 +2,17 @@
 // Manages request and response interceptors with proper execution order
 
 import type {
-  ApiRequest,
+  IApiRequest,
   IApiResponse,
   ApiError,
   RequestInterceptor,
-  ResponseInterceptor,
-  InterceptorConfig,
+  IResponseInterceptor,
+  IInterceptorConfig,
 } from "../api.types";
 
 export class InterceptorManager {
   private requestInterceptors = new Map<string, RequestInterceptor>();
-  private responseInterceptors = new Map<string, ResponseInterceptor>();
+  private responseInterceptors = new Map<string, IResponseInterceptor>();
 
   addRequestInterceptor(interceptor: RequestInterceptor): string {
     const id = crypto.randomUUID();
@@ -20,7 +20,7 @@ export class InterceptorManager {
     return id;
   }
 
-  addResponseInterceptor(interceptor: ResponseInterceptor): string {
+  addResponseInterceptor(interceptor: IResponseInterceptor): string {
     const id = crypto.randomUUID();
     this.responseInterceptors.set(id, interceptor);
     return id;
@@ -31,7 +31,7 @@ export class InterceptorManager {
     this.responseInterceptors.delete(id);
   }
 
-  async executeRequestInterceptors(request: ApiRequest): Promise<ApiRequest> {
+  async executeRequestInterceptors(request: IApiRequest): Promise<IApiRequest> {
     let processedRequest = { ...request };
 
     // Execute all request interceptors in order

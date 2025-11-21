@@ -1,6 +1,6 @@
 export type LogLevel = "debug" | "info" | "warn" | "error";
 
-export interface LogEntry {
+export interface ILogEntry {
   timestamp: string;
   level: LogLevel;
   context?: string;
@@ -23,7 +23,7 @@ export interface ILogger {
   ): void;
 }
 
-export interface LoggerConfig {
+export interface ILoggerConfig {
   minLevel?: LogLevel;
   enableColors?: boolean;
   enableTimestamp?: boolean;

@@ -3,14 +3,14 @@
 
 import type {
   IEncryptionService,
-  EncryptedData,
-  EncryptionConfig,
+  IEncryptedData,
+  IEncryptionConfig,
 } from "./storage.types";
 import { EncryptionError } from "./storage.types";
 
 export class EncryptionService implements IEncryptionService {
   private keys = new Map<string, CryptoKey>();
-  private readonly config: EncryptionConfig = {
+  private readonly config: IEncryptionConfig = {
     algorithm: "AES-GCM",
     keyLength: 256,
     ivLength: 12,
@@ -20,7 +20,7 @@ export class EncryptionService implements IEncryptionService {
   async encrypt(
     data: string,
     keyId: string = "default",
-  ): Promise<EncryptedData> {
+  ): Promise<IEncryptedData> {
     try {
       // Get or generate encryption key
       let key = await this.getKey(keyId);
@@ -60,7 +60,10 @@ export class EncryptionService implements IEncryptionService {
     }
   }
 
-  async decrypt(encryptedData: EncryptedData, keyId?: string): Promise<string> {
+  async decrypt(
+    encryptedData: IEncryptedData,
+    keyId?: string,
+  ): Promise<string> {
     try {
       const effectiveKeyId = keyId || encryptedData.keyId || "default";
 
