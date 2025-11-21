@@ -1,0 +1,20 @@
+/**
+ * Authentication Hook
+ * Provides access to authentication state and methods
+ */
+
+import { useAuthStore } from "@/shared/stores/auth.store";
+
+export function useAuth() {
+  const user = useAuthStore((state) => state.user);
+  const isLoading = useAuthStore((state) => state.isLoading);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const error = useAuthStore((state) => state.error);
+
+  return {
+    user,
+    isLoading,
+    isAuthenticated,
+    error,
+  };
+}

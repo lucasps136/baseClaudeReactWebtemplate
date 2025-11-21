@@ -9,8 +9,8 @@ import {
 } from "react";
 import type {
   IAuthProvider,
-  AuthState,
-  AuthProviderConfig,
+  IAuthState,
+  IAuthProviderConfig,
 } from "@/shared/types/auth";
 import {
   AuthProviderFactory,
@@ -18,7 +18,7 @@ import {
 } from "@/shared/services/auth/auth-factory";
 
 // Context (Dependency Inversion)
-interface AuthContextType extends AuthState {
+interface AuthContextType extends IAuthState {
   provider: IAuthProvider | null;
   login: IAuthProvider["login"];
   register: IAuthProvider["register"];

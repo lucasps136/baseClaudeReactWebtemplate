@@ -1,0 +1,173 @@
+/**
+ * EXEMPLO DE USO - Interface Segregation em Prática
+ *
+ * Este arquivo demonstra como usar as interfaces segregadas
+ * ao invés da interface monolítica IDatabaseProvider.
+ *
+ * NÃO É CÓDIGO DE PRODUÇÃO - APENAS EXEMPLO EDUCACIONAL
+ */
+
+import type { IDatabaseCRUD } from "@/shared/services/database";
+// import type { DatabaseResponse } from "@/shared/types/database"; // Example file - type not used
+
+/**
+ * ANTES (Interface Monolítica - Violação ISP)
+ *
+ * import type { IDatabaseProvider } from "@/shared/services/database";
+ *
+ * class UserService {
+ *   constructor(private db: IDatabaseProvider) {}
+ *   // ^ Dependência excessiva - tem acesso a métodos não utilizados
+ * }
+ */
+
+/**
+ * DEPOIS (Interface Segregada - ISP)
+ *
+ * Service depende APENAS de IDatabaseCRUD
+ * Não tem acesso a Realtime, Storage, Transactions, etc.
+ */
+export class UserService {
+  constructor(private db: IDatabaseCRUD) {}
+  // ^ Dependência mínima - clara e explícita
+
+  async getUsers() {
+    return this.db.select("users", {
+      orderBy: [{ column: "created_at", ascending: false }],
+    });
+  }
+
+  async getUserById(id: string) {
+    return this.db.selectOne("users", id);
+  }
+
+  async getUserByEmail(email: string) {
+    return this.db.selectBy("users", "email", email);
+  }
+
+  async createUser(userData: any) {
+    return this.db.insert("users", userData);
+  }
+
+  async updateUser(id: string, userData: any) {
+    return this.db.update("users", id, userData);
+  }
+
+  async deleteUser(id: string) {
+    return this.db.delete("users", id);
+  }
+}
+
+/**
+ * BENEFÍCIOS DEMONSTRADOS:
+ *
+ * 1. TESTES MAIS SIMPLES
+ *    - Mock apenas IDatabaseCRUD (9 métodos)
+ *    - Antes: mockava IDatabaseProvider (22+ métodos)
+ *
+ * 2. DEPENDÊNCIAS CLARAS
+ *    - Ao ver o construtor, você sabe que precisa apenas de CRUD
+ *    - Não há confusão sobre quais capacidades são usadas
+ *
+ * 3. FLEXIBILIDADE
+ *    - Pode receber qualquer implementação de IDatabaseCRUD
+ *    - Não precisa de implementação completa de IDatabaseProvider
+ *
+ * 4. MANUTENIBILIDADE
+ *    - Mudanças em Realtime/Storage não afetam este service
+ *    - Acoplamento reduzido
+ *
+ * 5. SOLID - Interface Segregation Principle
+ *    - "Clientes não devem depender de interfaces que não usam"
+ *    - UserService não depende de métodos de Realtime, Storage, etc.
+ */
+
+/**
+ * EXEMPLO DE TESTE (Jest)
+ */
+/*
+import { UserService } from "./example-user-service";
+import type { IDatabaseCRUD } from "@/shared/services/database";
+
+describe("UserService", () => {
+  let mockDb: IDatabaseCRUD;
+  let service: UserService;
+
+  beforeEach(() => {
+    // Mock apenas IDatabaseCRUD - muito mais simples!
+    mockDb = {
+      select: jest.fn(),
+      selectOne: jest.fn(),
+      selectBy: jest.fn(),
+      insert: jest.fn(),
+      update: jest.fn(),
+      updateBy: jest.fn(),
+      delete: jest.fn(),
+      deleteBy: jest.fn(),
+      upsert: jest.fn(),
+    };
+
+    service = new UserService(mockDb);
+  });
+
+  it("should get users", async () => {
+    const mockUsers = [{ id: "1", email: "test@test.com" }];
+    (mockDb.select as jest.Mock).mockResolvedValue({
+      data: mockUsers,
+      error: null,
+    });
+
+    const result = await service.getUsers();
+
+    expect(mockDb.select).toHaveBeenCalledWith("users", {
+      orderBy: [{ column: "created_at", ascending: false }],
+    });
+    expect(result.data).toEqual(mockUsers);
+  });
+
+  it("should get user by id", async () => {
+    const mockUser = { id: "1", email: "test@test.com" };
+    (mockDb.selectOne as jest.Mock).mockResolvedValue({
+      data: mockUser,
+      error: null,
+    });
+
+    const result = await service.getUserById("1");
+
+    expect(mockDb.selectOne).toHaveBeenCalledWith("users", "1");
+    expect(result.data).toEqual(mockUser);
+  });
+
+  it("should create user", async () => {
+    const userData = { email: "new@test.com", name: "New User" };
+    const mockCreated = { id: "2", ...userData };
+    (mockDb.insert as jest.Mock).mockResolvedValue({
+      data: [mockCreated],
+      error: null,
+    });
+
+    const result = await service.createUser(userData);
+
+    expect(mockDb.insert).toHaveBeenCalledWith("users", userData);
+    expect(result.data).toEqual([mockCreated]);
+  });
+});
+*/
+
+/**
+ * COMPARAÇÃO ANTES/DEPOIS
+ *
+ * ANTES (IDatabaseProvider):
+ * - Mock com 22+ métodos
+ * - Dependência pouco clara
+ * - Testes complexos
+ * - Violação do ISP
+ *
+ * DEPOIS (IDatabaseCRUD):
+ * - Mock com 9 métodos
+ * - Dependência explícita
+ * - Testes simples
+ * - ISP respeitado
+ *
+ * RESULTADO: Código mais limpo, testável e manutenível!
+ */
