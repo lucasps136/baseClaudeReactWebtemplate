@@ -1,4 +1,4 @@
-export interface User {
+export interface IUser {
   id: string;
   email: string;
   name?: string;
@@ -7,64 +7,64 @@ export interface User {
   metadata?: Record<string, any>;
 }
 
-export interface AuthSession {
-  user: User;
+export interface IAuthSession {
+  user: IUser;
   token: string;
   expiresAt?: Date;
   refreshToken?: string;
 }
 
-export interface LoginCredentials {
+export interface ILoginCredentials {
   email: string;
   password: string;
 }
 
-export interface RegisterCredentials {
+export interface IRegisterCredentials {
   email: string;
   password: string;
   name?: string;
   metadata?: Record<string, any>;
 }
 
-export interface ResetPasswordData {
+export interface IResetPasswordData {
   email: string;
 }
 
-export interface AuthError {
+export interface IAuthError {
   code: string;
   message: string;
   details?: any;
 }
 
-export interface AuthState {
-  user: User | null;
-  session: AuthSession | null;
+export interface IAuthState {
+  user: IUser | null;
+  session: IAuthSession | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  error: AuthError | null;
+  error: IAuthError | null;
 }
 
 // Interface principal do provider (DIP)
 export interface IAuthProvider {
   // Estado
-  getState(): AuthState;
+  getState(): IAuthState;
 
   // Autenticação
-  login(credentials: LoginCredentials): Promise<AuthSession>;
-  register(credentials: RegisterCredentials): Promise<AuthSession>;
+  login(credentials: ILoginCredentials): Promise<IAuthSession>;
+  register(credentials: IRegisterCredentials): Promise<IAuthSession>;
   logout(): Promise<void>;
 
   // Sessão
-  getCurrentUser(): Promise<User | null>;
-  getCurrentSession(): Promise<AuthSession | null>;
-  refreshSession(): Promise<AuthSession | null>;
+  getCurrentUser(): Promise<IUser | null>;
+  getCurrentSession(): Promise<IAuthSession | null>;
+  refreshSession(): Promise<IAuthSession | null>;
 
   // Recuperação de senha
-  resetPassword(data: ResetPasswordData): Promise<void>;
+  resetPassword(data: IResetPasswordData): Promise<void>;
   updatePassword(newPassword: string): Promise<void>;
 
   // Listeners (Observer Pattern)
-  onAuthStateChange(callback: (state: AuthState) => void): () => void;
+  onAuthStateChange(callback: (state: IAuthState) => void): () => void;
 
   // Inicialização
   initialize(): Promise<void>;
@@ -74,7 +74,7 @@ export interface IAuthProvider {
 // Tipos para Strategy Pattern
 export type AuthProviderType = "supabase" | "clerk" | "auth0" | "nextauth";
 
-export interface AuthProviderConfig {
+export interface IAuthProviderConfig {
   type: AuthProviderType;
   options: Record<string, any>;
 }

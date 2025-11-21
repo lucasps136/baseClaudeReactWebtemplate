@@ -2,7 +2,7 @@
 // Repository: https://github.com/nextjs/saas-starter
 // Adapted with SOLID principles for our template
 
-export interface Price {
+export interface IPrice {
   id: string;
   productId: string;
   active: boolean;
@@ -14,7 +14,7 @@ export interface Price {
   metadata?: Record<string, string>;
 }
 
-export interface Product {
+export interface IProduct {
   id: string;
   active: boolean;
   name: string;
@@ -23,7 +23,7 @@ export interface Product {
   metadata?: Record<string, string>;
 }
 
-export interface Subscription {
+export interface ISubscription {
   id: string;
   userId: string;
   status:
@@ -46,7 +46,7 @@ export interface Subscription {
   metadata?: Record<string, string>;
 }
 
-export interface Customer {
+export interface ICustomer {
   id: string;
   stripeCustomerId: string;
   email: string;
@@ -62,7 +62,7 @@ export interface Customer {
   };
 }
 
-export interface PaymentIntent {
+export interface IPaymentIntent {
   id: string;
   amount: number;
   currency: string;
@@ -79,7 +79,7 @@ export interface PaymentIntent {
   metadata?: Record<string, string>;
 }
 
-export interface CheckoutSession {
+export interface ICheckoutSession {
   id: string;
   url: string;
   customerId?: string;
@@ -88,7 +88,7 @@ export interface CheckoutSession {
   status: "open" | "complete" | "expired";
 }
 
-export interface WebhookEvent {
+export interface IWebhookEvent {
   id: string;
   type: string;
   data: any;
@@ -99,56 +99,56 @@ export interface WebhookEvent {
 // Main payment provider interface (DIP)
 export interface IPaymentProvider {
   // Products and Prices
-  getProducts(): Promise<Product[]>;
-  getProduct(productId: string): Promise<Product | null>;
-  getPrices(productId?: string): Promise<Price[]>;
-  getPrice(priceId: string): Promise<Price | null>;
+  getProducts(): Promise<IProduct[]>;
+  getProduct(productId: string): Promise<IProduct | null>;
+  getPrices(productId?: string): Promise<IPrice[]>;
+  getPrice(priceId: string): Promise<IPrice | null>;
 
   // Customers
   createCustomer(
-    data: Omit<Customer, "id" | "stripeCustomerId">,
-  ): Promise<Customer>;
-  getCustomer(customerId: string): Promise<Customer | null>;
+    data: Omit<ICustomer, "id" | "stripeCustomerId">,
+  ): Promise<ICustomer>;
+  getCustomer(customerId: string): Promise<ICustomer | null>;
   updateCustomer(
     customerId: string,
-    data: Partial<Customer>,
-  ): Promise<Customer>;
+    data: Partial<ICustomer>,
+  ): Promise<ICustomer>;
 
   // Subscriptions
   createSubscription(
     customerId: string,
     priceId: string,
-    options?: CreateSubscriptionOptions,
-  ): Promise<Subscription>;
-  getSubscription(subscriptionId: string): Promise<Subscription | null>;
+    options?: ICreateSubscriptionOptions,
+  ): Promise<ISubscription>;
+  getSubscription(subscriptionId: string): Promise<ISubscription | null>;
   updateSubscription(
     subscriptionId: string,
-    data: Partial<Subscription>,
-  ): Promise<Subscription>;
+    data: Partial<ISubscription>,
+  ): Promise<ISubscription>;
   cancelSubscription(
     subscriptionId: string,
     cancelAtPeriodEnd?: boolean,
-  ): Promise<Subscription>;
-  getCustomerSubscriptions(customerId: string): Promise<Subscription[]>;
+  ): Promise<ISubscription>;
+  getCustomerSubscriptions(customerId: string): Promise<ISubscription[]>;
 
   // Checkout
   createCheckoutSession(
-    options: CreateCheckoutSessionOptions,
-  ): Promise<CheckoutSession>;
-  getCheckoutSession(sessionId: string): Promise<CheckoutSession | null>;
+    options: ICreateCheckoutSessionOptions,
+  ): Promise<ICheckoutSession>;
+  getCheckoutSession(sessionId: string): Promise<ICheckoutSession | null>;
 
   // Payment Intents
   createPaymentIntent(
-    options: CreatePaymentIntentOptions,
-  ): Promise<PaymentIntent>;
-  confirmPaymentIntent(paymentIntentId: string): Promise<PaymentIntent>;
-  getPaymentIntent(paymentIntentId: string): Promise<PaymentIntent | null>;
+    options: ICreatePaymentIntentOptions,
+  ): Promise<IPaymentIntent>;
+  confirmPaymentIntent(paymentIntentId: string): Promise<IPaymentIntent>;
+  getPaymentIntent(paymentIntentId: string): Promise<IPaymentIntent | null>;
 
   // Webhooks
   verifyWebhookSignature(payload: string, signature: string): boolean;
-  processWebhookEvent(event: any): Promise<WebhookEvent>;
+  processWebhookEvent(event: any): Promise<IWebhookEvent>;
 
-  // Customer Portal
+  // ICustomer Portal
   createCustomerPortalSession(
     customerId: string,
     returnUrl: string,
@@ -160,7 +160,7 @@ export interface IPaymentProvider {
 }
 
 // Configuration options
-export interface CreateSubscriptionOptions {
+export interface ICreateSubscriptionOptions {
   trialPeriodDays?: number;
   metadata?: Record<string, string>;
   paymentBehavior?:
@@ -169,7 +169,7 @@ export interface CreateSubscriptionOptions {
     | "error_if_incomplete";
 }
 
-export interface CreateCheckoutSessionOptions {
+export interface ICreateCheckoutSessionOptions {
   mode: "payment" | "subscription" | "setup";
   lineItems: Array<{
     priceId: string;
@@ -185,7 +185,7 @@ export interface CreateCheckoutSessionOptions {
   trialPeriodDays?: number;
 }
 
-export interface CreatePaymentIntentOptions {
+export interface ICreatePaymentIntentOptions {
   amount: number;
   currency: string;
   customerId?: string;
@@ -198,13 +198,13 @@ export interface CreatePaymentIntentOptions {
 // Strategy Pattern for different payment providers
 export type PaymentProviderType = "stripe" | "paddle" | "lemonsqueezy";
 
-export interface PaymentProviderConfig {
+export interface IPaymentProviderConfig {
   type: PaymentProviderType;
   options: Record<string, any>;
 }
 
 // Error types
-export interface PaymentError {
+export interface IPaymentError {
   code: string;
   message: string;
   type:
@@ -217,9 +217,9 @@ export interface PaymentError {
 }
 
 // Response wrapper
-export interface PaymentResponse<T = any> {
+export interface IPaymentResponse<T = any> {
   data: T | null;
-  error: PaymentError | null;
+  error: IPaymentError | null;
 }
 
 // Webhook event types
@@ -234,12 +234,12 @@ export type StripeWebhookEvent =
   | "customer.updated"
   | "customer.deleted";
 
-// Subscription status helpers
-export const ACTIVE_SUBSCRIPTION_STATUSES: Subscription["status"][] = [
+// ISubscription status helpers
+export const ACTIVE_SUBSCRIPTION_STATUSES: ISubscription["status"][] = [
   "active",
   "trialing",
 ];
-export const INACTIVE_SUBSCRIPTION_STATUSES: Subscription["status"][] = [
+export const INACTIVE_SUBSCRIPTION_STATUSES: ISubscription["status"][] = [
   "canceled",
   "incomplete",
   "incomplete_expired",
@@ -248,10 +248,12 @@ export const INACTIVE_SUBSCRIPTION_STATUSES: Subscription["status"][] = [
 ];
 
 // Utility functions
-export const isSubscriptionActive = (subscription: Subscription): boolean => {
+export const isSubscriptionActive = (subscription: ISubscription): boolean => {
   return ACTIVE_SUBSCRIPTION_STATUSES.includes(subscription.status);
 };
 
-export const isSubscriptionCanceled = (subscription: Subscription): boolean => {
+export const isSubscriptionCanceled = (
+  subscription: ISubscription,
+): boolean => {
   return subscription.status === "canceled" || subscription.cancelAtPeriodEnd;
 };

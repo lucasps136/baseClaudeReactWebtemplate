@@ -1,5 +1,5 @@
 // Tipos para sistema de temas extensível
-export interface ThemeColors {
+export interface IThemeColors {
   background: string;
   foreground: string;
   card: string;
@@ -23,20 +23,20 @@ export interface ThemeColors {
   [key: string]: string;
 }
 
-export interface ThemeSpacing {
+export interface IThemeSpacing {
   radius: string;
   // Spacing customizado pode ser adicionado
   [key: string]: string;
 }
 
-export interface CustomTheme {
+export interface ICustomTheme {
   id: string;
   name: string;
   colors: {
-    light: ThemeColors;
-    dark: ThemeColors;
+    light: IThemeColors;
+    dark: IThemeColors;
   };
-  spacing?: ThemeSpacing;
+  spacing?: IThemeSpacing;
   css?: string; // CSS customizado adicional
   fonts?: {
     sans?: string[];
@@ -45,29 +45,29 @@ export interface CustomTheme {
   };
 }
 
-export interface ThemeConfig {
+export interface IThemeConfig {
   defaultTheme: string;
   enableSystem: boolean;
-  themes: CustomTheme[];
+  themes: ICustomTheme[];
   storageKey?: string;
   attribute?: string;
 }
 
-export interface ThemeContextType {
+export interface IThemeContextType {
   currentTheme: string;
-  availableThemes: CustomTheme[];
+  availableThemes: ICustomTheme[];
   setTheme: (theme: string) => void;
   toggleTheme: () => void;
   systemTheme: "light" | "dark" | undefined;
   resolvedTheme: string;
   // Registro de novos temas (Open/Closed Principle)
-  registerTheme: (theme: CustomTheme) => void;
+  registerTheme: (theme: ICustomTheme) => void;
   unregisterTheme: (themeId: string) => void;
   // Customização em tempo real
   updateThemeColors: (
     themeId: string,
     mode: "light" | "dark",
-    colors: Partial<ThemeColors>,
+    colors: Partial<IThemeColors>,
   ) => void;
 }
 
@@ -81,13 +81,13 @@ export type ThemePreset =
   | "violet"
   | "slate";
 
-export interface CreateThemeOptions {
+export interface ICreateThemeOptions {
   preset?: ThemePreset;
   customColors?: {
-    light?: Partial<ThemeColors>;
-    dark?: Partial<ThemeColors>;
+    light?: Partial<IThemeColors>;
+    dark?: Partial<IThemeColors>;
   };
-  customSpacing?: Partial<ThemeSpacing>;
+  customSpacing?: Partial<IThemeSpacing>;
   customFonts?: {
     sans?: string[];
     serif?: string[];

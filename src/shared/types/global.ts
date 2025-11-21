@@ -2,14 +2,14 @@
  * Global type definitions used throughout the application
  */
 
-export interface ApiResponse<T = any> {
+export interface IApiResponse<T = any> {
   data?: T;
   error?: string;
   message?: string;
   status: "success" | "error";
 }
 
-export interface PaginatedResponse<T> extends ApiResponse<T[]> {
+export interface IPaginatedResponse<T> extends IApiResponse<T[]> {
   pagination: {
     page: number;
     limit: number;
@@ -18,19 +18,19 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
   };
 }
 
-export interface BaseEntity {
+export interface IBaseEntity {
   id: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface SelectOption {
+export interface ISelectOption {
   label: string;
   value: string;
   disabled?: boolean;
 }
 
-export interface NavItem {
+export interface INavItem {
   title: string;
   href?: string;
   disabled?: boolean;
@@ -39,7 +39,7 @@ export interface NavItem {
   description?: string;
 }
 
-export interface SiteConfig {
+export interface ISiteConfig {
   name: string;
   description: string;
   url: string;
@@ -51,7 +51,7 @@ export interface SiteConfig {
   };
 }
 
-export interface FeatureFlag {
+export interface IFeatureFlag {
   name: string;
   enabled: boolean;
   description?: string;
@@ -83,30 +83,30 @@ export type Theme = "light" | "dark" | "system";
 /**
  * Common component props
  */
-export interface BaseComponentProps {
+export interface IBaseComponentProps {
   className?: string;
   children?: React.ReactNode;
 }
 
-export interface WithLoading {
+export interface IWithLoading {
   isLoading?: boolean;
 }
 
-export interface WithError {
+export interface IWithError {
   error?: string | null;
 }
 
 /**
  * Form types
  */
-export interface FormFieldError {
+export interface IFormFieldError {
   message: string;
   type: string;
 }
 
-export interface FormState<T = any> {
+export interface IFormState<T = any> {
   data: T;
-  errors: Record<string, FormFieldError>;
+  errors: Record<string, IFormFieldError>;
   isSubmitting: boolean;
   isValid: boolean;
 }

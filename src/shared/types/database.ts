@@ -1,12 +1,12 @@
 // Tipos base para operações de banco
-export interface DatabaseRecord {
+export interface IDatabaseRecord {
   id: string;
   created_at?: string;
   updated_at?: string;
   [key: string]: any;
 }
 
-export interface QueryOptions {
+export interface IQueryOptions {
   select?: string[];
   where?: Record<string, any>;
   orderBy?: { column: string; ascending?: boolean }[];
@@ -14,43 +14,43 @@ export interface QueryOptions {
   offset?: number;
 }
 
-export interface InsertData {
+export interface IInsertData {
   [key: string]: any;
 }
 
-export interface UpdateData {
+export interface IUpdateData {
   [key: string]: any;
 }
 
-export interface UpsertData extends InsertData {
+export interface IUpsertData extends IInsertData {
   id?: string;
 }
 
-export interface DatabaseResponse<T = any> {
+export interface IDatabaseResponse<T = any> {
   data: T | null;
-  error: DatabaseError | null;
+  error: IDatabaseError | null;
   count?: number;
 }
 
-export interface DatabaseError {
+export interface IDatabaseError {
   code: string;
   message: string;
   details?: any;
   hint?: string;
 }
 
-export interface TransactionContext {
+export interface ITransactionContext {
   id: string;
   isActive: boolean;
 }
 
-export interface RealtimeSubscription {
+export interface IRealtimeSubscription {
   id: string;
   table: string;
   unsubscribe: () => void;
 }
 
-export interface RealtimeEvent<T = any> {
+export interface IRealtimeEvent<T = any> {
   eventType: "INSERT" | "UPDATE" | "DELETE";
   new?: T;
   old?: T;
@@ -59,7 +59,7 @@ export interface RealtimeEvent<T = any> {
   commit_timestamp: string;
 }
 
-export type RealtimeCallback<T = any> = (event: RealtimeEvent<T>) => void;
+export type RealtimeCallback<T = any> = (event: IRealtimeEvent<T>) => void;
 
 // Interface principal do provider (DIP)
 export interface IDatabaseProvider {
@@ -69,97 +69,97 @@ export interface IDatabaseProvider {
 
   // CRUD Operations (Single Responsibility)
   // Create
-  insert<T extends DatabaseRecord>(
+  insert<T extends IDatabaseRecord>(
     table: string,
-    data: InsertData | InsertData[],
-  ): Promise<DatabaseResponse<T[]>>;
+    data: IInsertData | IInsertData[],
+  ): Promise<IDatabaseResponse<T[]>>;
 
   // Read
-  select<T extends DatabaseRecord>(
+  select<T extends IDatabaseRecord>(
     table: string,
-    options?: QueryOptions,
-  ): Promise<DatabaseResponse<T[]>>;
+    options?: IQueryOptions,
+  ): Promise<IDatabaseResponse<T[]>>;
 
-  selectOne<T extends DatabaseRecord>(
+  selectOne<T extends IDatabaseRecord>(
     table: string,
     id: string,
-  ): Promise<DatabaseResponse<T>>;
+  ): Promise<IDatabaseResponse<T>>;
 
-  selectBy<T extends DatabaseRecord>(
+  selectBy<T extends IDatabaseRecord>(
     table: string,
     field: string,
     value: any,
-    options?: Omit<QueryOptions, "where">,
-  ): Promise<DatabaseResponse<T[]>>;
+    options?: Omit<IQueryOptions, "where">,
+  ): Promise<IDatabaseResponse<T[]>>;
 
   // Update
-  update<T extends DatabaseRecord>(
+  update<T extends IDatabaseRecord>(
     table: string,
     id: string,
-    data: UpdateData,
-  ): Promise<DatabaseResponse<T>>;
+    data: IUpdateData,
+  ): Promise<IDatabaseResponse<T>>;
 
-  updateBy<T extends DatabaseRecord>(
+  updateBy<T extends IDatabaseRecord>(
     table: string,
     field: string,
     value: any,
-    data: UpdateData,
-  ): Promise<DatabaseResponse<T[]>>;
+    data: IUpdateData,
+  ): Promise<IDatabaseResponse<T[]>>;
 
   // Delete
-  delete<T extends DatabaseRecord>(
+  delete<T extends IDatabaseRecord>(
     table: string,
     id: string,
-  ): Promise<DatabaseResponse<T>>;
+  ): Promise<IDatabaseResponse<T>>;
 
-  deleteBy<T extends DatabaseRecord>(
+  deleteBy<T extends IDatabaseRecord>(
     table: string,
     field: string,
     value: any,
-  ): Promise<DatabaseResponse<T[]>>;
+  ): Promise<IDatabaseResponse<T[]>>;
 
   // Upsert
-  upsert<T extends DatabaseRecord>(
+  upsert<T extends IDatabaseRecord>(
     table: string,
-    data: UpsertData | UpsertData[],
+    data: IUpsertData | IUpsertData[],
     conflictColumns?: string[],
-  ): Promise<DatabaseResponse<T[]>>;
+  ): Promise<IDatabaseResponse<T[]>>;
 
   // Raw Queries (para casos complexos)
-  query<T = any>(sql: string, params?: any[]): Promise<DatabaseResponse<T[]>>;
+  query<T = any>(sql: string, params?: any[]): Promise<IDatabaseResponse<T[]>>;
 
   // Transações (ACID)
   transaction<T>(
-    callback: (ctx: TransactionContext) => Promise<T>,
-  ): Promise<DatabaseResponse<T>>;
+    callback: (ctx: ITransactionContext) => Promise<T>,
+  ): Promise<IDatabaseResponse<T>>;
 
   // Realtime (Observer Pattern)
   subscribe<T = any>(
     table: string,
     callback: RealtimeCallback<T>,
     options?: { event?: "INSERT" | "UPDATE" | "DELETE" | "*" },
-  ): Promise<RealtimeSubscription>;
+  ): Promise<IRealtimeSubscription>;
 
   unsubscribe(subscriptionId: string): Promise<void>;
 
   // Utilidades
   count(
     table: string,
-    options?: Pick<QueryOptions, "where">,
-  ): Promise<DatabaseResponse<number>>;
-  exists(table: string, id: string): Promise<DatabaseResponse<boolean>>;
+    options?: Pick<IQueryOptions, "where">,
+  ): Promise<IDatabaseResponse<number>>;
+  exists(table: string, id: string): Promise<IDatabaseResponse<boolean>>;
 
   // Storage (se aplicável)
   uploadFile?(
     bucket: string,
     path: string,
     file: File | Buffer,
-  ): Promise<DatabaseResponse<{ path: string; url: string }>>;
+  ): Promise<IDatabaseResponse<{ path: string; url: string }>>;
   downloadFile?(
     bucket: string,
     path: string,
-  ): Promise<DatabaseResponse<{ data: Blob; url: string }>>;
-  deleteFile?(bucket: string, path: string): Promise<DatabaseResponse<void>>;
+  ): Promise<IDatabaseResponse<{ data: Blob; url: string }>>;
+  deleteFile?(bucket: string, path: string): Promise<IDatabaseResponse<void>>;
 
   // Inicialização e cleanup
   initialize(): Promise<void>;
@@ -173,20 +173,20 @@ export type DatabaseProviderType =
   | "prisma"
   | "mongodb";
 
-export interface DatabaseProviderConfig {
+export interface IDatabaseProviderConfig {
   type: DatabaseProviderType;
   options: Record<string, any>;
 }
 
 // Tipos específicos para Supabase
-export interface SupabaseConfig {
+export interface ISupabaseConfig {
   url: string;
   anonKey: string;
   serviceRoleKey?: string;
 }
 
 // Tipos específicos para PlanetScale
-export interface PlanetScaleConfig {
+export interface IPlanetScaleConfig {
   host: string;
   username: string;
   password: string;
@@ -194,12 +194,12 @@ export interface PlanetScaleConfig {
 }
 
 // Tipos específicos para Prisma
-export interface PrismaConfig {
+export interface IPrismaConfig {
   databaseUrl: string;
 }
 
 // Tipos específicos para MongoDB
-export interface MongoDBConfig {
+export interface IMongoDBConfig {
   connectionString: string;
   database: string;
 }

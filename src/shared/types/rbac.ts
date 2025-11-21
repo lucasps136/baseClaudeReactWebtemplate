@@ -2,7 +2,7 @@
 // Repository: https://github.com/nextjs/saas-starter
 // Enhanced with SOLID principles for our template
 
-export interface Role {
+export interface IRole {
   id: string;
   name: string;
   description?: string;
@@ -11,7 +11,7 @@ export interface Role {
   updatedAt: Date;
 }
 
-export interface Permission {
+export interface IPermission {
   id: string;
   name: string;
   description?: string;
@@ -20,7 +20,7 @@ export interface Permission {
   createdAt: Date;
 }
 
-export interface UserRole {
+export interface IUserRole {
   id: string;
   userId: string;
   roleId: string;
@@ -31,7 +31,7 @@ export interface UserRole {
   isActive: boolean;
 }
 
-export interface RolePermission {
+export interface IRolePermission {
   roleId: string;
   permissionId: string;
   createdAt: Date;
@@ -40,47 +40,49 @@ export interface RolePermission {
 // RBAC Provider Interface (Dependency Inversion Principle)
 export interface IRBACProvider {
   // Roles
-  getRoles(): Promise<Role[]>;
-  getRole(roleId: string): Promise<Role | null>;
-  createRole(data: Omit<Role, "id" | "createdAt" | "updatedAt">): Promise<Role>;
-  updateRole(roleId: string, data: Partial<Role>): Promise<Role>;
+  getRoles(): Promise<IRole[]>;
+  getRole(roleId: string): Promise<IRole | null>;
+  createRole(
+    data: Omit<IRole, "id" | "createdAt" | "updatedAt">,
+  ): Promise<IRole>;
+  updateRole(roleId: string, data: Partial<IRole>): Promise<IRole>;
   deleteRole(roleId: string): Promise<void>;
 
   // Permissions
-  getPermissions(): Promise<Permission[]>;
-  getPermission(permissionId: string): Promise<Permission | null>;
+  getPermissions(): Promise<IPermission[]>;
+  getPermission(permissionId: string): Promise<IPermission | null>;
   createPermission(
-    data: Omit<Permission, "id" | "createdAt">,
-  ): Promise<Permission>;
+    data: Omit<IPermission, "id" | "createdAt">,
+  ): Promise<IPermission>;
   updatePermission(
     permissionId: string,
-    data: Partial<Permission>,
-  ): Promise<Permission>;
+    data: Partial<IPermission>,
+  ): Promise<IPermission>;
   deletePermission(permissionId: string): Promise<void>;
 
-  // Role Permissions
-  getRolePermissions(roleId: string): Promise<Permission[]>;
+  // IRole Permissions
+  getRolePermissions(roleId: string): Promise<IPermission[]>;
   assignPermissionToRole(roleId: string, permissionId: string): Promise<void>;
   removePermissionFromRole(roleId: string, permissionId: string): Promise<void>;
 
-  // User Roles
-  getUserRoles(userId: string, organizationId?: string): Promise<Role[]>;
+  // IUser Roles
+  getUserRoles(userId: string, organizationId?: string): Promise<IRole[]>;
   getUserPermissions(
     userId: string,
     organizationId?: string,
-  ): Promise<Permission[]>;
+  ): Promise<IPermission[]>;
   assignRoleToUser(
     userId: string,
     roleId: string,
-    options?: AssignRoleOptions,
-  ): Promise<UserRole>;
+    options?: IAssignRoleOptions,
+  ): Promise<IUserRole>;
   removeRoleFromUser(
     userId: string,
     roleId: string,
     organizationId?: string,
   ): Promise<void>;
 
-  // Permission Checking
+  // IPermission Checking
   userHasPermission(
     userId: string,
     permissionName: string,
@@ -94,7 +96,7 @@ export interface IRBACProvider {
 
   // Multi-tenant support
   getUsersByRole(roleName: string, organizationId?: string): Promise<string[]>;
-  getOrganizationUsers(organizationId: string): Promise<UserRole[]>;
+  getOrganizationUsers(organizationId: string): Promise<IUserRole[]>;
 
   // Initialization
   initialize(): Promise<void>;
@@ -102,14 +104,14 @@ export interface IRBACProvider {
 }
 
 // Configuration options
-export interface AssignRoleOptions {
+export interface IAssignRoleOptions {
   organizationId?: string;
   assignedBy?: string;
   expiresAt?: Date;
   isActive?: boolean;
 }
 
-export interface RBACProviderConfig {
+export interface IRBACProviderConfig {
   type: RBACProviderType;
   options: Record<string, any>;
 }
@@ -118,18 +120,18 @@ export interface RBACProviderConfig {
 export type RBACProviderType = "supabase" | "database";
 
 // JWT Claims interface (for integration with auth providers)
-export interface RBACClaims {
+export interface IRBACClaims {
   user_roles: string[];
   user_permissions: string[];
 }
 
 // Response types
-export interface RBACResponse<T = any> {
+export interface IRBACResponse<T = any> {
   data: T | null;
-  error: RBACError | null;
+  error: IRBACError | null;
 }
 
-export interface RBACError {
+export interface IRBACError {
   code: string;
   message: string;
   details?: any;
@@ -152,7 +154,7 @@ export const DEFAULT_PERMISSIONS = {
   USERS_DELETE: "users.delete",
   USERS_INVITE: "users.invite",
 
-  // Organization
+  // IOrganization
   ORGANIZATION_READ: "organization.read",
   ORGANIZATION_UPDATE: "organization.update",
   ORGANIZATION_DELETE: "organization.delete",
@@ -208,7 +210,7 @@ export const canAccessResource = (
 };
 
 // Resource-action mapping for type safety
-export interface ResourceAction {
+export interface IResourceAction {
   resource: string;
   action:
     | "create"
@@ -222,7 +224,7 @@ export interface ResourceAction {
 }
 
 // Multi-tenant organization support
-export interface Organization {
+export interface IOrganization {
   id: string;
   name: string;
   ownerId: string;
@@ -232,9 +234,9 @@ export interface Organization {
 }
 
 // RBAC Context for React components
-export interface RBACContext {
-  userRoles: Role[];
-  userPermissions: Permission[];
+export interface IRBACContext {
+  userRoles: IRole[];
+  userPermissions: IPermission[];
   hasPermission: (permission: string) => boolean;
   hasRole: (role: string) => boolean;
   canAccess: (resource: string, action: string) => boolean;
@@ -243,7 +245,7 @@ export interface RBACContext {
 }
 
 // Hook return type for useRBAC
-export interface UseRBACReturn extends RBACContext {
+export interface IUseRBACReturn extends IRBACContext {
   refetch: () => Promise<void>;
-  error: RBACError | null;
+  error: IRBACError | null;
 }
