@@ -8,7 +8,7 @@
  */
 
 import type { IDatabaseCRUD } from "@/shared/services/database";
-// import type { DatabaseResponse } from "@/shared/types/database"; // Example file - type not used
+// import type { IDatabaseResponse } from "@/shared/types/database"; // Example file - type not used
 
 /**
  * ANTES (Interface Monolítica - Violação ISP)
@@ -139,7 +139,7 @@ describe("UserService", () => {
   });
 
   it("should create user", async () => {
-    const userData = { email: "new@test.com", name: "New User" };
+    const userData = { email: "new@test.com", name: "New IUser" };
     const mockCreated = { id: "2", ...userData };
     (mockDb.insert as jest.Mock).mockResolvedValue({
       data: [mockCreated],

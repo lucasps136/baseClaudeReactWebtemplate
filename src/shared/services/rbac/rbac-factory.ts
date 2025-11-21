@@ -5,7 +5,7 @@
 import type {
   IRBACProvider,
   RBACProviderType,
-  RBACProviderConfig,
+  IRBACProviderConfig,
 } from "@/shared/types/rbac";
 
 // Factory for creating RBAC providers (Factory Pattern + Strategy Pattern)
@@ -25,7 +25,7 @@ export class RBACProviderFactory {
 
   // Create provider based on type (Strategy Pattern)
   static async createProvider(
-    config: RBACProviderConfig,
+    config: IRBACProviderConfig,
   ): Promise<IRBACProvider> {
     const factory = this.providers.get(config.type);
 
@@ -75,7 +75,7 @@ export const registerDefaultRBACProviders = async () => {
 };
 
 // Utility to validate RBAC configuration
-export const validateRBACConfig = (config: RBACProviderConfig): boolean => {
+export const validateRBACConfig = (config: IRBACProviderConfig): boolean => {
   if (!config.type) {
     throw new Error("RBAC provider type is required");
   }
@@ -109,7 +109,7 @@ export const validateRBACConfig = (config: RBACProviderConfig): boolean => {
 
 // Builder pattern for easy configuration
 export class RBACConfigBuilder {
-  private config: Partial<RBACProviderConfig> = {};
+  private config: Partial<IRBACProviderConfig> = {};
 
   static create(): RBACConfigBuilder {
     return new RBACConfigBuilder();
@@ -136,12 +136,12 @@ export class RBACConfigBuilder {
     return this;
   }
 
-  build(): RBACProviderConfig {
+  build(): IRBACProviderConfig {
     if (!this.config.type || !this.config.options) {
       throw new Error("RBAC configuration is incomplete");
     }
 
-    const config = this.config as RBACProviderConfig;
+    const config = this.config as IRBACProviderConfig;
     validateRBACConfig(config);
     return config;
   }
@@ -159,9 +159,9 @@ export const createRBACConfig = {
 // Singleton instance management (Optional Pattern)
 export class RBACManager {
   private static instance: IRBACProvider | null = null;
-  private static config: RBACProviderConfig | null = null;
+  private static config: IRBACProviderConfig | null = null;
 
-  static async initialize(config: RBACProviderConfig): Promise<IRBACProvider> {
+  static async initialize(config: IRBACProviderConfig): Promise<IRBACProvider> {
     if (this.instance && this.config?.type === config.type) {
       return this.instance;
     }

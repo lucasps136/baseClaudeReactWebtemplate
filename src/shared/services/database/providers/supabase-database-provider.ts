@@ -1,16 +1,16 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type {
   IDatabaseProvider,
-  DatabaseRecord,
-  QueryOptions,
-  InsertData,
-  UpdateData,
-  UpsertData,
-  DatabaseResponse,
-  DatabaseError,
-  TransactionContext,
-  RealtimeSubscription,
-  RealtimeEvent,
+  IDatabaseRecord,
+  IQueryOptions,
+  IInsertData,
+  IUpdateData,
+  IUpsertData,
+  IDatabaseResponse,
+  IDatabaseError,
+  ITransactionContext,
+  IRealtimeSubscription,
+  IRealtimeEvent,
   RealtimeCallback,
 } from "@/shared/types/database";
 import { getEnv } from "@/config/env";
@@ -93,10 +93,10 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
   // CRUD Operations (Single Responsibility)
 
   // Create
-  async insert<T extends DatabaseRecord>(
+  async insert<T extends IDatabaseRecord>(
     table: string,
-    data: InsertData | InsertData[],
-  ): Promise<DatabaseResponse<T[]>> {
+    data: IInsertData | IInsertData[],
+  ): Promise<IDatabaseResponse<T[]>> {
     try {
       const {
         data: result,
@@ -119,10 +119,10 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
   }
 
   // Read
-  async select<T extends DatabaseRecord>(
+  async select<T extends IDatabaseRecord>(
     table: string,
-    options: QueryOptions = {},
-  ): Promise<DatabaseResponse<T[]>> {
+    options: IQueryOptions = {},
+  ): Promise<IDatabaseResponse<T[]>> {
     try {
       let query = this.client
         .from(table)
@@ -177,10 +177,10 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
     }
   }
 
-  async selectOne<T extends DatabaseRecord>(
+  async selectOne<T extends IDatabaseRecord>(
     table: string,
     id: string,
-  ): Promise<DatabaseResponse<T>> {
+  ): Promise<IDatabaseResponse<T>> {
     try {
       const { data, error } = await this.client
         .from(table)
@@ -200,12 +200,12 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
     }
   }
 
-  async selectBy<T extends DatabaseRecord>(
+  async selectBy<T extends IDatabaseRecord>(
     table: string,
     field: string,
     value: any,
-    options: Omit<QueryOptions, "where"> = {},
-  ): Promise<DatabaseResponse<T[]>> {
+    options: Omit<IQueryOptions, "where"> = {},
+  ): Promise<IDatabaseResponse<T[]>> {
     return this.select<T>(table, {
       ...options,
       where: { [field]: value },
@@ -213,11 +213,11 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
   }
 
   // Update
-  async update<T extends DatabaseRecord>(
+  async update<T extends IDatabaseRecord>(
     table: string,
     id: string,
-    data: UpdateData,
-  ): Promise<DatabaseResponse<T>> {
+    data: IUpdateData,
+  ): Promise<IDatabaseResponse<T>> {
     try {
       const { data: result, error } = await this.client
         .from(table)
@@ -241,12 +241,12 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
     }
   }
 
-  async updateBy<T extends DatabaseRecord>(
+  async updateBy<T extends IDatabaseRecord>(
     table: string,
     field: string,
     value: any,
-    data: UpdateData,
-  ): Promise<DatabaseResponse<T[]>> {
+    data: IUpdateData,
+  ): Promise<IDatabaseResponse<T[]>> {
     try {
       const {
         data: result,
@@ -276,10 +276,10 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
   }
 
   // Delete
-  async delete<T extends DatabaseRecord>(
+  async delete<T extends IDatabaseRecord>(
     table: string,
     id: string,
-  ): Promise<DatabaseResponse<T>> {
+  ): Promise<IDatabaseResponse<T>> {
     try {
       const { data, error } = await this.client
         .from(table)
@@ -300,11 +300,11 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
     }
   }
 
-  async deleteBy<T extends DatabaseRecord>(
+  async deleteBy<T extends IDatabaseRecord>(
     table: string,
     field: string,
     value: any,
-  ): Promise<DatabaseResponse<T[]>> {
+  ): Promise<IDatabaseResponse<T[]>> {
     try {
       const { data, error, count } = await this.client
         .from(table)
@@ -327,11 +327,11 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
   }
 
   // Upsert
-  async upsert<T extends DatabaseRecord>(
+  async upsert<T extends IDatabaseRecord>(
     table: string,
-    data: UpsertData | UpsertData[],
+    data: IUpsertData | IUpsertData[],
     conflictColumns: string[] = ["id"],
-  ): Promise<DatabaseResponse<T[]>> {
+  ): Promise<IDatabaseResponse<T[]>> {
     try {
       const {
         data: result,
@@ -363,7 +363,7 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
   async query<T = any>(
     sql: string,
     params: any[] = [],
-  ): Promise<DatabaseResponse<T[]>> {
+  ): Promise<IDatabaseResponse<T[]>> {
     try {
       // Supabase não tem execução direta de SQL via JS client
       // Isso seria feito via RPC (stored procedures) ou Edge Functions
@@ -380,11 +380,11 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
 
   // Transações (simuladas com RPC)
   async transaction<T>(
-    callback: (ctx: TransactionContext) => Promise<T>,
-  ): Promise<DatabaseResponse<T>> {
+    callback: (ctx: ITransactionContext) => Promise<T>,
+  ): Promise<IDatabaseResponse<T>> {
     try {
       const transactionId = `tx_${++this.transactionCounter}_${Date.now()}`;
-      const context: TransactionContext = {
+      const context: ITransactionContext = {
         id: transactionId,
         isActive: true,
       };
@@ -410,7 +410,7 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
     table: string,
     callback: RealtimeCallback<T>,
     options: { event?: "INSERT" | "UPDATE" | "DELETE" | "*" } = {},
-  ): Promise<RealtimeSubscription> {
+  ): Promise<IRealtimeSubscription> {
     const subscriptionId = `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const event = options.event || "*";
 
@@ -424,7 +424,7 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
           table,
         },
         (payload) => {
-          const realtimeEvent: RealtimeEvent<T> = {
+          const realtimeEvent: IRealtimeEvent<T> = {
             eventType: payload.eventType as any,
             new: payload.new as T,
             old: payload.old as T,
@@ -457,8 +457,8 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
   // Utilidades
   async count(
     table: string,
-    options: Pick<QueryOptions, "where"> = {},
-  ): Promise<DatabaseResponse<number>> {
+    options: Pick<IQueryOptions, "where"> = {},
+  ): Promise<IDatabaseResponse<number>> {
     try {
       let query = this.client
         .from(table)
@@ -484,7 +484,7 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
     }
   }
 
-  async exists(table: string, id: string): Promise<DatabaseResponse<boolean>> {
+  async exists(table: string, id: string): Promise<IDatabaseResponse<boolean>> {
     try {
       const { count, error } = await this.client
         .from(table)
@@ -508,7 +508,7 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
     bucket: string,
     path: string,
     file: File | Buffer,
-  ): Promise<DatabaseResponse<{ path: string; url: string }>> {
+  ): Promise<IDatabaseResponse<{ path: string; url: string }>> {
     try {
       const { data, error } = await this.client.storage
         .from(bucket)
@@ -543,7 +543,7 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
   async downloadFile(
     bucket: string,
     path: string,
-  ): Promise<DatabaseResponse<{ data: Blob; url: string }>> {
+  ): Promise<IDatabaseResponse<{ data: Blob; url: string }>> {
     try {
       const { data, error } = await this.client.storage
         .from(bucket)
@@ -578,7 +578,7 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
   async deleteFile(
     bucket: string,
     path: string,
-  ): Promise<DatabaseResponse<void>> {
+  ): Promise<IDatabaseResponse<void>> {
     try {
       const { error } = await this.client.storage.from(bucket).remove([path]);
 
@@ -612,7 +612,7 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
   }
 
   // Mapper para erros (Single Responsibility)
-  private mapSupabaseError(error: any): DatabaseError {
+  private mapSupabaseError(error: any): IDatabaseError {
     return {
       code: error.code || error.error_code || "unknown_error",
       message: error.message || "An unknown database error occurred",

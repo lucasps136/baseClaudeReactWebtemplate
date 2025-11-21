@@ -9,16 +9,16 @@ import { useRBAC } from "@/shared/hooks/use-rbac";
 
 interface RBACGuardProps {
   children: ReactNode;
-  // Permission-based access
+  // IPermission-based access
   permissions?: string[];
   requireAllPermissions?: boolean;
-  // Role-based access
+  // IRole-based access
   roles?: string[];
   requireAllRoles?: boolean;
   // Resource-based access
   resource?: string;
   action?: string;
-  // Organization context
+  // IOrganization context
   organizationId?: string;
   // Fallback components
   fallback?: ReactNode;
@@ -35,13 +35,13 @@ interface RBACGuardProps {
  * multiple ways to check access.
  *
  * @example
- * // Permission-based protection
+ * // IPermission-based protection
  * <RBACGuard permissions={['users.create']}>
  *   <CreateUserButton />
  * </RBACGuard>
  *
  * @example
- * // Role-based protection
+ * // IRole-based protection
  * <RBACGuard roles={['admin', 'owner']}>
  *   <AdminPanel />
  * </RBACGuard>
@@ -134,7 +134,7 @@ function checkAccess({
     return canAccess(resource, action);
   }
 
-  // Permission checks
+  // IPermission checks
   if (permissions.length > 0) {
     if (requireAllPermissions) {
       return permissions.every((permission) => hasPermission(permission));
@@ -143,7 +143,7 @@ function checkAccess({
     }
   }
 
-  // Role checks
+  // IRole checks
   if (roles.length > 0) {
     if (requireAllRoles) {
       return roles.every((role) => hasRole(role));

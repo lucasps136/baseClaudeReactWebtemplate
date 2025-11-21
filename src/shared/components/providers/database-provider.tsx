@@ -9,7 +9,7 @@ import {
 } from "react";
 import type {
   IDatabaseProvider,
-  DatabaseProviderConfig,
+  IDatabaseProviderConfig,
 } from "@/shared/types/database";
 import {
   DatabaseProviderFactory,
@@ -29,7 +29,7 @@ const DatabaseContext = createContext<DatabaseContextType | null>(null);
 // Provider Props
 interface DatabaseProviderProps {
   children: ReactNode;
-  config?: DatabaseProviderConfig;
+  config?: IDatabaseProviderConfig;
 }
 
 // Hook para usar o contexto (Interface Segregation)

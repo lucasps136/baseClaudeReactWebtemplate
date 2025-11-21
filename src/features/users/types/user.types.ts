@@ -1,4 +1,4 @@
-// User domain types - specific to user feature
+// IUser domain types - specific to user feature
 export interface UserProfile {
   id: string;
   email: string;

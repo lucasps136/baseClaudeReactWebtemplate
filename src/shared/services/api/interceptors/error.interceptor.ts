@@ -1,12 +1,12 @@
 // Error Interceptor
 // Handles common error scenarios and provides consistent error formatting
 
-import type { ApiError, ApiResponse, ResponseInterceptor } from "../api.types";
+import type { ApiError, IApiResponse, ResponseInterceptor } from "../api.types";
 
 export class ErrorInterceptor {
   createResponseInterceptor(): ResponseInterceptor {
     return {
-      onFulfilled: (response: ApiResponse): ApiResponse => {
+      onFulfilled: (response: IApiResponse): IApiResponse => {
         // Response is successful, just pass it through
         return response;
       },

@@ -5,7 +5,7 @@
 import type {
   IPaymentProvider,
   PaymentProviderType,
-  PaymentProviderConfig,
+  IPaymentProviderConfig,
 } from "@/shared/types/payments";
 
 // Factory for creating payment providers (Factory Pattern + Strategy Pattern)
@@ -25,7 +25,7 @@ export class PaymentProviderFactory {
 
   // Create provider based on type (Strategy Pattern)
   static async createProvider(
-    config: PaymentProviderConfig,
+    config: IPaymentProviderConfig,
   ): Promise<IPaymentProvider> {
     const factory = this.providers.get(config.type);
 
@@ -84,7 +84,7 @@ export const registerDefaultPaymentProviders = async () => {
 
 // Utility to validate payment configuration
 export const validatePaymentConfig = (
-  config: PaymentProviderConfig,
+  config: IPaymentProviderConfig,
 ): boolean => {
   if (!config.type) {
     throw new Error("Payment provider type is required");
@@ -125,7 +125,7 @@ export const validatePaymentConfig = (
 
 // Builder pattern for easy configuration
 export class PaymentConfigBuilder {
-  private config: Partial<PaymentProviderConfig> = {};
+  private config: Partial<IPaymentProviderConfig> = {};
 
   static create(): PaymentConfigBuilder {
     return new PaymentConfigBuilder();
@@ -164,12 +164,12 @@ export class PaymentConfigBuilder {
     return this;
   }
 
-  build(): PaymentProviderConfig {
+  build(): IPaymentProviderConfig {
     if (!this.config.type || !this.config.options) {
       throw new Error("Payment configuration is incomplete");
     }
 
-    const config = this.config as PaymentProviderConfig;
+    const config = this.config as IPaymentProviderConfig;
     validatePaymentConfig(config);
     return config;
   }

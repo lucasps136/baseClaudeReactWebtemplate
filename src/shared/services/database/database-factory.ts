@@ -1,7 +1,7 @@
 import type {
   IDatabaseProvider,
   DatabaseProviderType,
-  DatabaseProviderConfig,
+  IDatabaseProviderConfig,
 } from "@/shared/types/database";
 
 // Factory para criação de database providers (Factory Pattern + Strategy Pattern)
@@ -21,7 +21,7 @@ export class DatabaseProviderFactory {
 
   // Criar provider baseado no tipo (Strategy Pattern)
   static async createProvider(
-    config: DatabaseProviderConfig,
+    config: IDatabaseProviderConfig,
   ): Promise<IDatabaseProvider> {
     const factory = this.providers.get(config.type);
 
@@ -88,7 +88,7 @@ export const registerDefaultDatabaseProviders = async () => {
 
 // Utilitário para validar configuração
 export const validateDatabaseConfig = (
-  config: DatabaseProviderConfig,
+  config: IDatabaseProviderConfig,
 ): boolean => {
   if (!config.type) {
     throw new Error("Database provider type is required");
@@ -139,7 +139,7 @@ export const validateDatabaseConfig = (
 
 // Builder pattern para configuração fácil
 export class DatabaseConfigBuilder {
-  private config: Partial<DatabaseProviderConfig> = {};
+  private config: Partial<IDatabaseProviderConfig> = {};
 
   static create(): DatabaseConfigBuilder {
     return new DatabaseConfigBuilder();
@@ -187,12 +187,12 @@ export class DatabaseConfigBuilder {
     return this;
   }
 
-  build(): DatabaseProviderConfig {
+  build(): IDatabaseProviderConfig {
     if (!this.config.type || !this.config.options) {
       throw new Error("Database configuration is incomplete");
     }
 
-    const config = this.config as DatabaseProviderConfig;
+    const config = this.config as IDatabaseProviderConfig;
     validateDatabaseConfig(config);
     return config;
   }

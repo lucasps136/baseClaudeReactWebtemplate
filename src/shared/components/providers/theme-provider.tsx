@@ -4,17 +4,17 @@ import * as React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
 import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes";
 import type {
-  CustomTheme,
-  ThemeContextType,
-  ThemeConfig,
+  ICustomTheme,
+  IThemeContextType,
+  IThemeConfig,
 } from "@/shared/types/theme";
 import { ThemeFactory } from "@/shared/services/theme/theme-factory";
 
 // Context extensível (Open/Closed Principle)
-const ExtendedThemeContext = createContext<ThemeContextType | null>(null);
+const ExtendedThemeContext = createContext<IThemeContextType | null>(null);
 
 // Hook para usar o contexto estendido (Interface Segregation)
-export const useExtendedTheme = (): ThemeContextType => {
+export const useExtendedTheme = (): IThemeContextType => {
   const context = useContext(ExtendedThemeContext);
   if (!context) {
     throw new Error(
@@ -62,15 +62,15 @@ export const useThemeActions = () => {
 
 // Gerenciador de temas (Single Responsibility)
 class ThemeManager {
-  private themes: Map<string, CustomTheme> = new Map();
+  private themes: Map<string, ICustomTheme> = new Map();
   private listeners: Set<() => void> = new Set();
 
-  constructor(initialThemes: CustomTheme[] = []) {
+  constructor(initialThemes: ICustomTheme[] = []) {
     initialThemes.forEach((theme) => this.themes.set(theme.id, theme));
   }
 
   // Registrar tema (Open/Closed Principle)
-  registerTheme(theme: CustomTheme): void {
+  registerTheme(theme: ICustomTheme): void {
     if (!ThemeFactory.validateTheme(theme)) {
       throw new Error(`Invalid theme: ${theme.id}`);
     }
@@ -91,7 +91,7 @@ class ThemeManager {
   updateThemeColors(
     themeId: string,
     mode: "light" | "dark",
-    colors: Partial<typeof CustomTheme.prototype.colors.light>,
+    colors: Partial<IThemeColors>,
   ): void {
     const theme = this.themes.get(themeId);
     if (!theme) return;
@@ -102,7 +102,7 @@ class ThemeManager {
   }
 
   // Aplicar estilos CSS do tema
-  private applyThemeStyles(theme: CustomTheme): void {
+  private applyThemeStyles(theme: ICustomTheme): void {
     const styleId = `theme-${theme.id}`;
     let styleElement = document.getElementById(styleId) as HTMLStyleElement;
 
@@ -157,11 +157,11 @@ class ThemeManager {
     this.listeners.forEach((listener) => listener());
   }
 
-  getThemes(): CustomTheme[] {
+  getThemes(): ICustomTheme[] {
     return Array.from(this.themes.values());
   }
 
-  getTheme(id: string): CustomTheme | undefined {
+  getTheme(id: string): ICustomTheme | undefined {
     return this.themes.get(id);
   }
 }
@@ -169,7 +169,7 @@ class ThemeManager {
 // Provider Props
 interface ExtendedThemeProviderProps {
   children: React.ReactNode;
-  config?: Partial<ThemeConfig>;
+  config?: Partial<IThemeConfig>;
 }
 
 // Componente Provider Principal
@@ -177,7 +177,7 @@ export function ExtendedThemeProvider({
   children,
   config = {},
 }: ExtendedThemeProviderProps) {
-  const defaultConfig: ThemeConfig = {
+  const defaultConfig: IThemeConfig = {
     defaultTheme: "default",
     enableSystem: true,
     themes: [
@@ -195,7 +195,7 @@ export function ExtendedThemeProvider({
 
   const finalConfig = { ...defaultConfig, ...config };
   const [themeManager] = useState(() => new ThemeManager(finalConfig.themes));
-  const [availableThemes, setAvailableThemes] = useState<CustomTheme[]>(
+  const [availableThemes, setAvailableThemes] = useState<ICustomTheme[]>(
     finalConfig.themes,
   );
 
@@ -229,7 +229,7 @@ export function ExtendedThemeProvider({
 interface ExtendedThemeProviderInnerProps {
   children: React.ReactNode;
   themeManager: ThemeManager;
-  availableThemes: CustomTheme[];
+  availableThemes: ICustomTheme[];
 }
 
 function ExtendedThemeProviderInner({
@@ -258,7 +258,7 @@ function ExtendedThemeProviderInner({
   }, [resolvedTheme, setTheme]);
 
   // Context value (Single Responsibility)
-  const contextValue: ThemeContextType = {
+  const contextValue: IThemeContextType = {
     currentTheme: currentTheme || "default",
     availableThemes,
     setTheme,

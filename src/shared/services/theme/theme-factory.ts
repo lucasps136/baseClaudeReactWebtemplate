@@ -1,14 +1,14 @@
 import type {
-  CustomTheme,
-  ThemeColors,
-  CreateThemeOptions,
+  ICustomTheme,
+  IThemeColors,
+  ICreateThemeOptions,
   ThemePreset,
 } from "@/shared/types/theme";
 
 // Temas base predefinidos (Template Method Pattern)
 const baseThemes: Record<
   ThemePreset,
-  { light: ThemeColors; dark: ThemeColors }
+  { light: IThemeColors; dark: IThemeColors }
 > = {
   default: {
     light: {
@@ -326,8 +326,8 @@ export class ThemeFactory {
   static createTheme(
     id: string,
     name: string,
-    options: CreateThemeOptions = {},
-  ): CustomTheme {
+    options: ICreateThemeOptions = {},
+  ): ICustomTheme {
     const {
       preset = "default",
       customColors,
@@ -360,7 +360,7 @@ export class ThemeFactory {
   }
 
   // Criar tema completamente customizado
-  static createCustomTheme(theme: CustomTheme): CustomTheme {
+  static createCustomTheme(theme: ICustomTheme): ICustomTheme {
     return {
       spacing: { radius: "0.5rem" },
       ...theme,
@@ -373,7 +373,7 @@ export class ThemeFactory {
     name: string,
     primaryLight: string,
     primaryDark: string,
-  ): CustomTheme {
+  ): ICustomTheme {
     return this.createTheme(id, name, {
       preset: "default",
       customColors: {
@@ -388,7 +388,7 @@ export class ThemeFactory {
     id: string,
     name: string,
     baseColor: string,
-  ): CustomTheme {
+  ): ICustomTheme {
     // Algoritmo simples para gerar variações da cor base
     // Em uma implementação real, usaríamos uma library como chroma.js
     const hue = this.extractHue(baseColor);
@@ -419,7 +419,7 @@ export class ThemeFactory {
   }
 
   // Validar tema
-  static validateTheme(theme: CustomTheme): boolean {
+  static validateTheme(theme: ICustomTheme): boolean {
     const requiredColorKeys = [
       "background",
       "foreground",

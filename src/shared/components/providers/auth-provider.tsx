@@ -33,7 +33,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 // Provider Props
 interface AuthProviderProps {
   children: ReactNode;
-  config?: AuthProviderConfig;
+  config?: IAuthProviderConfig;
 }
 
 // Hook para usar o contexto (Interface Segregation)
@@ -77,7 +77,7 @@ export const AuthProvider = ({
   config = { type: "supabase", options: {} },
 }: AuthProviderProps) => {
   const [provider, setProvider] = useState<IAuthProvider | null>(null);
-  const [authState, setAuthState] = useState<AuthState>({
+  const [authState, setAuthState] = useState<IAuthState>({
     user: null,
     session: null,
     isLoading: true,

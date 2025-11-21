@@ -1,7 +1,7 @@
 import type {
   IAuthProvider,
   AuthProviderType,
-  AuthProviderConfig,
+  IAuthProviderConfig,
 } from "@/shared/types/auth";
 
 // Factory para criação de providers (Factory Pattern + Strategy Pattern)
@@ -21,7 +21,7 @@ export class AuthProviderFactory {
 
   // Criar provider baseado no tipo (Strategy Pattern)
   static async createProvider(
-    config: AuthProviderConfig,
+    config: IAuthProviderConfig,
   ): Promise<IAuthProvider> {
     const factory = this.providers.get(config.type);
 

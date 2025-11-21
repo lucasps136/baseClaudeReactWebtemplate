@@ -1,28 +1,28 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-export interface User {
+export interface IUser {
   id: string;
   email: string;
   name?: string;
   avatar?: string;
 }
 
-interface AuthState {
-  user: User | null;
+interface IAuthState {
+  user: IUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
 }
 
 interface AuthActions {
-  setUser: (user: User) => void;
+  setUser: (user: IUser) => void;
   clearUser: () => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
 }
 
-export type AuthStore = AuthState & AuthActions;
+export type AuthStore = IAuthState & AuthActions;
 
 export const useAuthStore = create<AuthStore>()(
   devtools(

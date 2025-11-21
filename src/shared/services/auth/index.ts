@@ -5,15 +5,15 @@ export { SupabaseAuthProvider } from "./providers/supabase-auth-provider";
 // Re-export types
 export type {
   IAuthProvider,
-  User,
-  AuthSession,
-  LoginCredentials,
-  RegisterCredentials,
-  ResetPasswordData,
-  AuthState,
-  AuthError,
+  IUser,
+  IAuthSession,
+  ILoginCredentials,
+  IRegisterCredentials,
+  IResetPasswordData,
+  IAuthState,
+  IAuthError,
   AuthProviderType,
-  AuthProviderConfig,
+  IAuthProviderConfig,
 } from "@/shared/types/auth";
 
 // Re-export provider components

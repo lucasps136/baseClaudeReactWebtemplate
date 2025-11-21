@@ -1,26 +1,26 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type {
   IAuthProvider,
-  User,
-  AuthSession,
-  LoginCredentials,
-  RegisterCredentials,
-  ResetPasswordData,
-  AuthState,
-  AuthError,
+  IUser,
+  IAuthSession,
+  ILoginCredentials,
+  IRegisterCredentials,
+  IResetPasswordData,
+  IAuthState,
+  IAuthError,
 } from "@/shared/types/auth";
 import { getEnv } from "@/config/env";
 
 export class SupabaseAuthProvider implements IAuthProvider {
   private client: SupabaseClient;
-  private state: AuthState = {
+  private state: IAuthState = {
     user: null,
     session: null,
     isLoading: true,
     isAuthenticated: false,
     error: null,
   };
-  private listeners: ((state: AuthState) => void)[] = [];
+  private listeners: ((state: IAuthState) => void)[] = [];
 
   constructor() {
     const env = getEnv();
@@ -31,11 +31,11 @@ export class SupabaseAuthProvider implements IAuthProvider {
   }
 
   // Single Responsibility: Estado
-  getState(): AuthState {
+  getState(): IAuthState {
     return { ...this.state };
   }
 
-  private setState(partial: Partial<AuthState>): void {
+  private setState(partial: Partial<IAuthState>): void {
     this.state = { ...this.state, ...partial };
     this.notifyListeners();
   }
@@ -45,7 +45,7 @@ export class SupabaseAuthProvider implements IAuthProvider {
   }
 
   // Single Responsibility: Autenticação
-  async login(credentials: LoginCredentials): Promise<AuthSession> {
+  async login(credentials: ILoginCredentials): Promise<IAuthSession> {
     try {
       this.setState({ isLoading: true, error: null });
 
@@ -75,7 +75,7 @@ export class SupabaseAuthProvider implements IAuthProvider {
 
       return session;
     } catch (error) {
-      const authError = error as AuthError;
+      const authError = error as IAuthError;
       this.setState({
         isLoading: false,
         error: authError,
@@ -85,7 +85,7 @@ export class SupabaseAuthProvider implements IAuthProvider {
     }
   }
 
-  async register(credentials: RegisterCredentials): Promise<AuthSession> {
+  async register(credentials: IRegisterCredentials): Promise<IAuthSession> {
     try {
       this.setState({ isLoading: true, error: null });
 
@@ -121,7 +121,7 @@ export class SupabaseAuthProvider implements IAuthProvider {
 
       return session;
     } catch (error) {
-      const authError = error as AuthError;
+      const authError = error as IAuthError;
       this.setState({
         isLoading: false,
         error: authError,
@@ -149,7 +149,7 @@ export class SupabaseAuthProvider implements IAuthProvider {
         error: null,
       });
     } catch (error) {
-      const authError = error as AuthError;
+      const authError = error as IAuthError;
       this.setState({
         isLoading: false,
         error: authError,
@@ -159,7 +159,7 @@ export class SupabaseAuthProvider implements IAuthProvider {
   }
 
   // Single Responsibility: Sessão
-  async getCurrentUser(): Promise<User | null> {
+  async getCurrentUser(): Promise<IUser | null> {
     try {
       const {
         data: { user },
@@ -177,7 +177,7 @@ export class SupabaseAuthProvider implements IAuthProvider {
     }
   }
 
-  async getCurrentSession(): Promise<AuthSession | null> {
+  async getCurrentSession(): Promise<IAuthSession | null> {
     try {
       const {
         data: { session },
@@ -195,7 +195,7 @@ export class SupabaseAuthProvider implements IAuthProvider {
     }
   }
 
-  async refreshSession(): Promise<AuthSession | null> {
+  async refreshSession(): Promise<IAuthSession | null> {
     try {
       const { data, error } = await this.client.auth.refreshSession();
 
@@ -225,7 +225,7 @@ export class SupabaseAuthProvider implements IAuthProvider {
   }
 
   // Single Responsibility: Recuperação de senha
-  async resetPassword(data: ResetPasswordData): Promise<void> {
+  async resetPassword(data: IResetPasswordData): Promise<void> {
     try {
       const { error } = await this.client.auth.resetPasswordForEmail(
         data.email,
@@ -235,7 +235,7 @@ export class SupabaseAuthProvider implements IAuthProvider {
         throw this.mapSupabaseError(error);
       }
     } catch (error) {
-      throw error as AuthError;
+      throw error as IAuthError;
     }
   }
 
@@ -249,12 +249,12 @@ export class SupabaseAuthProvider implements IAuthProvider {
         throw this.mapSupabaseError(error);
       }
     } catch (error) {
-      throw error as AuthError;
+      throw error as IAuthError;
     }
   }
 
   // Observer Pattern: Listeners
-  onAuthStateChange(callback: (state: AuthState) => void): () => void {
+  onAuthStateChange(callback: (state: IAuthState) => void): () => void {
     this.listeners.push(callback);
 
     // Retorna função para remover listener
@@ -296,7 +296,7 @@ export class SupabaseAuthProvider implements IAuthProvider {
     } catch (error) {
       this.setState({
         isLoading: false,
-        error: error as AuthError,
+        error: error as IAuthError,
       });
     }
   }
@@ -307,7 +307,7 @@ export class SupabaseAuthProvider implements IAuthProvider {
   }
 
   // Mappers para conversão de tipos (Single Responsibility)
-  private mapSupabaseUser(supabaseUser: any): User {
+  private mapSupabaseUser(supabaseUser: any): IUser {
     return {
       id: supabaseUser.id,
       email: supabaseUser.email!,
@@ -318,7 +318,7 @@ export class SupabaseAuthProvider implements IAuthProvider {
     };
   }
 
-  private mapSupabaseSession(supabaseSession: any): AuthSession {
+  private mapSupabaseSession(supabaseSession: any): IAuthSession {
     return {
       user: this.mapSupabaseUser(supabaseSession.user),
       token: supabaseSession.access_token,
@@ -327,7 +327,7 @@ export class SupabaseAuthProvider implements IAuthProvider {
     };
   }
 
-  private mapSupabaseError(error: any): AuthError {
+  private mapSupabaseError(error: any): IAuthError {
     return {
       code: error.message || "unknown_error",
       message: error.message || "An unknown error occurred",

@@ -5,7 +5,7 @@ import { z } from "zod";
 import type {
   IApiService,
   ApiRequest,
-  ApiResponse,
+  IApiResponse,
   RequestConfig,
   RequestInterceptor,
   ResponseInterceptor,
@@ -53,7 +53,7 @@ export class ApiService implements IApiService {
   }
 
   // Core HTTP methods
-  async get<T>(url: string, config?: RequestConfig): Promise<ApiResponse<T>> {
+  async get<T>(url: string, config?: RequestConfig): Promise<IApiResponse<T>> {
     return this.request<T>({
       url,
       method: "GET",
@@ -65,7 +65,7 @@ export class ApiService implements IApiService {
     url: string,
     data?: unknown,
     config?: RequestConfig,
-  ): Promise<ApiResponse<T>> {
+  ): Promise<IApiResponse<T>> {
     return this.request<T>({
       url,
       method: "POST",
@@ -78,7 +78,7 @@ export class ApiService implements IApiService {
     url: string,
     data?: unknown,
     config?: RequestConfig,
-  ): Promise<ApiResponse<T>> {
+  ): Promise<IApiResponse<T>> {
     return this.request<T>({
       url,
       method: "PUT",
@@ -91,7 +91,7 @@ export class ApiService implements IApiService {
     url: string,
     data?: unknown,
     config?: RequestConfig,
-  ): Promise<ApiResponse<T>> {
+  ): Promise<IApiResponse<T>> {
     return this.request<T>({
       url,
       method: "PATCH",
@@ -103,7 +103,7 @@ export class ApiService implements IApiService {
   async delete<T>(
     url: string,
     config?: RequestConfig,
-  ): Promise<ApiResponse<T>> {
+  ): Promise<IApiResponse<T>> {
     return this.request<T>({
       url,
       method: "DELETE",
@@ -112,7 +112,7 @@ export class ApiService implements IApiService {
   }
 
   // Low-level request method
-  async request<T>(request: ApiRequest): Promise<ApiResponse<T>> {
+  async request<T>(request: ApiRequest): Promise<IApiResponse<T>> {
     // Validate request
     await this.validateRequest(request);
 
@@ -157,7 +157,7 @@ export class ApiService implements IApiService {
   // Private methods
   private async executeRequest<T>(
     request: ApiRequest,
-  ): Promise<ApiResponse<T>> {
+  ): Promise<IApiResponse<T>> {
     const { url, method, headers, body, timeout, signal, cache, credentials } =
       request;
 
@@ -211,8 +211,8 @@ export class ApiService implements IApiService {
       // Parse response data
       const data = await this.parseResponseData<T>(response);
 
-      // Create ApiResponse
-      const apiResponse: ApiResponse<T> = {
+      // Create IApiResponse
+      const apiResponse: IApiResponse<T> = {
         data,
         status: response.status,
         statusText: response.statusText,

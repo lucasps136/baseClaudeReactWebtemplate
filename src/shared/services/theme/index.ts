@@ -4,15 +4,15 @@ import { ThemeFactory } from "./theme-factory";
 
 // Re-export types
 export type {
-  CustomTheme,
-  ThemeColors,
-  ThemeSpacing,
-  ThemeConfig,
-  ThemeContextType,
-  CreateThemeOptions,
+  ICustomTheme,
+  IThemeColors,
+  IThemeSpacing,
+  IThemeConfig,
+  IThemeContextType,
+  ICreateThemeOptions,
   ThemePreset,
 } from "@/shared/types/theme";
-import type { CustomTheme, ThemePreset } from "@/shared/types/theme";
+import type { ICustomTheme, ThemePreset } from "@/shared/types/theme";
 
 // Re-export provider components
 export {
@@ -48,7 +48,7 @@ export const createCustomThemes = {
   fromColor: (id: string, name: string, baseColor: string) =>
     ThemeFactory.generateThemeFromColor(id, name, baseColor),
 
-  custom: (theme: CustomTheme) => ThemeFactory.createCustomTheme(theme),
+  custom: (theme: ICustomTheme) => ThemeFactory.createCustomTheme(theme),
 };
 
 // Temas predefinidos prontos para uso

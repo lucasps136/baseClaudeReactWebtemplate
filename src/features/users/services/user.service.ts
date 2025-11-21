@@ -1,4 +1,4 @@
-// User service following SOLID principles
+// IUser service following SOLID principles
 import type {
   UserProfile,
   CreateUserInput,
@@ -22,7 +22,7 @@ export interface IUserValidation {
   validateEmail(email: string): boolean;
 }
 
-// Single Responsibility - User service only handles user business logic
+// Single Responsibility - IUser service only handles user business logic
 export class UserService {
   constructor(
     private userRepository: IUserRepository,

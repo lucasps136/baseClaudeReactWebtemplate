@@ -8,7 +8,7 @@ export { ApiService, createApiService } from "./api.service";
 export type {
   IApiService,
   ApiRequest,
-  ApiResponse,
+  IApiResponse,
   RequestConfig,
   HttpMethod,
   RequestInterceptor,

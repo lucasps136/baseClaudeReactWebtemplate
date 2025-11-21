@@ -7,24 +7,24 @@
 import { logger } from "@/shared/services/logger";
 import type {
   IAuthProvider,
-  User,
-  AuthSession,
-  LoginCredentials,
-  RegisterCredentials,
-  ResetPasswordData,
-  AuthState,
-  AuthError,
+  IUser,
+  IAuthSession,
+  ILoginCredentials,
+  IRegisterCredentials,
+  IResetPasswordData,
+  IAuthState,
+  IAuthError,
 } from "@/shared/types/auth";
 
 export class ClerkAuthProvider implements IAuthProvider {
-  private state: AuthState = {
+  private state: IAuthState = {
     user: null,
     session: null,
     isLoading: true,
     isAuthenticated: false,
     error: null,
   };
-  private listeners: ((state: AuthState) => void)[] = [];
+  private listeners: ((state: IAuthState) => void)[] = [];
 
   constructor() {
     // Verificar se @clerk/nextjs está disponível
@@ -38,11 +38,11 @@ export class ClerkAuthProvider implements IAuthProvider {
   }
 
   // Single Responsibility: Estado
-  getState(): AuthState {
+  getState(): IAuthState {
     return { ...this.state };
   }
 
-  private setState(partial: Partial<AuthState>): void {
+  private setState(partial: Partial<IAuthState>): void {
     this.state = { ...this.state, ...partial };
     this.notifyListeners();
   }
@@ -53,7 +53,7 @@ export class ClerkAuthProvider implements IAuthProvider {
 
   // Single Responsibility: Autenticação
   // eslint-disable-next-line @typescript-eslint/no-unused-vars -- TODO: Remove when implementing direct Clerk login
-  async login(_credentials: LoginCredentials): Promise<AuthSession> {
+  async login(_credentials: ILoginCredentials): Promise<IAuthSession> {
     try {
       this.setState({ isLoading: true, error: null });
 
@@ -64,7 +64,7 @@ export class ClerkAuthProvider implements IAuthProvider {
         "Clerk authentication requires using Clerk's SignIn component. Use clerk.signIn() on client-side.",
       );
     } catch (error) {
-      const authError = error as AuthError;
+      const authError = error as IAuthError;
       this.setState({
         isLoading: false,
         error: authError,
@@ -75,7 +75,7 @@ export class ClerkAuthProvider implements IAuthProvider {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars -- TODO: Remove when implementing direct Clerk register
-  async register(_credentials: RegisterCredentials): Promise<AuthSession> {
+  async register(_credentials: IRegisterCredentials): Promise<IAuthSession> {
     try {
       this.setState({ isLoading: true, error: null });
 
@@ -86,7 +86,7 @@ export class ClerkAuthProvider implements IAuthProvider {
         "Clerk authentication requires using Clerk's SignUp component. Use clerk.signUp() on client-side.",
       );
     } catch (error) {
-      const authError = error as AuthError;
+      const authError = error as IAuthError;
       this.setState({
         isLoading: false,
         error: authError,
@@ -110,7 +110,7 @@ export class ClerkAuthProvider implements IAuthProvider {
         error: null,
       });
     } catch (error) {
-      const authError = error as AuthError;
+      const authError = error as IAuthError;
       this.setState({
         isLoading: false,
         error: authError,
@@ -120,7 +120,7 @@ export class ClerkAuthProvider implements IAuthProvider {
   }
 
   // Single Responsibility: Sessão
-  async getCurrentUser(): Promise<User | null> {
+  async getCurrentUser(): Promise<IUser | null> {
     try {
       // Clerk user deve ser obtido via useUser() hook no client-side
       // Este método retorna o estado atual
@@ -133,7 +133,7 @@ export class ClerkAuthProvider implements IAuthProvider {
     }
   }
 
-  async getCurrentSession(): Promise<AuthSession | null> {
+  async getCurrentSession(): Promise<IAuthSession | null> {
     try {
       // Clerk session deve ser obtida via useSession() hook no client-side
       // Este método retorna o estado atual
@@ -146,7 +146,7 @@ export class ClerkAuthProvider implements IAuthProvider {
     }
   }
 
-  async refreshSession(): Promise<AuthSession | null> {
+  async refreshSession(): Promise<IAuthSession | null> {
     try {
       // Clerk gerencia refresh automaticamente
       // Este método retorna a sessão atual
@@ -159,7 +159,7 @@ export class ClerkAuthProvider implements IAuthProvider {
 
   // Single Responsibility: Recuperação de senha
   // eslint-disable-next-line @typescript-eslint/no-unused-vars -- TODO: Remove when implementing Clerk password reset
-  async resetPassword(data: ResetPasswordData): Promise<void> {
+  async resetPassword(data: IResetPasswordData): Promise<void> {
     try {
       // Clerk password reset deve ser feito via clerk UI components
       // ou clerk.signIn.prepareFirstFactor() no client-side
@@ -168,7 +168,7 @@ export class ClerkAuthProvider implements IAuthProvider {
         "Clerk password reset requires using Clerk's UI components or client-side methods.",
       );
     } catch (error) {
-      throw error as AuthError;
+      throw error as IAuthError;
     }
   }
 
@@ -181,12 +181,12 @@ export class ClerkAuthProvider implements IAuthProvider {
         "Clerk password update requires using user.update() on client-side.",
       );
     } catch (error) {
-      throw error as AuthError;
+      throw error as IAuthError;
     }
   }
 
   // Observer Pattern: Listeners
-  onAuthStateChange(callback: (state: AuthState) => void): () => void {
+  onAuthStateChange(callback: (state: IAuthState) => void): () => void {
     this.listeners.push(callback);
 
     // Retorna função para remover listener
@@ -216,7 +216,7 @@ export class ClerkAuthProvider implements IAuthProvider {
     } catch (error) {
       this.setState({
         isLoading: false,
-        error: error as AuthError,
+        error: error as IAuthError,
       });
     }
   }
@@ -227,7 +227,7 @@ export class ClerkAuthProvider implements IAuthProvider {
   }
 
   // Helper: Criar erro padronizado
-  private createAuthError(code: string, message: string): AuthError {
+  private createAuthError(code: string, message: string): IAuthError {
     return {
       code,
       message,
@@ -263,7 +263,7 @@ export class ClerkAuthProvider implements IAuthProvider {
   }
 
   // Mappers para conversão de tipos (Single Responsibility)
-  private mapClerkUser(clerkUser: any): User {
+  private mapClerkUser(clerkUser: any): IUser {
     return {
       id: clerkUser.id,
       email: clerkUser.emailAddresses?.[0]?.emailAddress || "",
@@ -277,7 +277,7 @@ export class ClerkAuthProvider implements IAuthProvider {
     };
   }
 
-  private mapClerkSession(clerkSession: any, clerkUser: any): AuthSession {
+  private mapClerkSession(clerkSession: any, clerkUser: any): IAuthSession {
     return {
       user: this.mapClerkUser(clerkUser),
       token: clerkSession.lastActiveToken?.getRawString() || "",

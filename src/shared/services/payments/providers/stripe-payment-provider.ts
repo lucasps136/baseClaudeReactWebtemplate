@@ -5,18 +5,18 @@
 import Stripe from "stripe";
 import type {
   IPaymentProvider,
-  Product,
-  Price,
-  Customer,
-  Subscription,
-  PaymentIntent,
-  CheckoutSession,
-  WebhookEvent,
-  PaymentResponse,
-  PaymentError,
-  CreateSubscriptionOptions,
-  CreateCheckoutSessionOptions,
-  CreatePaymentIntentOptions,
+  IProduct,
+  IPrice,
+  ICustomer,
+  ISubscription,
+  IPaymentIntent,
+  ICheckoutSession,
+  IWebhookEvent,
+  IPaymentResponse,
+  IPaymentError,
+  ICreateSubscriptionOptions,
+  ICreateCheckoutSessionOptions,
+  ICreatePaymentIntentOptions,
 } from "@/shared/types/payments";
 import { getEnv } from "@/config/env";
 
@@ -40,7 +40,7 @@ export class StripePaymentProvider implements IPaymentProvider {
   }
 
   // Products and Prices (Single Responsibility)
-  async getProducts(): Promise<Product[]> {
+  async getProducts(): Promise<IProduct[]> {
     try {
       const { data } = await this.stripe.products.list({
         active: true,
@@ -53,7 +53,7 @@ export class StripePaymentProvider implements IPaymentProvider {
     }
   }
 
-  async getProduct(productId: string): Promise<Product | null> {
+  async getProduct(productId: string): Promise<IProduct | null> {
     try {
       const product = await this.stripe.products.retrieve(productId);
       return this.mapStripeProduct(product);
@@ -65,7 +65,7 @@ export class StripePaymentProvider implements IPaymentProvider {
     }
   }
 
-  async getPrices(productId?: string): Promise<Price[]> {
+  async getPrices(productId?: string): Promise<IPrice[]> {
     try {
       const params: Stripe.PriceListParams = {
         active: true,
@@ -83,7 +83,7 @@ export class StripePaymentProvider implements IPaymentProvider {
     }
   }
 
-  async getPrice(priceId: string): Promise<Price | null> {
+  async getPrice(priceId: string): Promise<IPrice | null> {
     try {
       const price = await this.stripe.prices.retrieve(priceId);
       return this.mapStripePrice(price);
@@ -97,8 +97,8 @@ export class StripePaymentProvider implements IPaymentProvider {
 
   // Customers (Single Responsibility)
   async createCustomer(
-    data: Omit<Customer, "id" | "stripeCustomerId">,
-  ): Promise<Customer> {
+    data: Omit<ICustomer, "id" | "stripeCustomerId">,
+  ): Promise<ICustomer> {
     try {
       const customer = await this.stripe.customers.create({
         email: data.email,
@@ -113,7 +113,7 @@ export class StripePaymentProvider implements IPaymentProvider {
     }
   }
 
-  async getCustomer(customerId: string): Promise<Customer | null> {
+  async getCustomer(customerId: string): Promise<ICustomer | null> {
     try {
       const customer = await this.stripe.customers.retrieve(customerId);
 
@@ -132,8 +132,8 @@ export class StripePaymentProvider implements IPaymentProvider {
 
   async updateCustomer(
     customerId: string,
-    data: Partial<Customer>,
-  ): Promise<Customer> {
+    data: Partial<ICustomer>,
+  ): Promise<ICustomer> {
     try {
       const customer = await this.stripe.customers.update(customerId, {
         email: data.email,
@@ -152,8 +152,8 @@ export class StripePaymentProvider implements IPaymentProvider {
   async createSubscription(
     customerId: string,
     priceId: string,
-    options: CreateSubscriptionOptions = {},
-  ): Promise<Subscription> {
+    options: ICreateSubscriptionOptions = {},
+  ): Promise<ISubscription> {
     try {
       const subscription = await this.stripe.subscriptions.create({
         customer: customerId,
@@ -170,7 +170,7 @@ export class StripePaymentProvider implements IPaymentProvider {
     }
   }
 
-  async getSubscription(subscriptionId: string): Promise<Subscription | null> {
+  async getSubscription(subscriptionId: string): Promise<ISubscription | null> {
     try {
       const subscription =
         await this.stripe.subscriptions.retrieve(subscriptionId);
@@ -185,8 +185,8 @@ export class StripePaymentProvider implements IPaymentProvider {
 
   async updateSubscription(
     subscriptionId: string,
-    data: Partial<Subscription>,
-  ): Promise<Subscription> {
+    data: Partial<ISubscription>,
+  ): Promise<ISubscription> {
     try {
       const updateData: Stripe.SubscriptionUpdateParams = {};
 
@@ -218,7 +218,7 @@ export class StripePaymentProvider implements IPaymentProvider {
   async cancelSubscription(
     subscriptionId: string,
     cancelAtPeriodEnd: boolean = false,
-  ): Promise<Subscription> {
+  ): Promise<ISubscription> {
     try {
       let subscription: Stripe.Subscription;
 
@@ -236,7 +236,7 @@ export class StripePaymentProvider implements IPaymentProvider {
     }
   }
 
-  async getCustomerSubscriptions(customerId: string): Promise<Subscription[]> {
+  async getCustomerSubscriptions(customerId: string): Promise<ISubscription[]> {
     try {
       const { data } = await this.stripe.subscriptions.list({
         customer: customerId,
@@ -251,8 +251,8 @@ export class StripePaymentProvider implements IPaymentProvider {
 
   // Checkout (Single Responsibility)
   async createCheckoutSession(
-    options: CreateCheckoutSessionOptions,
-  ): Promise<CheckoutSession> {
+    options: ICreateCheckoutSessionOptions,
+  ): Promise<ICheckoutSession> {
     try {
       const sessionData: Stripe.Checkout.SessionCreateParams = {
         mode: options.mode,
@@ -286,7 +286,9 @@ export class StripePaymentProvider implements IPaymentProvider {
     }
   }
 
-  async getCheckoutSession(sessionId: string): Promise<CheckoutSession | null> {
+  async getCheckoutSession(
+    sessionId: string,
+  ): Promise<ICheckoutSession | null> {
     try {
       const session = await this.stripe.checkout.sessions.retrieve(sessionId);
       return this.mapStripeCheckoutSession(session);
@@ -300,8 +302,8 @@ export class StripePaymentProvider implements IPaymentProvider {
 
   // Payment Intents (Single Responsibility)
   async createPaymentIntent(
-    options: CreatePaymentIntentOptions,
-  ): Promise<PaymentIntent> {
+    options: ICreatePaymentIntentOptions,
+  ): Promise<IPaymentIntent> {
     try {
       const paymentIntent = await this.stripe.paymentIntents.create({
         amount: options.amount,
@@ -317,7 +319,7 @@ export class StripePaymentProvider implements IPaymentProvider {
     }
   }
 
-  async confirmPaymentIntent(paymentIntentId: string): Promise<PaymentIntent> {
+  async confirmPaymentIntent(paymentIntentId: string): Promise<IPaymentIntent> {
     try {
       const paymentIntent =
         await this.stripe.paymentIntents.confirm(paymentIntentId);
@@ -329,7 +331,7 @@ export class StripePaymentProvider implements IPaymentProvider {
 
   async getPaymentIntent(
     paymentIntentId: string,
-  ): Promise<PaymentIntent | null> {
+  ): Promise<IPaymentIntent | null> {
     try {
       const paymentIntent =
         await this.stripe.paymentIntents.retrieve(paymentIntentId);
@@ -360,10 +362,10 @@ export class StripePaymentProvider implements IPaymentProvider {
     }
   }
 
-  async processWebhookEvent(event: any): Promise<WebhookEvent> {
+  async processWebhookEvent(event: any): Promise<IWebhookEvent> {
     try {
       // Process different event types
-      const webhookEvent: WebhookEvent = {
+      const webhookEvent: IWebhookEvent = {
         id: event.id,
         type: event.type,
         data: event.data,
@@ -393,7 +395,7 @@ export class StripePaymentProvider implements IPaymentProvider {
     }
   }
 
-  // Customer Portal
+  // ICustomer Portal
   async createCustomerPortalSession(
     customerId: string,
     returnUrl: string,
@@ -427,7 +429,7 @@ export class StripePaymentProvider implements IPaymentProvider {
   }
 
   // Mappers (Single Responsibility)
-  private mapStripeProduct = (product: Stripe.Product): Product => ({
+  private mapStripeProduct = (product: Stripe.Product): IProduct => ({
     id: product.id,
     active: product.active,
     name: product.name,
@@ -436,7 +438,7 @@ export class StripePaymentProvider implements IPaymentProvider {
     metadata: product.metadata,
   });
 
-  private mapStripePrice = (price: Stripe.Price): Price => ({
+  private mapStripePrice = (price: Stripe.Price): IPrice => ({
     id: price.id,
     productId:
       typeof price.product === "string" ? price.product : price.product.id,
@@ -449,7 +451,7 @@ export class StripePaymentProvider implements IPaymentProvider {
     metadata: price.metadata,
   });
 
-  private mapStripeCustomer = (customer: Stripe.Customer): Customer => ({
+  private mapStripeCustomer = (customer: Stripe.Customer): ICustomer => ({
     id: customer.id,
     stripeCustomerId: customer.id,
     email: customer.email!,
@@ -469,13 +471,13 @@ export class StripePaymentProvider implements IPaymentProvider {
 
   private mapStripeSubscription = (
     subscription: Stripe.Subscription,
-  ): Subscription => ({
+  ): ISubscription => ({
     id: subscription.id,
     userId:
       typeof subscription.customer === "string"
         ? subscription.customer
         : subscription.customer.id,
-    status: subscription.status as Subscription["status"],
+    status: subscription.status as ISubscription["status"],
     priceId: subscription.items.data[0]?.price.id || "",
     customerId:
       typeof subscription.customer === "string"
@@ -501,11 +503,11 @@ export class StripePaymentProvider implements IPaymentProvider {
 
   private mapStripePaymentIntent = (
     paymentIntent: Stripe.PaymentIntent,
-  ): PaymentIntent => ({
+  ): IPaymentIntent => ({
     id: paymentIntent.id,
     amount: paymentIntent.amount,
     currency: paymentIntent.currency,
-    status: paymentIntent.status as PaymentIntent["status"],
+    status: paymentIntent.status as IPaymentIntent["status"],
     clientSecret: paymentIntent.client_secret!,
     customerId:
       typeof paymentIntent.customer === "string"
@@ -516,7 +518,7 @@ export class StripePaymentProvider implements IPaymentProvider {
 
   private mapStripeCheckoutSession = (
     session: Stripe.Checkout.Session,
-  ): CheckoutSession => ({
+  ): ICheckoutSession => ({
     id: session.id,
     url: session.url!,
     customerId:
@@ -527,16 +529,16 @@ export class StripePaymentProvider implements IPaymentProvider {
       typeof session.subscription === "string"
         ? session.subscription
         : session.subscription?.id,
-    mode: session.mode as CheckoutSession["mode"],
-    status: session.status as CheckoutSession["status"],
+    mode: session.mode as ICheckoutSession["mode"],
+    status: session.status as ICheckoutSession["status"],
   });
 
-  private mapStripeError = (error: any): PaymentError => {
+  private mapStripeError = (error: any): IPaymentError => {
     const stripeError = error as Stripe.StripeError;
     return {
       code: stripeError.code || "unknown_error",
       message: stripeError.message || "An unknown error occurred",
-      type: (stripeError.type as PaymentError["type"]) || "api_error",
+      type: (stripeError.type as IPaymentError["type"]) || "api_error",
       details: stripeError,
     };
   };

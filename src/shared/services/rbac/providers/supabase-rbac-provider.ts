@@ -5,11 +5,11 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type {
   IRBACProvider,
-  Role,
-  Permission,
-  UserRole,
-  AssignRoleOptions,
-  RBACError,
+  IRole,
+  IPermission,
+  IUserRole,
+  IAssignRoleOptions,
+  IRBACError,
 } from "@/shared/types/rbac";
 import { getEnv } from "@/config/env";
 
@@ -34,7 +34,7 @@ export class SupabaseRBACProvider implements IRBACProvider {
   }
 
   // Roles (Single Responsibility)
-  async getRoles(): Promise<Role[]> {
+  async getRoles(): Promise<IRole[]> {
     try {
       const { data, error } = await this.supabase
         .from("roles")
@@ -49,7 +49,7 @@ export class SupabaseRBACProvider implements IRBACProvider {
     }
   }
 
-  async getRole(roleId: string): Promise<Role | null> {
+  async getRole(roleId: string): Promise<IRole | null> {
     try {
       const { data, error } = await this.supabase
         .from("roles")
@@ -67,8 +67,8 @@ export class SupabaseRBACProvider implements IRBACProvider {
   }
 
   async createRole(
-    data: Omit<Role, "id" | "createdAt" | "updatedAt">,
-  ): Promise<Role> {
+    data: Omit<IRole, "id" | "createdAt" | "updatedAt">,
+  ): Promise<IRole> {
     try {
       const { data: role, error } = await this.supabase
         .from("roles")
@@ -88,7 +88,7 @@ export class SupabaseRBACProvider implements IRBACProvider {
     }
   }
 
-  async updateRole(roleId: string, data: Partial<Role>): Promise<Role> {
+  async updateRole(roleId: string, data: Partial<IRole>): Promise<IRole> {
     try {
       const updateData: any = {};
       if (data.name) updateData.name = data.name;
@@ -125,7 +125,7 @@ export class SupabaseRBACProvider implements IRBACProvider {
   }
 
   // Permissions (Single Responsibility)
-  async getPermissions(): Promise<Permission[]> {
+  async getPermissions(): Promise<IPermission[]> {
     try {
       const { data, error } = await this.supabase
         .from("permissions")
@@ -140,7 +140,7 @@ export class SupabaseRBACProvider implements IRBACProvider {
     }
   }
 
-  async getPermission(permissionId: string): Promise<Permission | null> {
+  async getPermission(permissionId: string): Promise<IPermission | null> {
     try {
       const { data, error } = await this.supabase
         .from("permissions")
@@ -158,8 +158,8 @@ export class SupabaseRBACProvider implements IRBACProvider {
   }
 
   async createPermission(
-    data: Omit<Permission, "id" | "createdAt">,
-  ): Promise<Permission> {
+    data: Omit<IPermission, "id" | "createdAt">,
+  ): Promise<IPermission> {
     try {
       const { data: permission, error } = await this.supabase
         .from("permissions")
@@ -182,8 +182,8 @@ export class SupabaseRBACProvider implements IRBACProvider {
 
   async updatePermission(
     permissionId: string,
-    data: Partial<Permission>,
-  ): Promise<Permission> {
+    data: Partial<IPermission>,
+  ): Promise<IPermission> {
     try {
       const updateData: any = {};
       if (data.name) updateData.name = data.name;
@@ -220,8 +220,8 @@ export class SupabaseRBACProvider implements IRBACProvider {
     }
   }
 
-  // Role Permissions (Single Responsibility)
-  async getRolePermissions(roleId: string): Promise<Permission[]> {
+  // IRole Permissions (Single Responsibility)
+  async getRolePermissions(roleId: string): Promise<IPermission[]> {
     try {
       const { data, error } = await this.supabase
         .from("role_permissions")
@@ -280,8 +280,11 @@ export class SupabaseRBACProvider implements IRBACProvider {
     }
   }
 
-  // User Roles (Single Responsibility)
-  async getUserRoles(userId: string, organizationId?: string): Promise<Role[]> {
+  // IUser Roles (Single Responsibility)
+  async getUserRoles(
+    userId: string,
+    organizationId?: string,
+  ): Promise<IRole[]> {
     try {
       let query = this.supabase
         .from("user_roles")
@@ -317,7 +320,7 @@ export class SupabaseRBACProvider implements IRBACProvider {
   async getUserPermissions(
     userId: string,
     organizationId?: string,
-  ): Promise<Permission[]> {
+  ): Promise<IPermission[]> {
     try {
       // Use the helper function from the database
       const { data, error } = await this.supabase.rpc("get_user_permissions", {
@@ -342,8 +345,8 @@ export class SupabaseRBACProvider implements IRBACProvider {
   async assignRoleToUser(
     userId: string,
     roleId: string,
-    options: AssignRoleOptions = {},
-  ): Promise<UserRole> {
+    options: IAssignRoleOptions = {},
+  ): Promise<IUserRole> {
     try {
       const { data, error } = await this.supabase
         .from("user_roles")
@@ -390,7 +393,7 @@ export class SupabaseRBACProvider implements IRBACProvider {
     }
   }
 
-  // Permission Checking (Interface Segregation)
+  // IPermission Checking (Interface Segregation)
   async userHasPermission(
     userId: string,
     permissionName: string,
@@ -473,7 +476,7 @@ export class SupabaseRBACProvider implements IRBACProvider {
     }
   }
 
-  async getOrganizationUsers(organizationId: string): Promise<UserRole[]> {
+  async getOrganizationUsers(organizationId: string): Promise<IUserRole[]> {
     try {
       const { data, error } = await this.supabase
         .from("user_roles")
@@ -511,7 +514,7 @@ export class SupabaseRBACProvider implements IRBACProvider {
   }
 
   // Mappers (Single Responsibility)
-  private mapSupabaseRole = (role: any): Role => ({
+  private mapSupabaseRole = (role: any): IRole => ({
     id: role.id,
     name: role.name,
     description: role.description,
@@ -520,7 +523,7 @@ export class SupabaseRBACProvider implements IRBACProvider {
     updatedAt: new Date(role.updated_at),
   });
 
-  private mapSupabasePermission = (permission: any): Permission => ({
+  private mapSupabasePermission = (permission: any): IPermission => ({
     id: permission.id,
     name: permission.name,
     description: permission.description,
@@ -529,7 +532,7 @@ export class SupabaseRBACProvider implements IRBACProvider {
     createdAt: new Date(permission.created_at),
   });
 
-  private mapSupabaseUserRole = (userRole: any): UserRole => ({
+  private mapSupabaseUserRole = (userRole: any): IUserRole => ({
     id: userRole.id,
     userId: userRole.user_id,
     roleId: userRole.role_id,
@@ -540,7 +543,7 @@ export class SupabaseRBACProvider implements IRBACProvider {
     isActive: userRole.is_active,
   });
 
-  private mapSupabaseError = (error: any): RBACError => ({
+  private mapSupabaseError = (error: any): IRBACError => ({
     code: error.code || "unknown_error",
     message: error.message || "An unknown error occurred",
     details: error,

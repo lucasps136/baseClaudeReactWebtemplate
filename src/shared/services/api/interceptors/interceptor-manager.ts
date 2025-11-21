@@ -3,7 +3,7 @@
 
 import type {
   ApiRequest,
-  ApiResponse,
+  IApiResponse,
   ApiError,
   RequestInterceptor,
   ResponseInterceptor,
@@ -48,8 +48,8 @@ export class InterceptorManager {
   }
 
   async executeResponseInterceptors(
-    response: ApiResponse,
-  ): Promise<ApiResponse> {
+    response: IApiResponse,
+  ): Promise<IApiResponse> {
     let processedResponse = response;
 
     // Execute fulfilled response interceptors

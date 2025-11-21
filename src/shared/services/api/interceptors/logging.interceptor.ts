@@ -3,7 +3,7 @@
 
 import type {
   ApiRequest,
-  ApiResponse,
+  IApiResponse,
   RequestInterceptor,
   ResponseInterceptor,
 } from "../api.types";
@@ -37,7 +37,7 @@ export class LoggingInterceptor {
 
   createResponseInterceptor(): ResponseInterceptor {
     return {
-      onFulfilled: (response: ApiResponse): ApiResponse => {
+      onFulfilled: (response: IApiResponse): IApiResponse => {
         if (this.enabled) {
           console.log(
             `✅ API Response: ${response.status} ${response.statusText}`,

@@ -16,13 +16,13 @@ import {
   registerDefaultRBACProviders,
   createRBACConfig,
 } from "@/shared/services/rbac/rbac-factory";
-import type { IRBACProvider, RBACError } from "@/shared/types/rbac";
+import type { IRBACProvider, IRBACError } from "@/shared/types/rbac";
 import { getEnv } from "@/config/env";
 
 interface RBACContextValue {
   provider: IRBACProvider | null;
   isInitialized: boolean;
-  error: RBACError | null;
+  error: IRBACError | null;
   loading: boolean;
   reinitialize: () => Promise<void>;
 }
@@ -59,7 +59,7 @@ interface RBACProviderProps {
 export function RBACProvider({ children, config }: RBACProviderProps) {
   const [provider, setProvider] = useState<IRBACProvider | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
-  const [error, setError] = useState<RBACError | null>(null);
+  const [error, setError] = useState<IRBACError | null>(null);
   const [loading, setLoading] = useState(true);
 
   const initializeRBAC = async () => {
@@ -84,7 +84,7 @@ export function RBACProvider({ children, config }: RBACProviderProps) {
       setProvider(rbacProvider);
       setIsInitialized(true);
     } catch (err) {
-      const rbacError: RBACError = {
+      const rbacError: IRBACError = {
         code: "initialization_failed",
         message:
           err instanceof Error ? err.message : "Failed to initialize RBAC",

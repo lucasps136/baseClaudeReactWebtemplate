@@ -1,5 +1,5 @@
 // Export all stores for easy importing
-export { useAuthStore, type AuthStore, type User } from "./auth.store";
+export { useAuthStore, type AuthStore, type IUser } from "./auth.store";
 export { useSessionStore, type SessionStore } from "./session.store";
 export { useUIStore, type UIStore } from "./ui.store";
 

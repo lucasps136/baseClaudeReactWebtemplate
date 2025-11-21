@@ -56,7 +56,7 @@ export interface ApiRequest {
   credentials?: RequestCredentials;
 }
 
-export interface ApiResponse<T = unknown> {
+export interface IApiResponse<T = unknown> {
   /** Response data (parsed JSON or raw) */
   data: T;
 
@@ -89,7 +89,9 @@ export type RequestInterceptor = (
 // Response interceptor configuration
 export interface ResponseInterceptor {
   /** Handler for successful responses */
-  onFulfilled?: (response: ApiResponse) => ApiResponse | Promise<ApiResponse>;
+  onFulfilled?: (
+    response: IApiResponse,
+  ) => IApiResponse | Promise<IApiResponse>;
 
   /** Handler for error responses */
   onRejected?: (error: ApiError) => ApiError | Promise<ApiError>;
@@ -104,26 +106,26 @@ export interface InterceptorConfig {
 // Main API Service interface
 export interface IApiService {
   // Core HTTP methods
-  get<T>(url: string, config?: RequestConfig): Promise<ApiResponse<T>>;
+  get<T>(url: string, config?: RequestConfig): Promise<IApiResponse<T>>;
   post<T>(
     url: string,
     data?: unknown,
     config?: RequestConfig,
-  ): Promise<ApiResponse<T>>;
+  ): Promise<IApiResponse<T>>;
   put<T>(
     url: string,
     data?: unknown,
     config?: RequestConfig,
-  ): Promise<ApiResponse<T>>;
+  ): Promise<IApiResponse<T>>;
   patch<T>(
     url: string,
     data?: unknown,
     config?: RequestConfig,
-  ): Promise<ApiResponse<T>>;
-  delete<T>(url: string, config?: RequestConfig): Promise<ApiResponse<T>>;
+  ): Promise<IApiResponse<T>>;
+  delete<T>(url: string, config?: RequestConfig): Promise<IApiResponse<T>>;
 
   // Low-level request method
-  request<T>(request: ApiRequest): Promise<ApiResponse<T>>;
+  request<T>(request: ApiRequest): Promise<IApiResponse<T>>;
 
   // Interceptor management
   addRequestInterceptor(interceptor: RequestInterceptor): string;
@@ -177,7 +179,7 @@ export interface ApiProviderConfig {
 }
 
 export interface IApiProvider {
-  request<T>(request: ApiRequest): Promise<ApiResponse<T>>;
+  request<T>(request: ApiRequest): Promise<IApiResponse<T>>;
   createInstance(config: ApiProviderConfig): IApiProvider;
 }
 
