@@ -1,0 +1,18 @@
+"use client";
+
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
+
+import type {
+  IDatabaseProvider,
+  IDatabaseProviderConfig,
+} from "@/shared/types/database";
+import {
+  DatabaseProviderFactory,
+  registerDefaultDatabaseProviders,
+} from "@/shared/services/database/database-factory";
