@@ -1,0 +1,54 @@
+{
+  "id": "payments-ui",
+  "name": "Payments Ui",
+  "version": "1.0.0",
+  "category": "ui",
+  "description": "PaymentsUi module - Auto-generated",
+  "exports": {
+    "components": [
+      {
+        "name": "PaymentsUiList",
+        "path": "./components/PaymentsUiList"
+      }
+    ],
+    "hooks": [
+      {
+        "name": "usePaymentsUi",
+        "path": "./hooks/usePaymentsUi"
+      }
+    ],
+    "stores": [
+      {
+        "name": "usePaymentsUiStore",
+        "path": "./stores/payments-ui.store"
+      }
+    ],
+    "types": [
+      {
+        "name": "PaymentsUiItem",
+        "path": "./types"
+      }
+    ]
+  },
+  "dependencies": {
+    "modules": [],
+    "packages": ["react", "zustand"]
+  },
+  "ai": {
+    "summary": "PaymentsUi module for ui layer",
+    "keywords": ["payments-ui", "ui"],
+    "use_cases": ["Manage payments-ui"],
+    "reusable": {
+      "components": ["PaymentsUiList"],
+      "hooks": ["usePaymentsUi"]
+    },
+    "examples": ["import { PaymentsUi } from '@/modules/ui/payments-ui'"]
+  },
+  "status": "experimental",
+  "createdAt": "2025-11-21T15:06:40.978Z",
+  "updatedAt": "2025-11-21T15:06:40.978Z",
+  "author": "Auto-generated",
+  "license": "MIT",
+  "tags": ["ui", "payments-ui"],
+  "relatedFiles": []
+}

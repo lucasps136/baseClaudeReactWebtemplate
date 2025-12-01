@@ -1,0 +1,54 @@
+{
+  "id": "orders-ui",
+  "name": "Orders Ui",
+  "version": "1.0.0",
+  "category": "ui",
+  "description": "OrdersUi module - Auto-generated",
+  "exports": {
+    "components": [
+      {
+        "name": "OrdersUiList",
+        "path": "./components/OrdersUiList"
+      }
+    ],
+    "hooks": [
+      {
+        "name": "useOrdersUi",
+        "path": "./hooks/useOrdersUi"
+      }
+    ],
+    "stores": [
+      {
+        "name": "useOrdersUiStore",
+        "path": "./stores/orders-ui.store"
+      }
+    ],
+    "types": [
+      {
+        "name": "OrdersUiItem",
+        "path": "./types"
+      }
+    ]
+  },
+  "dependencies": {
+    "modules": [],
+    "packages": ["react", "zustand"]
+  },
+  "ai": {
+    "summary": "OrdersUi module for ui layer",
+    "keywords": ["orders-ui", "ui"],
+    "use_cases": ["Manage orders-ui"],
+    "reusable": {
+      "components": ["OrdersUiList"],
+      "hooks": ["useOrdersUi"]
+    },
+    "examples": ["import { OrdersUi } from '@/modules/ui/orders-ui'"]
+  },
+  "status": "experimental",
+  "createdAt": "2025-11-21T15:15:49.435Z",
+  "updatedAt": "2025-11-21T15:15:49.435Z",
+  "author": "Auto-generated",
+  "license": "MIT",
+  "tags": ["ui", "orders-ui"],
+  "relatedFiles": []
+}

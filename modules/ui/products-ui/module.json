@@ -1,0 +1,54 @@
+{
+  "id": "products-ui",
+  "name": "Products Ui",
+  "version": "1.0.0",
+  "category": "ui",
+  "description": "ProductsUi module - Auto-generated",
+  "exports": {
+    "components": [
+      {
+        "name": "ProductsUiList",
+        "path": "./components/ProductsUiList"
+      }
+    ],
+    "hooks": [
+      {
+        "name": "useProductsUi",
+        "path": "./hooks/useProductsUi"
+      }
+    ],
+    "stores": [
+      {
+        "name": "useProductsUiStore",
+        "path": "./stores/products-ui.store"
+      }
+    ],
+    "types": [
+      {
+        "name": "ProductsUiItem",
+        "path": "./types"
+      }
+    ]
+  },
+  "dependencies": {
+    "modules": [],
+    "packages": ["react", "zustand"]
+  },
+  "ai": {
+    "summary": "ProductsUi module for ui layer",
+    "keywords": ["products-ui", "ui"],
+    "use_cases": ["Manage products-ui"],
+    "reusable": {
+      "components": ["ProductsUiList"],
+      "hooks": ["useProductsUi"]
+    },
+    "examples": ["import { ProductsUi } from '@/modules/ui/products-ui'"]
+  },
+  "status": "experimental",
+  "createdAt": "2025-11-21T15:11:32.668Z",
+  "updatedAt": "2025-11-21T15:11:32.668Z",
+  "author": "Auto-generated",
+  "license": "MIT",
+  "tags": ["ui", "products-ui"],
+  "relatedFiles": []
+}

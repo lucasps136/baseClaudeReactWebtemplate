@@ -1,0 +1,35 @@
+{
+  "id": "orders-data",
+  "name": "Orders Data",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "OrdersData module - Auto-generated",
+  "exports": {
+    "schemas": [
+      {
+        "name": "orders-data_table",
+        "path": "./schemas"
+      }
+    ]
+  },
+  "dependencies": {
+    "modules": [],
+    "packages": []
+  },
+  "ai": {
+    "summary": "OrdersData module for data layer",
+    "keywords": ["orders-data", "data"],
+    "use_cases": ["Manage orders-data"],
+    "reusable": {
+      "schemas": ["ordersdata_table"]
+    },
+    "examples": ["import { OrdersData } from '@/modules/data/orders-data'"]
+  },
+  "status": "experimental",
+  "createdAt": "2025-11-21T15:15:49.606Z",
+  "updatedAt": "2025-11-21T15:15:49.606Z",
+  "author": "Auto-generated",
+  "license": "MIT",
+  "tags": ["data", "orders-data"],
+  "relatedFiles": []
+}

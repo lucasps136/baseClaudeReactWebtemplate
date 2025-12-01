@@ -14,6 +14,7 @@
     "jsx": "preserve",
     "incremental": true,
     "downlevelIteration": true,
+    "types": ["jest", "@testing-library/jest-dom"],
     "plugins": [
       {
         "name": "next"
@@ -28,7 +29,12 @@
       "@/config/*": ["./src/config/*"],
       "@/hooks/*": ["./src/shared/hooks/*"],
       "@/utils/*": ["./src/shared/utils/*"],
-      "@/shared/*": ["./src/shared/*"]
+      "@/shared/*": ["./src/shared/*"],
+      "@/modules/*": ["./modules/*"],
+      "@/modules/ui/*": ["./modules/ui/*"],
+      "@/modules/logic/*": ["./modules/logic/*"],
+      "@/modules/data/*": ["./modules/data/*"],
+      "@/modules/integration/*": ["./modules/integration/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

@@ -1,0 +1,35 @@
+{
+  "id": "products-data",
+  "name": "Products Data",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "ProductsData module - Auto-generated",
+  "exports": {
+    "schemas": [
+      {
+        "name": "products-data_table",
+        "path": "./schemas"
+      }
+    ]
+  },
+  "dependencies": {
+    "modules": [],
+    "packages": []
+  },
+  "ai": {
+    "summary": "ProductsData module for data layer",
+    "keywords": ["products-data", "data"],
+    "use_cases": ["Manage products-data"],
+    "reusable": {
+      "schemas": ["productsdata_table"]
+    },
+    "examples": ["import { ProductsData } from '@/modules/data/products-data'"]
+  },
+  "status": "experimental",
+  "createdAt": "2025-11-21T15:11:32.823Z",
+  "updatedAt": "2025-11-21T15:11:32.823Z",
+  "author": "Auto-generated",
+  "license": "MIT",
+  "tags": ["data", "products-data"],
+  "relatedFiles": []
+}

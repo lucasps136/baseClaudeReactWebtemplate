@@ -1,0 +1,43 @@
+{
+  "id": "payments-logic",
+  "name": "Payments Logic",
+  "version": "1.0.0",
+  "category": "logic",
+  "description": "PaymentsLogic module - Auto-generated",
+  "exports": {
+    "services": [
+      {
+        "name": "PaymentsLogicService",
+        "path": "./services/payments-logic.service"
+      }
+    ],
+    "types": [
+      {
+        "name": "IPaymentsLogicRepository",
+        "path": "./repositories"
+      }
+    ]
+  },
+  "dependencies": {
+    "modules": [],
+    "packages": []
+  },
+  "ai": {
+    "summary": "PaymentsLogic module for logic layer",
+    "keywords": ["payments-logic", "logic"],
+    "use_cases": ["Manage payments-logic"],
+    "reusable": {
+      "services": ["PaymentsLogicService"]
+    },
+    "examples": [
+      "import { PaymentsLogic } from '@/modules/logic/payments-logic'"
+    ]
+  },
+  "status": "experimental",
+  "createdAt": "2025-11-21T14:44:46.184Z",
+  "updatedAt": "2025-11-21T14:44:46.184Z",
+  "author": "Auto-generated",
+  "license": "MIT",
+  "tags": ["logic", "payments-logic"],
+  "relatedFiles": []
+}

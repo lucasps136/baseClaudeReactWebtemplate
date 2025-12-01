@@ -1,0 +1,35 @@
+{
+  "id": "payments-data",
+  "name": "Payments Data",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "PaymentsData module - Auto-generated",
+  "exports": {
+    "schemas": [
+      {
+        "name": "payments-data_table",
+        "path": "./schemas"
+      }
+    ]
+  },
+  "dependencies": {
+    "modules": [],
+    "packages": []
+  },
+  "ai": {
+    "summary": "PaymentsData module for data layer",
+    "keywords": ["payments-data", "data"],
+    "use_cases": ["Manage payments-data"],
+    "reusable": {
+      "schemas": ["paymentsdata_table"]
+    },
+    "examples": ["import { PaymentsData } from '@/modules/data/payments-data'"]
+  },
+  "status": "experimental",
+  "createdAt": "2025-11-21T15:06:40.896Z",
+  "updatedAt": "2025-11-21T15:06:40.896Z",
+  "author": "Auto-generated",
+  "license": "MIT",
+  "tags": ["data", "payments-data"],
+  "relatedFiles": []
+}

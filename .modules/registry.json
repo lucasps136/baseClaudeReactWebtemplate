@@ -1,8 +1,44 @@
 {
   "version": "1.0.0",
-  "updated": "2025-11-12T02:17:44.248Z",
+  "updated": "2025-11-21T15:16:17.825Z",
   "categories": {
     "ui": [
+      {
+        "id": "orders-ui",
+        "name": "Orders Ui",
+        "version": "1.0.0",
+        "category": "ui",
+        "path": "modules/ui/orders-ui",
+        "description": "OrdersUi module - Auto-generated",
+        "keywords": ["orders-ui", "ui"],
+        "status": "experimental",
+        "updatedAt": "2025-11-21T15:15:49.435Z",
+        "reusableCount": 2
+      },
+      {
+        "id": "payments-ui",
+        "name": "Payments Ui",
+        "version": "1.0.0",
+        "category": "ui",
+        "path": "modules/ui/payments-ui",
+        "description": "PaymentsUi module - Auto-generated",
+        "keywords": ["payments-ui", "ui"],
+        "status": "experimental",
+        "updatedAt": "2025-11-21T15:06:40.978Z",
+        "reusableCount": 2
+      },
+      {
+        "id": "products-ui",
+        "name": "Products Ui",
+        "version": "1.0.0",
+        "category": "ui",
+        "path": "modules/ui/products-ui",
+        "description": "ProductsUi module - Auto-generated",
+        "keywords": ["products-ui", "ui"],
+        "status": "experimental",
+        "updatedAt": "2025-11-21T15:11:32.668Z",
+        "reusableCount": 2
+      },
       {
         "id": "user-profile-ui",
         "name": "User Profile UI",
@@ -27,6 +63,42 @@
     ],
     "logic": [
       {
+        "id": "orders-logic",
+        "name": "Orders Logic",
+        "version": "1.0.0",
+        "category": "logic",
+        "path": "modules/logic/orders-logic",
+        "description": "OrdersLogic module - Auto-generated",
+        "keywords": ["orders-logic", "logic"],
+        "status": "experimental",
+        "updatedAt": "2025-11-21T15:15:49.519Z",
+        "reusableCount": 1
+      },
+      {
+        "id": "payments-logic",
+        "name": "Payments Logic",
+        "version": "1.0.0",
+        "category": "logic",
+        "path": "modules/logic/payments-logic",
+        "description": "PaymentsLogic module - Auto-generated",
+        "keywords": ["payments-logic", "logic"],
+        "status": "experimental",
+        "updatedAt": "2025-11-21T14:44:46.184Z",
+        "reusableCount": 1
+      },
+      {
+        "id": "products-logic",
+        "name": "Products Logic",
+        "version": "1.0.0",
+        "category": "logic",
+        "path": "modules/logic/products-logic",
+        "description": "ProductsLogic module - Auto-generated",
+        "keywords": ["products-logic", "logic"],
+        "status": "experimental",
+        "updatedAt": "2025-11-21T15:11:32.745Z",
+        "reusableCount": 1
+      },
+      {
         "id": "user-logic",
         "name": "User Logic",
         "version": "1.0.0",
@@ -49,6 +121,42 @@
       }
     ],
     "data": [
+      {
+        "id": "orders-data",
+        "name": "Orders Data",
+        "version": "1.0.0",
+        "category": "data",
+        "path": "modules/data/orders-data",
+        "description": "OrdersData module - Auto-generated",
+        "keywords": ["orders-data", "data"],
+        "status": "experimental",
+        "updatedAt": "2025-11-21T15:15:49.606Z",
+        "reusableCount": 1
+      },
+      {
+        "id": "payments-data",
+        "name": "Payments Data",
+        "version": "1.0.0",
+        "category": "data",
+        "path": "modules/data/payments-data",
+        "description": "PaymentsData module - Auto-generated",
+        "keywords": ["payments-data", "data"],
+        "status": "experimental",
+        "updatedAt": "2025-11-21T15:06:40.896Z",
+        "reusableCount": 1
+      },
+      {
+        "id": "products-data",
+        "name": "Products Data",
+        "version": "1.0.0",
+        "category": "data",
+        "path": "modules/data/products-data",
+        "description": "ProductsData module - Auto-generated",
+        "keywords": ["products-data", "data"],
+        "status": "experimental",
+        "updatedAt": "2025-11-21T15:11:32.823Z",
+        "reusableCount": 1
+      },
       {
         "id": "user-data",
         "name": "User Data",
@@ -75,12 +183,12 @@
     "integration": []
   },
   "stats": {
-    "total_modules": 3,
-    "ui": 1,
-    "logic": 1,
-    "data": 1,
+    "total_modules": 12,
+    "ui": 4,
+    "logic": 4,
+    "data": 4,
     "integration": 0,
     "reusability_score": 85,
-    "last_sync": "2025-11-12T02:17:44.248Z"
+    "last_sync": "2025-11-21T15:16:17.825Z"
   }
 }

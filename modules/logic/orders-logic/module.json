@@ -1,0 +1,41 @@
+{
+  "id": "orders-logic",
+  "name": "Orders Logic",
+  "version": "1.0.0",
+  "category": "logic",
+  "description": "OrdersLogic module - Auto-generated",
+  "exports": {
+    "services": [
+      {
+        "name": "OrdersLogicService",
+        "path": "./services/orders-logic.service"
+      }
+    ],
+    "types": [
+      {
+        "name": "IOrdersLogicRepository",
+        "path": "./repositories"
+      }
+    ]
+  },
+  "dependencies": {
+    "modules": [],
+    "packages": []
+  },
+  "ai": {
+    "summary": "OrdersLogic module for logic layer",
+    "keywords": ["orders-logic", "logic"],
+    "use_cases": ["Manage orders-logic"],
+    "reusable": {
+      "services": ["OrdersLogicService"]
+    },
+    "examples": ["import { OrdersLogic } from '@/modules/logic/orders-logic'"]
+  },
+  "status": "experimental",
+  "createdAt": "2025-11-21T15:15:49.519Z",
+  "updatedAt": "2025-11-21T15:15:49.519Z",
+  "author": "Auto-generated",
+  "license": "MIT",
+  "tags": ["logic", "orders-logic"],
+  "relatedFiles": []
+}

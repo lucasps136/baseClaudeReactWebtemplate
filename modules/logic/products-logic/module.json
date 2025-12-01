@@ -1,0 +1,43 @@
+{
+  "id": "products-logic",
+  "name": "Products Logic",
+  "version": "1.0.0",
+  "category": "logic",
+  "description": "ProductsLogic module - Auto-generated",
+  "exports": {
+    "services": [
+      {
+        "name": "ProductsLogicService",
+        "path": "./services/products-logic.service"
+      }
+    ],
+    "types": [
+      {
+        "name": "IProductsLogicRepository",
+        "path": "./repositories"
+      }
+    ]
+  },
+  "dependencies": {
+    "modules": [],
+    "packages": []
+  },
+  "ai": {
+    "summary": "ProductsLogic module for logic layer",
+    "keywords": ["products-logic", "logic"],
+    "use_cases": ["Manage products-logic"],
+    "reusable": {
+      "services": ["ProductsLogicService"]
+    },
+    "examples": [
+      "import { ProductsLogic } from '@/modules/logic/products-logic'"
+    ]
+  },
+  "status": "experimental",
+  "createdAt": "2025-11-21T15:11:32.745Z",
+  "updatedAt": "2025-11-21T15:11:32.745Z",
+  "author": "Auto-generated",
+  "license": "MIT",
+  "tags": ["logic", "products-logic"],
+  "relatedFiles": []
+}
