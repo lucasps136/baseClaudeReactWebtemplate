@@ -34,23 +34,24 @@ export const useAuthStore = create<AuthStore>()(
       error: null,
 
       // Actions
-      setUser: (user) =>
+      setUser: (user): void =>
         set(
           { user, isAuthenticated: true, error: null },
           false,
           "auth/setUser",
         ),
 
-      clearUser: () =>
+      clearUser: (): void =>
         set(
           { user: null, isAuthenticated: false, error: null },
           false,
           "auth/clearUser",
         ),
 
-      setLoading: (isLoading) => set({ isLoading }, false, "auth/setLoading"),
+      setLoading: (isLoading): void =>
+        set({ isLoading }, false, "auth/setLoading"),
 
-      setError: (error) => set({ error }, false, "auth/setError"),
+      setError: (error): void => set({ error }, false, "auth/setError"),
     }),
     {
       name: "auth-store",

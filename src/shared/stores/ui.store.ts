@@ -53,21 +53,21 @@ export const useUIStore = create<UIStore>()(
       },
 
       // Actions
-      setTheme: (theme) => set({ theme }, false, "ui/setTheme"),
+      setTheme: (theme): void => set({ theme }, false, "ui/setTheme"),
 
-      toggleSidebar: () =>
+      toggleSidebar: (): void =>
         set(
           (state) => ({ sidebarOpen: !state.sidebarOpen }),
           false,
           "ui/toggleSidebar",
         ),
 
-      setSidebarOpen: (sidebarOpen) =>
+      setSidebarOpen: (sidebarOpen): void =>
         set({ sidebarOpen }, false, "ui/setSidebarOpen"),
 
-      setLoading: (loading) => set({ loading }, false, "ui/setLoading"),
+      setLoading: (loading): void => set({ loading }, false, "ui/setLoading"),
 
-      addNotification: (notification) => {
+      addNotification: (notification): void => {
         const id = crypto.randomUUID();
         const newNotification: INotification = {
           ...notification,
@@ -92,7 +92,7 @@ export const useUIStore = create<UIStore>()(
         }
       },
 
-      removeNotification: (id) =>
+      removeNotification: (id): void =>
         set(
           (state) => ({
             notifications: state.notifications.filter((n) => n.id !== id),
@@ -101,10 +101,10 @@ export const useUIStore = create<UIStore>()(
           "ui/removeNotification",
         ),
 
-      clearNotifications: () =>
+      clearNotifications: (): void =>
         set({ notifications: [] }, false, "ui/clearNotifications"),
 
-      openModal: (type, data = null) =>
+      openModal: (type, data = null): void =>
         set(
           {
             modal: {
@@ -117,7 +117,7 @@ export const useUIStore = create<UIStore>()(
           "ui/openModal",
         ),
 
-      closeModal: () =>
+      closeModal: (): void =>
         set(
           {
             modal: {

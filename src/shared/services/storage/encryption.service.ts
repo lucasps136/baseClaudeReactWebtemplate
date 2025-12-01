@@ -17,6 +17,7 @@ export class EncryptionService implements IEncryptionService {
     tagLength: 16,
   };
 
+  // eslint-disable-next-line max-lines-per-function -- Complex encryption with salt generation and encoding
   async encrypt(
     data: string,
     keyId: string = "default",
@@ -60,6 +61,7 @@ export class EncryptionService implements IEncryptionService {
     }
   }
 
+  // eslint-disable-next-line max-lines-per-function -- Complex decryption with validation and error handling
   async decrypt(
     encryptedData: IEncryptedData,
     keyId?: string,

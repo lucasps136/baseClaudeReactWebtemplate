@@ -29,7 +29,7 @@ export const useSessionStore = create<SessionStore>()(
         isActive: false,
 
         // Actions
-        createSession: (sessionId, expiresAt) =>
+        createSession: (sessionId, expiresAt): void => {
           set(
             {
               sessionId,
@@ -39,19 +39,22 @@ export const useSessionStore = create<SessionStore>()(
             },
             false,
             "session/create",
-          ),
+          );
+        },
 
-        refreshSession: (expiresAt) =>
+        refreshSession: (expiresAt): void => {
           set(
             { expiresAt, lastActivity: new Date() },
             false,
             "session/refresh",
-          ),
+          );
+        },
 
-        updateActivity: () =>
-          set({ lastActivity: new Date() }, false, "session/updateActivity"),
+        updateActivity: (): void => {
+          set({ lastActivity: new Date() }, false, "session/updateActivity");
+        },
 
-        destroySession: () =>
+        destroySession: (): void => {
           set(
             {
               sessionId: null,
@@ -61,9 +64,10 @@ export const useSessionStore = create<SessionStore>()(
             },
             false,
             "session/destroy",
-          ),
+          );
+        },
 
-        isSessionValid: () => {
+        isSessionValid: (): boolean => {
           const state = get();
           if (!state.sessionId || !state.expiresAt) return false;
           return new Date() < state.expiresAt;

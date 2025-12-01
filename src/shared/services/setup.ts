@@ -1,6 +1,11 @@
 // Service setup and initialization
 // This file configures all services following Dependency Inversion
 
+import { getEnv } from "@/config/env";
+
+import { createApiService } from "./api";
+import { createStorageService } from "./storage";
+
 import {
   registerSingleton,
   SERVICE_KEYS,
@@ -9,10 +14,7 @@ import {
   createValidationService,
   type ISupabaseConfig,
 } from "./index";
-import { createApiService, type IApiService } from "./api";
-import { createStorageService, type IStorageService } from "./storage";
 import type { ISupabaseService, IValidationService } from "./index";
-import { getEnv } from "@/config/env";
 
 // Setup services with proper dependency injection
 export const setupServices = () => {

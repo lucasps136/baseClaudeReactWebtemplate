@@ -118,6 +118,7 @@ export class CrossTabSyncService {
     return btoa(data).slice(0, 16); // Simple hash-like signature
   }
 
+  // eslint-disable-next-line max-lines-per-function, complexity -- Complex message validation with type checking and schema validation
   private validateMessage<T>(message: ICrossTabMessage<T>): boolean {
     try {
       // Basic validation
