@@ -11,13 +11,14 @@ import {
   useState,
   type ReactNode,
 } from "react";
+
+import { getEnv } from "@/config/env";
 import {
   RBACManager,
   registerDefaultRBACProviders,
   createRBACConfig,
 } from "@/shared/services/rbac/rbac-factory";
 import type { IRBACProvider, IRBACError } from "@/shared/types/rbac";
-import { getEnv } from "@/config/env";
 
 interface IRBACContextValue {
   provider: IRBACProvider | null;
@@ -138,18 +139,10 @@ export function useRBACContext(): IRBACContextValue {
 function createDefaultConfig() {
   const env = getEnv();
 
-  // Default to Supabase if environment variables are available
-  if (env.NEXT_PUBLIC_SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY) {
-    return createRBACConfig.supabase(
-      env.NEXT_PUBLIC_SUPABASE_URL,
-      env.SUPABASE_SERVICE_ROLE_KEY,
-    );
-  }
-
-  throw new Error(
-    "RBAC configuration required. Provide either config prop or environment variables:\n" +
-      "- NEXT_PUBLIC_SUPABASE_URL\n" +
-      "- SUPABASE_SERVICE_ROLE_KEY",
+  // Default to Supabase (env variables are now required)
+  return createRBACConfig.supabase(
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.SUPABASE_SERVICE_ROLE_KEY,
   );
 }
 

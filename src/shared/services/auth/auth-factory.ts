@@ -64,19 +64,21 @@ export const registerDefaultProviders = async () => {
     return new ClerkAuthProvider();
   });
 
+  // NOTE: Provider not yet implemented - uncomment when ready
   // Auth0 Provider (futuro)
-  AuthProviderFactory.registerProvider("auth0", async () => {
-    const { Auth0AuthProvider } = await import(
-      "./providers/auth0-auth-provider"
-    );
-    return new Auth0AuthProvider();
-  });
+  // AuthProviderFactory.registerProvider("auth0", async () => {
+  //   const { Auth0AuthProvider } = await import(
+  //     "./providers/auth0-auth-provider"
+  //   );
+  //   return new Auth0AuthProvider();
+  // });
 
+  // NOTE: Provider not yet implemented - uncomment when ready
   // NextAuth Provider (futuro)
-  AuthProviderFactory.registerProvider("nextauth", async () => {
-    const { NextAuthProvider } = await import(
-      "./providers/nextauth-auth-provider"
-    );
-    return new NextAuthProvider();
-  });
+  // AuthProviderFactory.registerProvider("nextauth", async () => {
+  //   const { NextAuthProvider } = await import(
+  //     "./providers/nextauth-auth-provider"
+  //   );
+  //   return new NextAuthProvider();
+  // });
 };

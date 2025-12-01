@@ -341,8 +341,14 @@ export class ThemeFactory {
     }
 
     // Merge cores customizadas (Open/Closed Principle)
-    const lightColors = { ...baseTheme.light, ...customColors?.light };
-    const darkColors = { ...baseTheme.dark, ...customColors?.dark };
+    const lightColors = {
+      ...baseTheme.light,
+      ...(customColors?.light || {}),
+    } as IThemeColors;
+    const darkColors = {
+      ...baseTheme.dark,
+      ...(customColors?.dark || {}),
+    } as IThemeColors;
 
     return {
       id,

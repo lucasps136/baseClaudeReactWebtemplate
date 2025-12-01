@@ -42,6 +42,9 @@ export {
   DatabaseStatus,
 } from "@/shared/components/providers/database-provider";
 
+// Re-import DatabaseConfigBuilder for helpers
+import { DatabaseConfigBuilder } from "./database-factory";
+
 // Helper para criar configuração facilmente
 export const createDatabaseConfig = {
   supabase: (url: string, anonKey: string, serviceRoleKey?: string) =>
@@ -49,21 +52,22 @@ export const createDatabaseConfig = {
       .useSupabase(url, anonKey, serviceRoleKey)
       .build(),
 
-  planetscale: (
-    host: string,
-    username: string,
-    password: string,
-    database: string,
-  ) =>
-    DatabaseConfigBuilder.create()
-      .usePlanetScale(host, username, password, database)
-      .build(),
+  // NOTE: Helpers for unimplemented providers - uncomment when ready
+  // planetscale: (
+  //   host: string,
+  //   username: string,
+  //   password: string,
+  //   database: string,
+  // ) =>
+  //   DatabaseConfigBuilder.create()
+  //     .usePlanetScale(host, username, password, database)
+  //     .build(),
 
-  prisma: (databaseUrl: string) =>
-    DatabaseConfigBuilder.create().usePrisma(databaseUrl).build(),
+  // prisma: (databaseUrl: string) =>
+  //   DatabaseConfigBuilder.create().usePrisma(databaseUrl).build(),
 
-  mongodb: (connectionString: string, database: string) =>
-    DatabaseConfigBuilder.create()
-      .useMongoDB(connectionString, database)
-      .build(),
+  // mongodb: (connectionString: string, database: string) =>
+  //   DatabaseConfigBuilder.create()
+  //     .useMongoDB(connectionString, database)
+  //     .build(),
 };

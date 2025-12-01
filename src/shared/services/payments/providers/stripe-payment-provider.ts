@@ -27,10 +27,6 @@ export class StripePaymentProvider implements IPaymentProvider {
   constructor() {
     const env = getEnv();
 
-    if (!env.STRIPE_SECRET_KEY) {
-      throw new Error("STRIPE_SECRET_KEY is required");
-    }
-
     this.stripe = new Stripe(env.STRIPE_SECRET_KEY, {
       apiVersion: "2024-06-20",
       typescript: true,
@@ -58,7 +54,7 @@ export class StripePaymentProvider implements IPaymentProvider {
       const product = await this.stripe.products.retrieve(productId);
       return this.mapStripeProduct(product);
     } catch (error) {
-      if ((error as Stripe.StripeError).code === "resource_missing") {
+      if ((error as Stripe.StripeRawError).code === "resource_missing") {
         return null;
       }
       throw this.mapStripeError(error);
@@ -88,7 +84,7 @@ export class StripePaymentProvider implements IPaymentProvider {
       const price = await this.stripe.prices.retrieve(priceId);
       return this.mapStripePrice(price);
     } catch (error) {
-      if ((error as Stripe.StripeError).code === "resource_missing") {
+      if ((error as Stripe.StripeRawError).code === "resource_missing") {
         return null;
       }
       throw this.mapStripeError(error);
@@ -123,7 +119,7 @@ export class StripePaymentProvider implements IPaymentProvider {
 
       return this.mapStripeCustomer(customer as Stripe.Customer);
     } catch (error) {
-      if ((error as Stripe.StripeError).code === "resource_missing") {
+      if ((error as Stripe.StripeRawError).code === "resource_missing") {
         return null;
       }
       throw this.mapStripeError(error);
@@ -176,7 +172,7 @@ export class StripePaymentProvider implements IPaymentProvider {
         await this.stripe.subscriptions.retrieve(subscriptionId);
       return this.mapStripeSubscription(subscription);
     } catch (error) {
-      if ((error as Stripe.StripeError).code === "resource_missing") {
+      if ((error as Stripe.StripeRawError).code === "resource_missing") {
         return null;
       }
       throw this.mapStripeError(error);
@@ -293,7 +289,7 @@ export class StripePaymentProvider implements IPaymentProvider {
       const session = await this.stripe.checkout.sessions.retrieve(sessionId);
       return this.mapStripeCheckoutSession(session);
     } catch (error) {
-      if ((error as Stripe.StripeError).code === "resource_missing") {
+      if ((error as Stripe.StripeRawError).code === "resource_missing") {
         return null;
       }
       throw this.mapStripeError(error);
@@ -337,7 +333,7 @@ export class StripePaymentProvider implements IPaymentProvider {
         await this.stripe.paymentIntents.retrieve(paymentIntentId);
       return this.mapStripePaymentIntent(paymentIntent);
     } catch (error) {
-      if ((error as Stripe.StripeError).code === "resource_missing") {
+      if ((error as Stripe.StripeRawError).code === "resource_missing") {
         return null;
       }
       throw this.mapStripeError(error);
@@ -534,7 +530,7 @@ export class StripePaymentProvider implements IPaymentProvider {
   });
 
   private mapStripeError = (error: any): IPaymentError => {
-    const stripeError = error as Stripe.StripeError;
+    const stripeError = error as Stripe.StripeRawError;
     return {
       code: stripeError.code || "unknown_error",
       message: stripeError.message || "An unknown error occurred",

@@ -47,8 +47,8 @@ export class EncryptionService implements IEncryptionService {
 
       // Convert to base64 for storage
       const encryptedArray = new Uint8Array(encryptedBuffer);
-      const encryptedBase64 = this.arrayBufferToBase64(encryptedArray);
-      const ivBase64 = this.arrayBufferToBase64(iv);
+      const encryptedBase64 = this.arrayBufferToBase64(encryptedArray.buffer);
+      const ivBase64 = this.arrayBufferToBase64(iv.buffer);
 
       return {
         data: encryptedBase64,

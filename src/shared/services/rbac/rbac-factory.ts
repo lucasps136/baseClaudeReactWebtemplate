@@ -65,13 +65,14 @@ export const registerDefaultRBACProviders = async () => {
     return new SupabaseRBACProvider();
   });
 
+  // NOTE: Provider not yet implemented - uncomment when ready
   // Database Provider (future - for other databases)
-  RBACProviderFactory.registerProvider("database", async () => {
-    const { DatabaseRBACProvider } = await import(
-      "./providers/database-rbac-provider"
-    );
-    return new DatabaseRBACProvider();
-  });
+  // RBACProviderFactory.registerProvider("database", async () => {
+  //   const { DatabaseRBACProvider } = await import(
+  //     "./providers/database-rbac-provider"
+  //   );
+  //   return new DatabaseRBACProvider();
+  // });
 };
 
 // Utility to validate RBAC configuration
@@ -92,13 +93,14 @@ export const validateRBACConfig = (config: IRBACProviderConfig): boolean => {
       }
       break;
 
-    case "database":
-      if (!config.options.connectionString) {
-        throw new Error(
-          "Database provider requires connectionString in options",
-        );
-      }
-      break;
+    // NOTE: Validation for unimplemented provider - uncomment when ready
+    // case "database":
+    //   if (!config.options.connectionString) {
+    //     throw new Error(
+    //       "Database provider requires connectionString in options",
+    //     );
+    //   }
+    //   break;
 
     default:
       throw new Error(`Unknown RBAC provider type: ${config.type}`);
@@ -123,13 +125,14 @@ export class RBACConfigBuilder {
     return this;
   }
 
-  useDatabase(connectionString: string): this {
-    this.config = {
-      type: "database",
-      options: { connectionString },
-    };
-    return this;
-  }
+  // NOTE: Builder method for unimplemented provider - uncomment when ready
+  // useDatabase(connectionString: string): this {
+  //   this.config = {
+  //     type: "database",
+  //     options: { connectionString },
+  //   };
+  //   return this;
+  // }
 
   withCustomOptions(options: Record<string, any>): this {
     this.config.options = { ...this.config.options, ...options };
@@ -152,8 +155,9 @@ export const createRBACConfig = {
   supabase: (url: string, serviceKey: string) =>
     RBACConfigBuilder.create().useSupabase(url, serviceKey).build(),
 
-  database: (connectionString: string) =>
-    RBACConfigBuilder.create().useDatabase(connectionString).build(),
+  // NOTE: Preset for unimplemented provider - uncomment when ready
+  // database: (connectionString: string) =>
+  //   RBACConfigBuilder.create().useDatabase(connectionString).build(),
 };
 
 // Singleton instance management (Optional Pattern)

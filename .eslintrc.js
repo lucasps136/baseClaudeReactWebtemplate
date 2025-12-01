@@ -68,8 +68,9 @@ module.exports = {
     {
       files: ["src/features/**/*.ts", "src/features/**/*.tsx"],
       rules: {
-        // Force proper exports from feature index
-        "import/no-relative-parent-imports": "error",
+        // Disabled: Features use relative imports internally for better encapsulation
+        // External features should import from feature's main index.ts
+        "import/no-relative-parent-imports": "off",
       },
     },
 

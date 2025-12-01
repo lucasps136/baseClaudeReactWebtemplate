@@ -1,14 +1,34 @@
 import { useCallback } from "react";
+
 import { useUserStore } from "../stores/user.store";
 import type {
   IUserListFilter,
   ICreateUserInput,
   IUpdateUserInput,
+  IUserProfile,
 } from "../types/user.types";
+
+interface IUseUsersReturn {
+  users: IUserProfile[];
+  isLoadingUsers: boolean;
+  usersError: string | null;
+  filter: IUserListFilter;
+  hasMore: boolean;
+  total: number;
+  fetchUsers: (newFilter?: Partial<IUserListFilter>) => Promise<void>;
+  createUser: (input: ICreateUserInput) => Promise<IUserProfile>;
+  updateUser: (
+    id: string,
+    input: IUpdateUserInput,
+  ) => Promise<Partial<IUserProfile> & { updatedAt: Date }>;
+  deleteUser: (id: string) => Promise<void>;
+  loadMore: () => Promise<void>;
+  setFilter: (filter: Partial<IUserListFilter>) => void;
+}
 
 // Custom hook following Single Responsibility
 // Only handles user list operations
-export const useUsers = () => {
+export const useUsers = (): IUseUsersReturn => {
   const {
     users,
     isLoadingUsers,
@@ -18,7 +38,7 @@ export const useUsers = () => {
     total,
     setUsers,
     addUser,
-    updateUser,
+    updateUser: updateUserInStore,
     removeUser,
     setUsersLoading,
     setUsersError,
@@ -28,7 +48,7 @@ export const useUsers = () => {
   } = useUserStore();
 
   const fetchUsers = useCallback(
-    async (newFilter?: Partial<IUserListFilter>) => {
+    async (newFilter?: Partial<IUserListFilter>): Promise<void> => {
       try {
         setUsersLoading(true);
         setUsersError(null);
@@ -59,19 +79,11 @@ export const useUsers = () => {
         setUsersLoading(false);
       }
     },
-    [
-      filter,
-      setUsers,
-      setUsersLoading,
-      setUsersError,
-      setFilter,
-      setTotal,
-      setHasMore,
-    ],
+    [setUsers, setUsersLoading, setUsersError, setFilter, setTotal, setHasMore],
   );
 
   const createUser = useCallback(
-    async (input: ICreateUserInput) => {
+    async (input: ICreateUserInput): Promise<IUserProfile> => {
       try {
         setUsersLoading(true);
         setUsersError(null);
@@ -81,7 +93,7 @@ export const useUsers = () => {
         // const newUser = await userService.createUser(input)
 
         // Mock implementation
-        const newUser = {
+        const newUser: IUserProfile = {
           id: crypto.randomUUID(),
           ...input,
           createdAt: new Date(),
@@ -103,7 +115,10 @@ export const useUsers = () => {
   );
 
   const updateUserById = useCallback(
-    async (id: string, input: IUpdateUserInput) => {
+    async (
+      id: string,
+      input: IUpdateUserInput,
+    ): Promise<Partial<IUserProfile> & { updatedAt: Date }> => {
       try {
         setUsersLoading(true);
         setUsersError(null);
@@ -115,7 +130,7 @@ export const useUsers = () => {
         // Mock implementation
         const updates = { ...input, updatedAt: new Date() };
 
-        updateUser(id, updates);
+        updateUserInStore(id, updates);
         return updates;
       } catch (error) {
         const errorMessage =
@@ -126,11 +141,11 @@ export const useUsers = () => {
         setUsersLoading(false);
       }
     },
-    [updateUser, setUsersLoading, setUsersError],
+    [updateUserInStore, setUsersLoading, setUsersError],
   );
 
   const deleteUser = useCallback(
-    async (id: string) => {
+    async (id: string): Promise<void> => {
       try {
         setUsersLoading(true);
         setUsersError(null);
@@ -152,7 +167,7 @@ export const useUsers = () => {
     [removeUser, setUsersLoading, setUsersError],
   );
 
-  const loadMore = useCallback(async () => {
+  const loadMore = useCallback(async (): Promise<void> => {
     if (!hasMore || isLoadingUsers) return;
 
     const nextOffset = users.length;

@@ -1,7 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Monitor, Moon, Sun, Palette } from "lucide-react";
+import { Monitor, Moon, Palette, Sun } from "lucide-react";
+
 import { Button } from "@/shared/components/ui/button";
 import {
   DropdownMenu,
@@ -11,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
+
 import {
   useExtendedTheme,
   useTheme,
@@ -18,7 +20,7 @@ import {
 
 // Componente para trocar entre light/dark/system (Single Responsibility)
 export function ThemeToggle() {
-  const { setTheme, theme } = useTheme();
+  const { setTheme } = useTheme();
 
   return (
     <DropdownMenu>

@@ -23,13 +23,12 @@ export { ApiService, createApiService } from "./api";
 export type {
   IApiService,
   IRequestConfig,
-  ResponseData,
-  ApiError,
   IApiServiceDependencies,
   RequestInterceptor,
   IResponseInterceptor,
-  ErrorInterceptor,
 } from "./api";
+export { ApiError } from "./api";
+export type { ErrorInterceptor } from "./api";
 
 // Storage Service
 export {

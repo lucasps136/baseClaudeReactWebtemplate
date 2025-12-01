@@ -1,9 +1,10 @@
 import { useEffect } from "react";
+
 import { useUsers } from "../hooks";
 
 // Simple UserList component following Single Responsibility
 // Only renders user list UI
-export const UserList = () => {
+export const UserList = (): JSX.Element => {
   const { users, isLoadingUsers, usersError, fetchUsers, deleteUser } =
     useUsers();
 

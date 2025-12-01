@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+
 import type { IUserProfile, IUserListFilter } from "../types/user.types";
 
 interface IUserState {
@@ -59,31 +60,31 @@ const initialState: IUserState = {
 
 export const useUserStore = create<UserStore>()(
   devtools(
-    (set, get) => ({
+    (set) => ({
       ...initialState,
 
       // Single user actions
-      setCurrentUser: (currentUser) =>
+      setCurrentUser: (currentUser: IUserProfile | null): void =>
         set({ currentUser, userError: null }, false, "user/setCurrentUser"),
 
-      setUserLoading: (isLoadingUser) =>
+      setUserLoading: (isLoadingUser: boolean): void =>
         set({ isLoadingUser }, false, "user/setUserLoading"),
 
-      setUserError: (userError) =>
+      setUserError: (userError: string | null): void =>
         set({ userError }, false, "user/setUserError"),
 
       // List actions
-      setUsers: (users) =>
+      setUsers: (users: IUserProfile[]): void =>
         set({ users, usersError: null }, false, "user/setUsers"),
 
-      addUser: (user) =>
+      addUser: (user: IUserProfile): void =>
         set(
           (state) => ({ users: [...state.users, user] }),
           false,
           "user/addUser",
         ),
 
-      updateUser: (id, updates) =>
+      updateUser: (id: string, updates: Partial<IUserProfile>): void =>
         set(
           (state) => ({
             users: state.users.map((user) =>
@@ -98,7 +99,7 @@ export const useUserStore = create<UserStore>()(
           "user/updateUser",
         ),
 
-      removeUser: (id) =>
+      removeUser: (id: string): void =>
         set(
           (state) => ({
             users: state.users.filter((user) => user.id !== id),
@@ -109,24 +110,25 @@ export const useUserStore = create<UserStore>()(
           "user/removeUser",
         ),
 
-      setUsersLoading: (isLoadingUsers) =>
+      setUsersLoading: (isLoadingUsers: boolean): void =>
         set({ isLoadingUsers }, false, "user/setUsersLoading"),
 
-      setUsersError: (usersError) =>
+      setUsersError: (usersError: string | null): void =>
         set({ usersError }, false, "user/setUsersError"),
 
-      setFilter: (filterUpdates) =>
+      setFilter: (filterUpdates: Partial<IUserListFilter>): void =>
         set(
           (state) => ({ filter: { ...state.filter, ...filterUpdates } }),
           false,
           "user/setFilter",
         ),
 
-      setHasMore: (hasMore) => set({ hasMore }, false, "user/setHasMore"),
+      setHasMore: (hasMore: boolean): void =>
+        set({ hasMore }, false, "user/setHasMore"),
 
-      setTotal: (total) => set({ total }, false, "user/setTotal"),
+      setTotal: (total: number): void => set({ total }, false, "user/setTotal"),
 
-      reset: () => set(initialState, false, "user/reset"),
+      reset: (): void => set(initialState, false, "user/reset"),
     }),
     {
       name: "user-store",

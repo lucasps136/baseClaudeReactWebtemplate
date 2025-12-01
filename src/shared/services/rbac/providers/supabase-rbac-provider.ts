@@ -19,10 +19,6 @@ export class SupabaseRBACProvider implements IRBACProvider {
   constructor() {
     const env = getEnv();
 
-    if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
-      throw new Error("Supabase configuration is required for RBAC");
-    }
-
     // Using service role key for admin operations
     this.supabase = createClient(
       env.NEXT_PUBLIC_SUPABASE_URL,

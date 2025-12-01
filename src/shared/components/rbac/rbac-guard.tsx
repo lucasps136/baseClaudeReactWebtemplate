@@ -5,6 +5,7 @@
 "use client";
 
 import { type ReactNode } from "react";
+
 import { useRBAC } from "@/shared/hooks/use-rbac";
 
 interface IRBACGuardProps {

@@ -2,22 +2,21 @@
 // Fetch-based HTTP client with interceptor support following SOLID principles
 
 import { z } from "zod";
+
 import type {
-  IApiService,
   IApiRequest,
   IApiResponse,
+  IApiService,
   IRequestConfig,
-  RequestInterceptor,
   IResponseInterceptor,
-  HttpMethod,
-  IApiServiceDependencies,
   ISupabaseService,
   IValidationService,
+  RequestInterceptor,
 } from "./api.types";
 import { ApiError, NetworkError, TimeoutError } from "./api.types";
-import { InterceptorManager } from "./interceptors/interceptor-manager";
 import { AuthInterceptor } from "./interceptors/auth.interceptor";
 import { ErrorInterceptor } from "./interceptors/error.interceptor";
+import { InterceptorManager } from "./interceptors/interceptor-manager";
 import { LoggingInterceptor } from "./interceptors/logging.interceptor";
 
 // Validation schemas
@@ -32,14 +31,15 @@ const apiRequestSchema = z.object({
   credentials: z.any().optional(),
 });
 
-const requestConfigSchema = z.object({
-  headers: z.record(z.string()).optional(),
-  timeout: z.number().positive().max(60000).optional(),
-  signal: z.any().optional(),
-  cache: z.any().optional(),
-  credentials: z.any().optional(),
-  validateStatus: z.function().optional(),
-});
+// Unused schema - kept for future validation if needed
+// const requestConfigSchema = z.object({
+//   headers: z.record(z.string()).optional(),
+//   timeout: z.number().positive().max(60000).optional(),
+//   signal: z.any().optional(),
+//   cache: z.any().optional(),
+//   credentials: z.any().optional(),
+//   validateStatus: z.function().optional(),
+// });
 
 export class ApiService implements IApiService {
   private readonly DEFAULT_TIMEOUT = 30000; // 30 seconds
@@ -128,7 +128,7 @@ export class ApiService implements IApiService {
       const processedResponse =
         await this.interceptorManager.executeResponseInterceptors(response);
 
-      return processedResponse;
+      return processedResponse as IApiResponse<T>;
     } catch (error) {
       // Convert to ApiError if needed
       const apiError = this.normalizeError(error, processedRequest);
@@ -154,96 +154,132 @@ export class ApiService implements IApiService {
     this.interceptorManager.removeInterceptor(id);
   }
 
-  // Private methods
+  // Private methods - Request execution broken into smaller methods for clarity
   private async executeRequest<T>(
     request: IApiRequest,
   ): Promise<IApiResponse<T>> {
-    const { url, method, headers, body, timeout, signal, cache, credentials } =
-      request;
+    const { url, timeout, signal } = request;
 
     // Setup abort controller for timeout
+    const { controller, timeoutId } = this.setupTimeoutController(timeout);
+
+    try {
+      // Prepare and execute fetch request
+      const fetchOptions = this.prepareFetchOptions(
+        request,
+        signal || controller.signal,
+      );
+      const response = await fetch(url, fetchOptions);
+
+      // Clear timeout and process response
+      if (timeoutId) clearTimeout(timeoutId);
+
+      return await this.processSuccessfulResponse<T>(response, request);
+    } catch (error) {
+      // Clear timeout and handle errors
+      if (timeoutId) clearTimeout(timeoutId);
+      throw this.handleExecutionError(error, request, timeout, signal);
+    }
+  }
+
+  private setupTimeoutController(timeout?: number): {
+    controller: AbortController;
+    timeoutId: NodeJS.Timeout | null;
+  } {
     const controller = new AbortController();
     const timeoutId = timeout
       ? setTimeout(() => controller.abort(), timeout)
       : null;
 
-    // Combine signals if both provided
-    const finalSignal = signal || controller.signal;
+    return { controller, timeoutId };
+  }
 
-    try {
-      // Prepare fetch options
-      const fetchOptions: RequestInit = {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          ...headers,
-        },
-        signal: finalSignal,
-        cache,
-        credentials,
-      };
+  private prepareFetchOptions(
+    request: IApiRequest,
+    finalSignal: AbortSignal,
+  ): RequestInit {
+    const { method, headers, body, cache, credentials } = request;
 
-      // Add body for methods that support it
-      if (body !== undefined && ["POST", "PUT", "PATCH"].includes(method)) {
-        if (body instanceof FormData) {
-          // Remove Content-Type header for FormData (browser will set it)
-          delete (fetchOptions.headers as Record<string, string>)[
-            "Content-Type"
-          ];
-          fetchOptions.body = body;
-        } else {
-          fetchOptions.body = JSON.stringify(body);
-        }
-      }
+    const fetchOptions: RequestInit = {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        ...headers,
+      },
+      signal: finalSignal,
+      cache,
+      credentials,
+    };
 
-      // Make the request
-      const response = await fetch(url, fetchOptions);
-
-      // Clear timeout
-      if (timeoutId) clearTimeout(timeoutId);
-
-      // Check if response is ok based on custom validator or default
-      const validateStatus = this.getValidateStatusFunction(request);
-      if (!validateStatus(response.status)) {
-        throw await this.createApiError(response, request);
-      }
-
-      // Parse response data
-      const data = await this.parseResponseData<T>(response);
-
-      // Create IApiResponse
-      const apiResponse: IApiResponse<T> = {
-        data,
-        status: response.status,
-        statusText: response.statusText,
-        headers: response.headers,
-        config: request,
-      };
-
-      return apiResponse;
-    } catch (error) {
-      // Clear timeout
-      if (timeoutId) clearTimeout(timeoutId);
-
-      // Handle different error types
-      if (error instanceof DOMException && error.name === "AbortError") {
-        if (timeout && !signal) {
-          throw new TimeoutError(timeout, request);
-        }
-      }
-
-      if (error instanceof TypeError && error.message.includes("fetch")) {
-        throw new NetworkError(error.message, request);
-      }
-
-      // Re-throw if already an ApiError
-      if (error instanceof ApiError) {
-        throw error;
-      }
-
-      // Wrap other errors
-      throw new NetworkError(`Request failed: ${error}`, request);
+    // Add body for methods that support it
+    if (body !== undefined && ["POST", "PUT", "PATCH"].includes(method)) {
+      this.addBodyToFetchOptions(fetchOptions, body);
     }
+
+    return fetchOptions;
+  }
+
+  private addBodyToFetchOptions(
+    fetchOptions: RequestInit,
+    body: unknown,
+  ): void {
+    if (body instanceof FormData) {
+      // Remove Content-Type header for FormData (browser will set it)
+      delete (fetchOptions.headers as Record<string, string>)["Content-Type"];
+      fetchOptions.body = body;
+    } else {
+      fetchOptions.body = JSON.stringify(body);
+    }
+  }
+
+  private async processSuccessfulResponse<T>(
+    response: Response,
+    request: IApiRequest,
+  ): Promise<IApiResponse<T>> {
+    // Check if response is ok based on custom validator or default
+    const validateStatus = this.getValidateStatusFunction(request);
+    if (!validateStatus(response.status)) {
+      throw await this.createApiError(response, request);
+    }
+
+    // Parse response data
+    const data = await this.parseResponseData<T>(response);
+
+    // Create IApiResponse
+    return {
+      data,
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers,
+      config: request,
+    };
+  }
+
+  private handleExecutionError(
+    error: unknown,
+    request: IApiRequest,
+    timeout?: number,
+    signal?: AbortSignal,
+  ): Error {
+    // Already an ApiError - return as-is
+    if (error instanceof ApiError) {
+      return error;
+    }
+
+    // Timeout/Abort error
+    if (error instanceof DOMException && error.name === "AbortError") {
+      if (timeout && !signal) {
+        return new TimeoutError(timeout, request);
+      }
+    }
+
+    // Network/Fetch error
+    if (error instanceof TypeError && error.message.includes("fetch")) {
+      return new NetworkError(error.message, request);
+    }
+
+    // Generic error - wrap in NetworkError
+    return new NetworkError(`Request failed: ${error}`, request);
   }
 
   private async parseResponseData<T>(response: Response): Promise<T> {
@@ -274,28 +310,7 @@ export class ApiService implements IApiService {
     response: Response,
     request: IApiRequest,
   ): Promise<ApiError> {
-    let errorResponse: any;
-
-    try {
-      const contentType = response.headers.get("content-type");
-      if (contentType?.includes("application/json")) {
-        errorResponse = await response.json();
-      } else {
-        errorResponse = {
-          error: response.statusText,
-          message: (await response.text()) || response.statusText,
-          status: response.status,
-          statusText: response.statusText,
-        };
-      }
-    } catch {
-      errorResponse = {
-        error: response.statusText,
-        message: response.statusText,
-        status: response.status,
-        statusText: response.statusText,
-      };
-    }
+    const errorResponse = await this.parseErrorResponse(response);
 
     return new ApiError(
       errorResponse.message ||
@@ -307,23 +322,66 @@ export class ApiService implements IApiService {
     );
   }
 
+  private async parseErrorResponse(response: Response): Promise<any> {
+    try {
+      const contentType = response.headers.get("content-type");
+      if (contentType?.includes("application/json")) {
+        return await response.json();
+      }
+
+      return await this.createTextErrorResponse(response);
+    } catch {
+      return this.createDefaultErrorResponse(response);
+    }
+  }
+
+  private async createTextErrorResponse(response: Response): Promise<any> {
+    return {
+      error: response.statusText,
+      message: (await response.text()) || response.statusText,
+      status: response.status,
+      statusText: response.statusText,
+    };
+  }
+
+  private createDefaultErrorResponse(response: Response): any {
+    return {
+      error: response.statusText,
+      message: response.statusText,
+      status: response.status,
+      statusText: response.statusText,
+    };
+  }
+
   private normalizeError(error: any, request: IApiRequest): ApiError {
+    // Already an ApiError - return as-is
     if (error instanceof ApiError) {
       return error;
     }
 
-    if (error instanceof DOMException && error.name === "AbortError") {
+    // Timeout/Abort error
+    if (this.isAbortError(error)) {
       return new TimeoutError(this.DEFAULT_TIMEOUT, request);
     }
 
-    if (error instanceof TypeError && error.message.includes("fetch")) {
+    // Network/Fetch error
+    if (this.isFetchError(error)) {
       return new NetworkError(error.message, request);
     }
 
+    // Generic error
     return new NetworkError(
       `Request failed: ${error.message || error}`,
       request,
     );
+  }
+
+  private isAbortError(error: any): boolean {
+    return error instanceof DOMException && error.name === "AbortError";
+  }
+
+  private isFetchError(error: any): boolean {
+    return error instanceof TypeError && error.message.includes("fetch");
   }
 
   private getValidateStatusFunction(

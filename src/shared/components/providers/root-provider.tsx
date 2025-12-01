@@ -1,8 +1,8 @@
 "use client";
 
-import { ThemeProvider } from "./theme-provider";
 import { AuthProvider } from "./auth-provider";
 import { DatabaseProvider } from "./database-provider";
+import { ThemeProvider } from "./theme-provider";
 
 interface IRootProviderProps {
   children: React.ReactNode;

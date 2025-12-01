@@ -4,15 +4,16 @@
 
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type {
-  IRole,
-  IPermission,
-  IUseRBACReturn,
   IRBACError,
+  IPermission,
+  IRole,
+  IUseRBACReturn,
 } from "@/shared/types/rbac";
-import { getRBACProvider } from "@/shared/services/rbac/rbac-factory";
+
 import { useAuth } from "@/shared/hooks/use-auth";
+import { getRBACProvider } from "@/shared/services/rbac/rbac-factory";
 
 export function useRBAC(organizationId?: string): IUseRBACReturn {
   const { user } = useAuth();
@@ -147,7 +148,8 @@ export function useCanAccessOrganization(organizationId: string): boolean {
 // Hook for resource access
 export function useCanAccessResource(
   resource: string,
-  actions: string[] = ["read"],
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Parameter kept for API compatibility
+  _actions: string[] = ["read"],
   organizationId?: string,
 ): {
   canRead: boolean;

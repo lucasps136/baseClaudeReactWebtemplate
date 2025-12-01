@@ -65,21 +65,23 @@ export const registerDefaultPaymentProviders = async () => {
     return new StripePaymentProvider();
   });
 
+  // NOTE: Provider not yet implemented - uncomment when ready
   // Paddle Provider (future)
-  PaymentProviderFactory.registerProvider("paddle", async () => {
-    const { PaddlePaymentProvider } = await import(
-      "./providers/paddle-payment-provider"
-    );
-    return new PaddlePaymentProvider();
-  });
+  // PaymentProviderFactory.registerProvider("paddle", async () => {
+  //   const { PaddlePaymentProvider } = await import(
+  //     "./providers/paddle-payment-provider"
+  //   );
+  //   return new PaddlePaymentProvider();
+  // });
 
+  // NOTE: Provider not yet implemented - uncomment when ready
   // LemonSqueezy Provider (future)
-  PaymentProviderFactory.registerProvider("lemonsqueezy", async () => {
-    const { LemonSqueezyPaymentProvider } = await import(
-      "./providers/lemonsqueezy-payment-provider"
-    );
-    return new LemonSqueezyPaymentProvider();
-  });
+  // PaymentProviderFactory.registerProvider("lemonsqueezy", async () => {
+  //   const { LemonSqueezyPaymentProvider } = await import(
+  //     "./providers/lemonsqueezy-payment-provider"
+  //   );
+  //   return new LemonSqueezyPaymentProvider();
+  // });
 };
 
 // Utility to validate payment configuration
@@ -104,17 +106,18 @@ export const validatePaymentConfig = (
       }
       break;
 
-    case "paddle":
-      if (!config.options.vendorId || !config.options.apiKey) {
-        throw new Error("Paddle requires vendorId and apiKey in options");
-      }
-      break;
+    // NOTE: Validation for unimplemented providers - uncomment when ready
+    // case "paddle":
+    //   if (!config.options.vendorId || !config.options.apiKey) {
+    //     throw new Error("Paddle requires vendorId and apiKey in options");
+    //   }
+    //   break;
 
-    case "lemonsqueezy":
-      if (!config.options.apiKey) {
-        throw new Error("LemonSqueezy requires apiKey in options");
-      }
-      break;
+    // case "lemonsqueezy":
+    //   if (!config.options.apiKey) {
+    //     throw new Error("LemonSqueezy requires apiKey in options");
+    //   }
+    //   break;
 
     default:
       throw new Error(`Unknown payment provider type: ${config.type}`);
@@ -143,21 +146,22 @@ export class PaymentConfigBuilder {
     return this;
   }
 
-  usePaddle(vendorId: string, apiKey: string, publicKey?: string): this {
-    this.config = {
-      type: "paddle",
-      options: { vendorId, apiKey, publicKey },
-    };
-    return this;
-  }
+  // NOTE: Builder methods for unimplemented providers - uncomment when ready
+  // usePaddle(vendorId: string, apiKey: string, publicKey?: string): this {
+  //   this.config = {
+  //     type: "paddle",
+  //     options: { vendorId, apiKey, publicKey },
+  //   };
+  //   return this;
+  // }
 
-  useLemonSqueezy(apiKey: string, storeId?: string): this {
-    this.config = {
-      type: "lemonsqueezy",
-      options: { apiKey, storeId },
-    };
-    return this;
-  }
+  // useLemonSqueezy(apiKey: string, storeId?: string): this {
+  //   this.config = {
+  //     type: "lemonsqueezy",
+  //     options: { apiKey, storeId },
+  //   };
+  //   return this;
+  // }
 
   withCustomOptions(options: Record<string, any>): this {
     this.config.options = { ...this.config.options, ...options };
@@ -182,11 +186,12 @@ export const createPaymentConfig = {
       .useStripe(publishableKey, secretKey, webhookSecret)
       .build(),
 
-  paddle: (vendorId: string, apiKey: string, publicKey?: string) =>
-    PaymentConfigBuilder.create()
-      .usePaddle(vendorId, apiKey, publicKey)
-      .build(),
+  // NOTE: Presets for unimplemented providers - uncomment when ready
+  // paddle: (vendorId: string, apiKey: string, publicKey?: string) =>
+  //   PaymentConfigBuilder.create()
+  //     .usePaddle(vendorId, apiKey, publicKey)
+  //     .build(),
 
-  lemonsqueezy: (apiKey: string, storeId?: string) =>
-    PaymentConfigBuilder.create().useLemonSqueezy(apiKey, storeId).build(),
+  // lemonsqueezy: (apiKey: string, storeId?: string) =>
+  //   PaymentConfigBuilder.create().useLemonSqueezy(apiKey, storeId).build(),
 };

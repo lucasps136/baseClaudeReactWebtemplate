@@ -26,23 +26,21 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
 
     // Client principal (com auth context)
     this.client = createClient(
-      env.NEXT_PUBLIC_SUPABASE_URL!,
-      env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      env.NEXT_PUBLIC_SUPABASE_URL,
+      env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     );
 
     // Admin client (para operações privilegiadas)
-    if (env.SUPABASE_SERVICE_ROLE_KEY) {
-      this.adminClient = createClient(
-        env.NEXT_PUBLIC_SUPABASE_URL!,
-        env.SUPABASE_SERVICE_ROLE_KEY,
-        {
-          auth: {
-            autoRefreshToken: false,
-            persistSession: false,
-          },
+    this.adminClient = createClient(
+      env.NEXT_PUBLIC_SUPABASE_URL,
+      env.SUPABASE_SERVICE_ROLE_KEY,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
         },
-      );
-    }
+      },
+    );
   }
 
   // Conexão e health check
@@ -107,13 +105,13 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
       return {
         data: result as T[],
         error: error ? this.mapSupabaseError(error) : null,
-        count,
+        count: count ?? undefined,
       };
     } catch (error) {
       return {
         data: null,
         error: this.mapSupabaseError(error),
-        count: 0,
+        count: undefined,
       };
     }
   }
@@ -164,15 +162,15 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
       const { data, error, count } = await query;
 
       return {
-        data: data as T[],
+        data: error ? null : (data as unknown as T[]),
         error: error ? this.mapSupabaseError(error) : null,
-        count,
+        count: count ?? undefined,
       };
     } catch (error) {
       return {
         data: null,
         error: this.mapSupabaseError(error),
-        count: 0,
+        count: undefined,
       };
     }
   }
@@ -264,13 +262,13 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
       return {
         data: result as T[],
         error: error ? this.mapSupabaseError(error) : null,
-        count,
+        count: count ?? undefined,
       };
     } catch (error) {
       return {
         data: null,
         error: this.mapSupabaseError(error),
-        count: 0,
+        count: undefined,
       };
     }
   }
@@ -315,13 +313,13 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
       return {
         data: data as T[],
         error: error ? this.mapSupabaseError(error) : null,
-        count,
+        count: count ?? undefined,
       };
     } catch (error) {
       return {
         data: null,
         error: this.mapSupabaseError(error),
-        count: 0,
+        count: undefined,
       };
     }
   }
@@ -348,13 +346,13 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
       return {
         data: result as T[],
         error: error ? this.mapSupabaseError(error) : null,
-        count,
+        count: count ?? undefined,
       };
     } catch (error) {
       return {
         data: null,
         error: this.mapSupabaseError(error),
-        count: 0,
+        count: undefined,
       };
     }
   }
@@ -417,13 +415,13 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
     const channel = this.client
       .channel(subscriptionId)
       .on(
-        "postgres_changes",
+        "postgres_changes" as any,
         {
           event,
           schema: "public",
           table,
-        },
-        (payload) => {
+        } as any,
+        (payload: any) => {
           const realtimeEvent: IRealtimeEvent<T> = {
             eventType: payload.eventType as any,
             new: payload.new as T,

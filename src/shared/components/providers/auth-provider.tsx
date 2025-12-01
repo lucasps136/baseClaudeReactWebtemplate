@@ -7,15 +7,16 @@ import {
   useState,
   type ReactNode,
 } from "react";
+
+import {
+  AuthProviderFactory,
+  registerDefaultProviders,
+} from "@/shared/services/auth/auth-factory";
 import type {
   IAuthProvider,
   IAuthState,
   IAuthProviderConfig,
 } from "@/shared/types/auth";
-import {
-  AuthProviderFactory,
-  registerDefaultProviders,
-} from "@/shared/services/auth/auth-factory";
 
 // Context (Dependency Inversion)
 interface IAuthContextType extends IAuthState {
@@ -36,6 +37,23 @@ interface IAuthProviderProps {
   config?: IAuthProviderConfig;
 }
 
+interface IUseAuthStateReturn {
+  user: IAuthState["user"];
+  session: IAuthState["session"];
+  isLoading: boolean;
+  isAuthenticated: boolean;
+  error: IAuthState["error"];
+}
+
+interface IUseAuthActionsReturn {
+  login: IAuthProvider["login"];
+  register: IAuthProvider["register"];
+  logout: IAuthProvider["logout"];
+  resetPassword: IAuthProvider["resetPassword"];
+  updatePassword: IAuthProvider["updatePassword"];
+  refreshSession: IAuthProvider["refreshSession"];
+}
+
 // Hook para usar o contexto (Interface Segregation)
 export const useAuth = (): IAuthContextType => {
   const context = useContext(AuthContext);
@@ -46,13 +64,13 @@ export const useAuth = (): IAuthContextType => {
 };
 
 // Hook especializado para estado (Single Responsibility)
-export const useAuthState = () => {
+export const useAuthState = (): IUseAuthStateReturn => {
   const { user, session, isLoading, isAuthenticated, error } = useAuth();
   return { user, session, isLoading, isAuthenticated, error };
 };
 
 // Hook especializado para ações (Single Responsibility)
-export const useAuthActions = () => {
+export const useAuthActions = (): IUseAuthActionsReturn => {
   const {
     login,
     register,
@@ -75,7 +93,7 @@ export const useAuthActions = () => {
 export const AuthProvider = ({
   children,
   config = { type: "supabase", options: {} },
-}: IAuthProviderProps) => {
+}: IAuthProviderProps): JSX.Element => {
   const [provider, setProvider] = useState<IAuthProvider | null>(null);
   const [authState, setAuthState] = useState<IAuthState>({
     user: null,
@@ -90,7 +108,7 @@ export const AuthProvider = ({
     let mounted = true;
     let unsubscribe: (() => void) | null = null;
 
-    const initializeAuth = async () => {
+    const initializeAuth = async (): Promise<void> => {
       try {
         // Registrar providers disponíveis
         await registerDefaultProviders();
@@ -103,7 +121,7 @@ export const AuthProvider = ({
         setProvider(authProvider);
 
         // Configurar listener para mudanças de estado (Observer Pattern)
-        unsubscribe = authProvider.onAuthStateChange((state) => {
+        unsubscribe = authProvider.onAuthStateChange((state): void => {
           if (mounted) {
             setAuthState(state);
           }
@@ -127,9 +145,9 @@ export const AuthProvider = ({
       }
     };
 
-    initializeAuth();
+    void initializeAuth();
 
-    return () => {
+    return (): void => {
       mounted = false;
       if (unsubscribe) {
         unsubscribe();
@@ -139,7 +157,7 @@ export const AuthProvider = ({
 
   // Cleanup na desmontagem
   useEffect(() => {
-    return () => {
+    return (): void => {
       if (provider) {
         provider.cleanup();
       }
@@ -165,17 +183,17 @@ export const AuthProvider = ({
       }),
     logout:
       provider?.logout.bind(provider) ??
-      (async () => {
+      (async (): Promise<void> => {
         throw new Error("Auth provider not initialized");
       }),
     resetPassword:
       provider?.resetPassword.bind(provider) ??
-      (async () => {
+      (async (): Promise<void> => {
         throw new Error("Auth provider not initialized");
       }),
     updatePassword:
       provider?.updatePassword.bind(provider) ??
-      (async () => {
+      (async (): Promise<void> => {
         throw new Error("Auth provider not initialized");
       }),
     refreshSession:
@@ -201,7 +219,7 @@ export const ProtectedRoute = ({
   children,
   fallback = <div>Loading...</div>,
   requireAuth = true,
-}: IProtectedRouteProps) => {
+}: IProtectedRouteProps): JSX.Element => {
   const { isAuthenticated, isLoading } = useAuthState();
 
   if (isLoading) {
@@ -219,10 +237,10 @@ export const ProtectedRoute = ({
 export function withAuth<P extends object>(
   Component: React.ComponentType<P>,
   options: { requireAuth?: boolean; fallback?: ReactNode } = {},
-) {
+): React.ComponentType<P> {
   const { requireAuth = true, fallback } = options;
 
-  return function AuthenticatedComponent(props: P) {
+  return function AuthenticatedComponent(props: P): JSX.Element {
     return (
       <ProtectedRoute requireAuth={requireAuth} fallback={fallback}>
         <Component {...props} />

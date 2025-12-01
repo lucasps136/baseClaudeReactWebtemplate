@@ -7,14 +7,15 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type {
-  IDatabaseProvider,
-  IDatabaseProviderConfig,
-} from "@/shared/types/database";
+
 import {
   DatabaseProviderFactory,
   registerDefaultDatabaseProviders,
 } from "@/shared/services/database/database-factory";
+import type {
+  IDatabaseProvider,
+  IDatabaseProviderConfig,
+} from "@/shared/types/database";
 
 // Context (Dependency Inversion)
 interface IDatabaseContextType {

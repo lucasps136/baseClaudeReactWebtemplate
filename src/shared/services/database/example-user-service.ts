@@ -7,7 +7,7 @@
  * NÃO É CÓDIGO DE PRODUÇÃO - APENAS EXEMPLO EDUCACIONAL
  */
 
-import type { IDatabaseCRUD } from "@/shared/services/database";
+import type { IDatabaseRecord } from "@/shared/services/database";
 // import type { IDatabaseResponse } from "@/shared/types/database"; // Example file - type not used
 
 /**
@@ -24,11 +24,11 @@ import type { IDatabaseCRUD } from "@/shared/services/database";
 /**
  * DEPOIS (Interface Segregada - ISP)
  *
- * Service depende APENAS de IDatabaseCRUD
+ * Service depende APENAS de IDatabaseRecord
  * Não tem acesso a Realtime, Storage, Transactions, etc.
  */
 export class UserService {
-  constructor(private db: IDatabaseCRUD) {}
+  constructor(private db: IDatabaseRecord) {}
   // ^ Dependência mínima - clara e explícita
 
   async getUsers() {
@@ -62,7 +62,7 @@ export class UserService {
  * BENEFÍCIOS DEMONSTRADOS:
  *
  * 1. TESTES MAIS SIMPLES
- *    - Mock apenas IDatabaseCRUD (9 métodos)
+ *    - Mock apenas IDatabaseRecord (9 métodos)
  *    - Antes: mockava IDatabaseProvider (22+ métodos)
  *
  * 2. DEPENDÊNCIAS CLARAS
@@ -87,14 +87,14 @@ export class UserService {
  */
 /*
 import { UserService } from "./example-user-service";
-import type { IDatabaseCRUD } from "@/shared/services/database";
+import type { IDatabaseRecord } from "@/shared/services/database";
 
 describe("UserService", () => {
-  let mockDb: IDatabaseCRUD;
+  let mockDb: IDatabaseRecord;
   let service: UserService;
 
   beforeEach(() => {
-    // Mock apenas IDatabaseCRUD - muito mais simples!
+    // Mock apenas IDatabaseRecord - muito mais simples!
     mockDb = {
       select: jest.fn(),
       selectOne: jest.fn(),
@@ -163,7 +163,7 @@ describe("UserService", () => {
  * - Testes complexos
  * - Violação do ISP
  *
- * DEPOIS (IDatabaseCRUD):
+ * DEPOIS (IDatabaseRecord):
  * - Mock com 9 métodos
  * - Dependência explícita
  * - Testes simples

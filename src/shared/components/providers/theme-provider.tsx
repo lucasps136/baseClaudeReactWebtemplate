@@ -1,14 +1,16 @@
 "use client";
 
+import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes";
 import * as React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
-import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes";
+
+import { ThemeFactory } from "@/shared/services/theme/theme-factory";
 import type {
   ICustomTheme,
   IThemeContextType,
   IThemeConfig,
+  IThemeColors,
 } from "@/shared/types/theme";
-import { ThemeFactory } from "@/shared/services/theme/theme-factory";
 
 // Context extensível (Open/Closed Principle)
 const ExtendedThemeContext = createContext<IThemeContextType | null>(null);
@@ -96,7 +98,7 @@ class ThemeManager {
     const theme = this.themes.get(themeId);
     if (!theme) return;
 
-    theme.colors[mode] = { ...theme.colors[mode], ...colors };
+    theme.colors[mode] = { ...theme.colors[mode], ...colors } as IThemeColors;
     this.applyThemeStyles(theme);
     this.notifyListeners();
   }
@@ -112,8 +114,8 @@ class ThemeManager {
       document.head.appendChild(styleElement);
     }
 
-    const lightCSS = this.generateCSSVariables(theme.colors.light, "");
-    const darkCSS = this.generateCSSVariables(theme.colors.dark, ".dark");
+    const lightCSS = this.generateCSSVariables(theme.colors.light);
+    const darkCSS = this.generateCSSVariables(theme.colors.dark);
 
     styleElement.textContent = `
       [data-theme="${theme.id}"] {
@@ -135,10 +137,7 @@ class ThemeManager {
   }
 
   // Gerar variáveis CSS
-  private generateCSSVariables(
-    colors: Record<string, string>,
-    selector: string,
-  ): string {
+  private generateCSSVariables(colors: Record<string, string>): string {
     return Object.entries(colors)
       .map(([key, value]) => {
         const cssVar = key.replace(/([A-Z])/g, "-$1").toLowerCase();

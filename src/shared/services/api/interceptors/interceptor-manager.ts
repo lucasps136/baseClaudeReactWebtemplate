@@ -2,12 +2,11 @@
 // Manages request and response interceptors with proper execution order
 
 import type {
+  ApiError,
   IApiRequest,
   IApiResponse,
-  ApiError,
-  RequestInterceptor,
   IResponseInterceptor,
-  IInterceptorConfig,
+  RequestInterceptor,
 } from "../api.types";
 
 export class InterceptorManager {

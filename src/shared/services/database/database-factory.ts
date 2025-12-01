@@ -61,29 +61,32 @@ export const registerDefaultDatabaseProviders = async () => {
     return new SupabaseDatabaseProvider();
   });
 
+  // NOTE: Provider not yet implemented - uncomment when ready
   // PlanetScale Provider (futuro)
-  DatabaseProviderFactory.registerProvider("planetscale", async () => {
-    const { PlanetScaleDatabaseProvider } = await import(
-      "./providers/planetscale-database-provider"
-    );
-    return new PlanetScaleDatabaseProvider();
-  });
+  // DatabaseProviderFactory.registerProvider("planetscale", async () => {
+  //   const { PlanetScaleDatabaseProvider } = await import(
+  //     "./providers/planetscale-database-provider"
+  //   );
+  //   return new PlanetScaleDatabaseProvider();
+  // });
 
+  // NOTE: Provider not yet implemented - uncomment when ready
   // Prisma Provider (futuro)
-  DatabaseProviderFactory.registerProvider("prisma", async () => {
-    const { PrismaDatabaseProvider } = await import(
-      "./providers/prisma-database-provider"
-    );
-    return new PrismaDatabaseProvider();
-  });
+  // DatabaseProviderFactory.registerProvider("prisma", async () => {
+  //   const { PrismaDatabaseProvider } = await import(
+  //     "./providers/prisma-database-provider"
+  //   );
+  //   return new PrismaDatabaseProvider();
+  // });
 
+  // NOTE: Provider not yet implemented - uncomment when ready
   // MongoDB Provider (futuro)
-  DatabaseProviderFactory.registerProvider("mongodb", async () => {
-    const { MongoDBDatabaseProvider } = await import(
-      "./providers/mongodb-database-provider"
-    );
-    return new MongoDBDatabaseProvider();
-  });
+  // DatabaseProviderFactory.registerProvider("mongodb", async () => {
+  //   const { MongoDBDatabaseProvider } = await import(
+  //     "./providers/mongodb-database-provider"
+  //   );
+  //   return new MongoDBDatabaseProvider();
+  // });
 };
 
 // Utilitário para validar configuração
@@ -106,29 +109,30 @@ export const validateDatabaseConfig = (
       }
       break;
 
-    case "planetscale":
-      if (
-        !config.options.host ||
-        !config.options.username ||
-        !config.options.password
-      ) {
-        throw new Error(
-          "PlanetScale requires host, username, and password in options",
-        );
-      }
-      break;
+    // NOTE: Validation for unimplemented providers - uncomment when ready
+    // case "planetscale":
+    //   if (
+    //     !config.options.host ||
+    //     !config.options.username ||
+    //     !config.options.password
+    //   ) {
+    //     throw new Error(
+    //       "PlanetScale requires host, username, and password in options",
+    //     );
+    //   }
+    //   break;
 
-    case "prisma":
-      if (!config.options.databaseUrl) {
-        throw new Error("Prisma requires databaseUrl in options");
-      }
-      break;
+    // case "prisma":
+    //   if (!config.options.databaseUrl) {
+    //     throw new Error("Prisma requires databaseUrl in options");
+    //   }
+    //   break;
 
-    case "mongodb":
-      if (!config.options.connectionString) {
-        throw new Error("MongoDB requires connectionString in options");
-      }
-      break;
+    // case "mongodb":
+    //   if (!config.options.connectionString) {
+    //     throw new Error("MongoDB requires connectionString in options");
+    //   }
+    //   break;
 
     default:
       throw new Error(`Unknown database provider type: ${config.type}`);
@@ -153,34 +157,35 @@ export class DatabaseConfigBuilder {
     return this;
   }
 
-  usePlanetScale(
-    host: string,
-    username: string,
-    password: string,
-    database: string,
-  ): this {
-    this.config = {
-      type: "planetscale",
-      options: { host, username, password, database },
-    };
-    return this;
-  }
+  // NOTE: Builder methods for unimplemented providers - uncomment when ready
+  // usePlanetScale(
+  //   host: string,
+  //   username: string,
+  //   password: string,
+  //   database: string,
+  // ): this {
+  //   this.config = {
+  //     type: "planetscale",
+  //     options: { host, username, password, database },
+  //   };
+  //   return this;
+  // }
 
-  usePrisma(databaseUrl: string): this {
-    this.config = {
-      type: "prisma",
-      options: { databaseUrl },
-    };
-    return this;
-  }
+  // usePrisma(databaseUrl: string): this {
+  //   this.config = {
+  //     type: "prisma",
+  //     options: { databaseUrl },
+  //   };
+  //   return this;
+  // }
 
-  useMongoDB(connectionString: string, database: string): this {
-    this.config = {
-      type: "mongodb",
-      options: { connectionString, database },
-    };
-    return this;
-  }
+  // useMongoDB(connectionString: string, database: string): this {
+  //   this.config = {
+  //     type: "mongodb",
+  //     options: { connectionString, database },
+  //   };
+  //   return this;
+  // }
 
   withCustomOptions(options: Record<string, any>): this {
     this.config.options = { ...this.config.options, ...options };

@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import {
-  isProtectedRoute,
-  isAuthRoute,
-  isAdminRoute,
-  redirects,
-} from "@/config/routes";
+// Commented out until authentication is implemented
+// import {
+//   isProtectedRoute,
+//   isAuthRoute,
+//   isAdminRoute,
+//   redirects,
+// } from "@/config/routes";
 
 /**
  * Middleware for handling routing, authentication, and redirects
@@ -17,7 +18,7 @@ import {
  *
  * TEMPLATE NOTE: Uncomment and modify the authentication logic based on your auth provider
  */
-export function middleware(request: NextRequest) {
+export function middleware(request: NextRequest): NextResponse {
   // Get pathname from the request URL
   const { pathname } = request.nextUrl;
 
@@ -46,6 +47,9 @@ export function middleware(request: NextRequest) {
   // Uncomment and modify based on your authentication strategy
 
   /*
+  // Import route helpers first:
+  // import { isProtectedRoute, isAuthRoute, isAdminRoute, redirects } from "@/config/routes";
+
   // Check if route requires authentication
   if (isProtectedRoute(pathname)) {
     // EXAMPLE: Check for authentication token/session
@@ -62,7 +66,7 @@ export function middleware(request: NextRequest) {
     // EXAMPLE: Admin route protection
     if (isAdminRoute(pathname)) {
       const userRole = request.cookies.get('user-role')?.value;
-      
+
       if (userRole !== 'admin') {
         return NextResponse.redirect(
           new URL(redirects.adminRequired, request.url)
@@ -71,7 +75,7 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // Redirect authenticated users away from auth pages  
+  // Redirect authenticated users away from auth pages
   if (isAuthRoute(pathname)) {
     const token = request.cookies.get('auth-token')?.value;
     const session = request.cookies.get('next-auth.session-token')?.value;

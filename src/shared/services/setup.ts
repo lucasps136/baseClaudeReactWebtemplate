@@ -12,20 +12,18 @@ import {
 import { createApiService, type IApiService } from "./api";
 import { createStorageService, type IStorageService } from "./storage";
 import type { ISupabaseService, IValidationService } from "./index";
+import { getEnv } from "@/config/env";
 
 // Setup services with proper dependency injection
 export const setupServices = () => {
+  const env = getEnv();
+
   // Supabase configuration from environment
   const supabaseConfig: ISupabaseConfig = {
-    url: process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    url: env.NEXT_PUBLIC_SUPABASE_URL,
+    anonKey: env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    serviceRoleKey: env.SUPABASE_SERVICE_ROLE_KEY,
   };
-
-  // Validate required environment variables
-  if (!supabaseConfig.url || !supabaseConfig.anonKey) {
-    throw new Error("Missing required Supabase environment variables");
-  }
 
   // Register services as singletons
   registerSingleton(SERVICE_KEYS.SUPABASE, () =>

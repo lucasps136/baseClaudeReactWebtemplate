@@ -1,9 +1,19 @@
 import { useCallback } from "react";
+
 import { useUserStore } from "../stores/user.store";
+import type { IUserProfile } from "../types/user.types";
+
+interface IUseUserReturn {
+  currentUser: IUserProfile | null;
+  isLoadingUser: boolean;
+  userError: string | null;
+  fetchUser: (id: string) => Promise<IUserProfile | null>;
+  clearUser: () => void;
+}
 
 // Custom hook following Single Responsibility
 // Only handles single user operations
-export const useUser = () => {
+export const useUser = (): IUseUserReturn => {
   const {
     currentUser,
     isLoadingUser,
@@ -14,7 +24,7 @@ export const useUser = () => {
   } = useUserStore();
 
   const fetchUser = useCallback(
-    async (id: string) => {
+    async (id: string): Promise<IUserProfile | null> => {
       if (!id) {
         setUserError("User ID is required");
         return null;
@@ -45,7 +55,7 @@ export const useUser = () => {
     [setCurrentUser, setUserLoading, setUserError],
   );
 
-  const clearUser = useCallback(() => {
+  const clearUser = useCallback((): void => {
     setCurrentUser(null);
     setUserError(null);
   }, [setCurrentUser, setUserError]);
