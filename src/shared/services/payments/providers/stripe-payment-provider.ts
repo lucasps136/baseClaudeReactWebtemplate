@@ -3,6 +3,8 @@
 // Enhanced with SOLID principles
 
 import Stripe from "stripe";
+
+import { getEnv } from "@/config/env";
 import type {
   IPaymentProvider,
   IProduct,
@@ -12,13 +14,11 @@ import type {
   IPaymentIntent,
   ICheckoutSession,
   IWebhookEvent,
-  IPaymentResponse,
   IPaymentError,
   ICreateSubscriptionOptions,
   ICreateCheckoutSessionOptions,
   ICreatePaymentIntentOptions,
 } from "@/shared/types/payments";
-import { getEnv } from "@/config/env";
 
 export class StripePaymentProvider implements IPaymentProvider {
   private stripe: Stripe;

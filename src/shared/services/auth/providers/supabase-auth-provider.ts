@@ -1,4 +1,6 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+
+import { getEnv } from "@/config/env";
 import type {
   IAuthProvider,
   IUser,
@@ -9,7 +11,6 @@ import type {
   IAuthState,
   IAuthError,
 } from "@/shared/types/auth";
-import { getEnv } from "@/config/env";
 
 export class SupabaseAuthProvider implements IAuthProvider {
   private client: SupabaseClient;

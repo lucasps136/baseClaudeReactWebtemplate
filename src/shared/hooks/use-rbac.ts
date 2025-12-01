@@ -5,15 +5,15 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+
+import { useAuth } from "@/shared/hooks/use-auth";
+import { getRBACProvider } from "@/shared/services/rbac/rbac-factory";
 import type {
   IRBACError,
   IPermission,
   IRole,
   IUseRBACReturn,
 } from "@/shared/types/rbac";
-
-import { useAuth } from "@/shared/hooks/use-auth";
-import { getRBACProvider } from "@/shared/services/rbac/rbac-factory";
 
 export function useRBAC(organizationId?: string): IUseRBACReturn {
   const { user } = useAuth();

@@ -1,0 +1,77 @@
+
+> nextjs-solid-boilerplate@1.0.0 quality:check
+> node scripts/modules/quality-check.js
+
+[1m[36m╔════════════════════════════════════════════════════════╗[0m
+[1m[36m║          MODULE QUALITY CHECK REPORT                   ║[0m
+[1m[36m╚════════════════════════════════════════════════════════╝[0m
+
+[90mFound 3 module(s) to check[0m
+
+[1mChecking: data/user-data[0m
+[90m────────────────────────────────────────────────────────────[0m
+
+[1mScore: [32m88/100[0m
+
+[32m✓[0m Structure Check
+[32m✓[0m Manifest Check
+[32m✓[0m Documentation Check
+  [33m⚠[0m README missing recommended section: API
+[32m✓[0m Tests Check
+  [33m⚠[0m Found 1 test file(s)
+  [33m⚠[0m Test documentation found
+[32m✓[0m Exports Check
+  [33m⚠[0m Manifest declares users_table but not found in index.ts exports
+  [33m⚠[0m Manifest declares 001_create_users_table but not found in index.ts exports
+  [33m⚠[0m Manifest declares user_queries but not found in index.ts exports
+
+[1mChecking: logic/user-logic[0m
+[90m────────────────────────────────────────────────────────────[0m
+
+[1mScore: [32m94/100[0m
+
+[32m✓[0m Structure Check
+[32m✓[0m Manifest Check
+[32m✓[0m Documentation Check
+[32m✓[0m Tests Check
+  [33m⚠[0m Found 2 test file(s)
+  [33m⚠[0m Test documentation found
+[32m✓[0m Exports Check
+  [33m⚠[0m Manifest declares UserProfile but not found in index.ts exports
+  [33m⚠[0m Manifest declares CreateUserInput but not found in index.ts exports
+  [33m⚠[0m Manifest declares UpdateUserInput but not found in index.ts exports
+
+[1mChecking: ui/user-profile-ui[0m
+[90m────────────────────────────────────────────────────────────[0m
+
+[1mScore: [32m94/100[0m
+
+[32m✓[0m Structure Check
+[32m✓[0m Manifest Check
+[32m✓[0m Documentation Check
+[32m✓[0m Tests Check
+  [33m⚠[0m Found 4 test file(s)
+[32m✓[0m Exports Check
+  [33m⚠[0m Manifest declares UserProfile but not found in index.ts exports
+  [33m⚠[0m Manifest declares UserListFilter but not found in index.ts exports
+
+
+[1m[36m═══════════════════════════════════════════════════════[0m
+[1mSUMMARY[0m
+
+Total Modules: 3
+[32m✓ Passed (≥80): 3[0m
+[33m⚠ Warning (60-79): 0[0m
+[31m✗ Failed (<60): 0[0m
+
+Average Score: 92/100
+
+[1mModule Scores:[0m
+[32m✓[0m user-logic: [32m94/100[0m
+  [90mstructure: ✓, manifest: ✓, documentation: ✓, tests: ✓, exports: ✓[0m
+[32m✓[0m user-profile-ui: [32m94/100[0m
+  [90mstructure: ✓, manifest: ✓, documentation: ✓, tests: ✓, exports: ✓[0m
+[32m✓[0m user-data: [32m88/100[0m
+  [90mstructure: ✓, manifest: ✓, documentation: ✓, tests: ✓, exports: ✓[0m
+
+[32m[1mQuality check completed[0m

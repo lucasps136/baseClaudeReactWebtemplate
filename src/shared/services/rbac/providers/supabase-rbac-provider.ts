@@ -3,6 +3,8 @@
 // Enhanced with SOLID principles
 
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+
+import { getEnv } from "@/config/env";
 import type {
   IRBACProvider,
   IRole,
@@ -11,7 +13,6 @@ import type {
   IAssignRoleOptions,
   IRBACError,
 } from "@/shared/types/rbac";
-import { getEnv } from "@/config/env";
 
 export class SupabaseRBACProvider implements IRBACProvider {
   private supabase: SupabaseClient;
@@ -279,7 +280,7 @@ export class SupabaseRBACProvider implements IRBACProvider {
   // IUser Roles (Single Responsibility)
   async getUserRoles(
     userId: string,
-    organizationId?: string,
+    _organizationId?: string, // eslint-disable-line @typescript-eslint/no-unused-vars
   ): Promise<IRole[]> {
     try {
       let query = this.supabase
@@ -299,8 +300,8 @@ export class SupabaseRBACProvider implements IRBACProvider {
         .eq("user_id", userId)
         .eq("is_active", true);
 
-      if (organizationId) {
-        query = query.eq("organization_id", organizationId);
+      if (_organizationId) {
+        query = query.eq("organization_id", _organizationId);
       }
 
       const { data, error } = await query;
@@ -315,7 +316,7 @@ export class SupabaseRBACProvider implements IRBACProvider {
 
   async getUserPermissions(
     userId: string,
-    organizationId?: string,
+    _organizationId?: string, // eslint-disable-line @typescript-eslint/no-unused-vars
   ): Promise<IPermission[]> {
     try {
       // Use the helper function from the database
@@ -368,7 +369,7 @@ export class SupabaseRBACProvider implements IRBACProvider {
   async removeRoleFromUser(
     userId: string,
     roleId: string,
-    organizationId?: string,
+    _organizationId?: string, // eslint-disable-line @typescript-eslint/no-unused-vars
   ): Promise<void> {
     try {
       let query = this.supabase
@@ -377,8 +378,8 @@ export class SupabaseRBACProvider implements IRBACProvider {
         .eq("user_id", userId)
         .eq("role_id", roleId);
 
-      if (organizationId) {
-        query = query.eq("organization_id", organizationId);
+      if (_organizationId) {
+        query = query.eq("organization_id", _organizationId);
       }
 
       const { error } = await query;
@@ -393,13 +394,13 @@ export class SupabaseRBACProvider implements IRBACProvider {
   async userHasPermission(
     userId: string,
     permissionName: string,
-    organizationId?: string,
+    _organizationId?: string, // eslint-disable-line @typescript-eslint/no-unused-vars
   ): Promise<boolean> {
     try {
       const { data, error } = await this.supabase.rpc("user_has_permission", {
         user_id: userId,
         permission_name: permissionName,
-        organization_id: organizationId,
+        organization_id: _organizationId,
       });
 
       if (error) throw error;
@@ -413,7 +414,7 @@ export class SupabaseRBACProvider implements IRBACProvider {
   async userHasRole(
     userId: string,
     roleName: string,
-    organizationId?: string,
+    _organizationId?: string, // eslint-disable-line @typescript-eslint/no-unused-vars
   ): Promise<boolean> {
     try {
       let query = this.supabase
@@ -427,8 +428,8 @@ export class SupabaseRBACProvider implements IRBACProvider {
         .eq("roles.name", roleName)
         .eq("is_active", true);
 
-      if (organizationId) {
-        query = query.eq("organization_id", organizationId);
+      if (_organizationId) {
+        query = query.eq("organization_id", _organizationId);
       }
 
       const { data, error } = await query;
@@ -444,7 +445,7 @@ export class SupabaseRBACProvider implements IRBACProvider {
   // Multi-tenant support
   async getUsersByRole(
     roleName: string,
-    organizationId?: string,
+    _organizationId?: string, // eslint-disable-line @typescript-eslint/no-unused-vars
   ): Promise<string[]> {
     try {
       let query = this.supabase
@@ -458,8 +459,8 @@ export class SupabaseRBACProvider implements IRBACProvider {
         .eq("roles.name", roleName)
         .eq("is_active", true);
 
-      if (organizationId) {
-        query = query.eq("organization_id", organizationId);
+      if (_organizationId) {
+        query = query.eq("organization_id", _organizationId);
       }
 
       const { data, error } = await query;
@@ -472,12 +473,12 @@ export class SupabaseRBACProvider implements IRBACProvider {
     }
   }
 
-  async getOrganizationUsers(organizationId: string): Promise<IUserRole[]> {
+  async getOrganizationUsers(_organizationId: string): Promise<IUserRole[]> {
     try {
       const { data, error } = await this.supabase
         .from("user_roles")
         .select("*")
-        .eq("organization_id", organizationId)
+        .eq("organization_id", _organizationId)
         .eq("is_active", true);
 
       if (error) throw error;

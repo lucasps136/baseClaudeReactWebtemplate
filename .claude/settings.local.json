@@ -3,7 +3,15 @@
     "allow": [
       "WebSearch",
       "mcp__shrimp-task-manager__process_thought",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(pwsh -File .specify/scripts/powershell/check-prerequisites.ps1 -Json)",
+      "Bash(npm run modules:validate:*)",
+      "Bash(node scripts/modules/metrics.js:*)",
+      "Bash(npm run type-check:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npm run test:modules:coverage:*)",
+      "Bash(paste:*)",
+      "Bash(npx tsc:*)"
     ],
     "deny": [],
     "ask": []

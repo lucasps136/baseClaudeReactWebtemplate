@@ -1,0 +1,105 @@
+specs/master/contracts/integration.contract.ts(20,6): error TS2300: Duplicate identifier 'ISupabaseService'.
+specs/master/contracts/integration.contract.ts(21,6): error TS2300: Duplicate identifier 'IValidationService'.
+specs/master/contracts/integration.contract.ts(22,6): error TS2300: Duplicate identifier 'StorageProviderType'.
+specs/master/contracts/integration.contract.ts(489,18): error TS2300: Duplicate identifier 'ISupabaseService'.
+specs/master/contracts/integration.contract.ts(493,18): error TS2300: Duplicate identifier 'IValidationService'.
+specs/master/contracts/integration.contract.ts(513,13): error TS2300: Duplicate identifier 'StorageProviderType'.
+specs/master/contracts/tests/api-service.contract.test.ts(9,10): error TS2305: Module '"jest"' has no exported member 'describe'.
+specs/master/contracts/tests/api-service.contract.test.ts(9,20): error TS2305: Module '"jest"' has no exported member 'test'.
+specs/master/contracts/tests/api-service.contract.test.ts(9,26): error TS2305: Module '"jest"' has no exported member 'expect'.
+specs/master/contracts/tests/api-service.contract.test.ts(9,34): error TS2305: Module '"jest"' has no exported member 'beforeEach'.
+specs/master/contracts/tests/api-service.contract.test.ts(9,46): error TS2305: Module '"jest"' has no exported member 'afterEach'.
+specs/master/contracts/tests/api-service.contract.test.ts(9,57): error TS2305: Module '"jest"' has no exported member 'jest'.
+specs/master/contracts/tests/storage-service.contract.test.ts(9,10): error TS2305: Module '"jest"' has no exported member 'describe'.
+specs/master/contracts/tests/storage-service.contract.test.ts(9,20): error TS2305: Module '"jest"' has no exported member 'test'.
+specs/master/contracts/tests/storage-service.contract.test.ts(9,26): error TS2305: Module '"jest"' has no exported member 'expect'.
+specs/master/contracts/tests/storage-service.contract.test.ts(9,34): error TS2305: Module '"jest"' has no exported member 'beforeEach'.
+specs/master/contracts/tests/storage-service.contract.test.ts(9,46): error TS2305: Module '"jest"' has no exported member 'afterEach'.
+specs/master/contracts/tests/storage-service.contract.test.ts(9,57): error TS2305: Module '"jest"' has no exported member 'jest'.
+specs/master/contracts/tests/storage-service.contract.test.ts(262,48): error TS7006: Parameter 'call' implicitly has an 'any' type.
+src/shared/components/providers/rbac-provider.tsx(139,15): error TS2554: Expected 1 arguments, but got 0.
+src/shared/components/providers/rbac-provider.tsx(142,7): error TS18048: 'env' is possibly 'undefined'.
+src/shared/components/providers/rbac-provider.tsx(142,11): error TS2339: Property 'NEXT_PUBLIC_SUPABASE_URL' does not exist on type 'string'.
+src/shared/components/providers/rbac-provider.tsx(142,39): error TS18048: 'env' is possibly 'undefined'.
+src/shared/components/providers/rbac-provider.tsx(142,43): error TS2339: Property 'SUPABASE_SERVICE_ROLE_KEY' does not exist on type 'string'.
+src/shared/components/providers/rbac-provider.tsx(144,7): error TS18048: 'env' is possibly 'undefined'.
+src/shared/components/providers/rbac-provider.tsx(144,11): error TS2339: Property 'NEXT_PUBLIC_SUPABASE_URL' does not exist on type 'string'.
+src/shared/components/providers/rbac-provider.tsx(145,7): error TS18048: 'env' is possibly 'undefined'.
+src/shared/components/providers/rbac-provider.tsx(145,11): error TS2339: Property 'SUPABASE_SERVICE_ROLE_KEY' does not exist on type 'string'.
+src/shared/components/providers/theme-provider.tsx(94,28): error TS2693: 'CustomTheme' only refers to a type, but is being used as a value here.
+src/shared/components/ui/theme-selector.tsx(25,28): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & { children: ReactNode; }'.
+src/shared/components/ui/theme-selector.tsx(32,28): error TS2322: Type '{ children: Element[]; align: string; }' is not assignable to type 'IntrinsicAttributes & { children: ReactNode; }'.
+src/shared/components/ui/theme-selector.tsx(33,27): error TS2322: Type '{ children: (string | Element)[]; onClick: () => void; }' is not assignable to type 'IntrinsicAttributes & { children: ReactNode; }'.
+src/shared/components/ui/theme-selector.tsx(37,27): error TS2322: Type '{ children: (string | Element)[]; onClick: () => void; }' is not assignable to type 'IntrinsicAttributes & { children: ReactNode; }'.
+src/shared/components/ui/theme-selector.tsx(41,27): error TS2322: Type '{ children: (string | Element)[]; onClick: () => void; }' is not assignable to type 'IntrinsicAttributes & { children: ReactNode; }'.
+src/shared/components/ui/theme-selector.tsx(56,28): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & { children: ReactNode; }'.
+src/shared/components/ui/theme-selector.tsx(62,28): error TS2322: Type '{ children: (Element | Element[])[]; align: string; className: string; }' is not assignable to type 'IntrinsicAttributes & { children: ReactNode; }'.
+src/shared/components/ui/theme-selector.tsx(68,13): error TS2322: Type '{ children: (false | Element)[]; key: string; onClick: () => void; className: string; }' is not assignable to type 'IntrinsicAttributes & { children: ReactNode; }'.
+src/shared/hooks/use-auth.ts(10,49): error TS2339: Property 'session' does not exist on type 'AuthStore'.
+src/shared/hooks/use-auth.ts(11,49): error TS2551: Property 'loading' does not exist on type 'AuthStore'. Did you mean 'isLoading'?
+src/shared/hooks/use-auth.ts(12,48): error TS2339: Property 'signIn' does not exist on type 'AuthStore'.
+src/shared/hooks/use-auth.ts(13,49): error TS2339: Property 'signOut' does not exist on type 'AuthStore'.
+src/shared/hooks/use-auth.ts(14,48): error TS2339: Property 'signUp' does not exist on type 'AuthStore'.
+src/shared/services/api/api.service.ts(131,7): error TS2322: Type 'ApiResponse<unknown>' is not assignable to type 'ApiResponse<T>'.
+src/shared/services/auth/auth-factory.ts(60,49): error TS2345: Argument of type '() => Promise<ClerkAuthProvider>' is not assignable to parameter of type '() => Promise<IAuthProvider>'.
+src/shared/services/auth/providers/supabase-auth-provider.ts(26,17): error TS2554: Expected 1 arguments, but got 0.
+src/shared/services/auth/providers/supabase-auth-provider.ts(28,7): error TS18048: 'env' is possibly 'undefined'.
+src/shared/services/auth/providers/supabase-auth-provider.ts(28,11): error TS2339: Property 'NEXT_PUBLIC_SUPABASE_URL' does not exist on type 'string'.
+src/shared/services/auth/providers/supabase-auth-provider.ts(29,7): error TS18048: 'env' is possibly 'undefined'.
+src/shared/services/auth/providers/supabase-auth-provider.ts(29,11): error TS2339: Property 'NEXT_PUBLIC_SUPABASE_ANON_KEY' does not exist on type 'string'.
+src/shared/services/database/index.ts(48,5): error TS2304: Cannot find name 'DatabaseConfigBuilder'.
+src/shared/services/database/index.ts(58,5): error TS2304: Cannot find name 'DatabaseConfigBuilder'.
+src/shared/services/database/index.ts(63,5): error TS2304: Cannot find name 'DatabaseConfigBuilder'.
+src/shared/services/database/index.ts(66,5): error TS2304: Cannot find name 'DatabaseConfigBuilder'.
+src/shared/services/database/providers/supabase-database-provider.ts(25,17): error TS2554: Expected 1 arguments, but got 0.
+src/shared/services/database/providers/supabase-database-provider.ts(29,7): error TS18048: 'env' is possibly 'undefined'.
+src/shared/services/database/providers/supabase-database-provider.ts(29,11): error TS2339: Property 'NEXT_PUBLIC_SUPABASE_URL' does not exist on type 'string'.
+src/shared/services/database/providers/supabase-database-provider.ts(30,7): error TS18048: 'env' is possibly 'undefined'.
+src/shared/services/database/providers/supabase-database-provider.ts(30,11): error TS2339: Property 'NEXT_PUBLIC_SUPABASE_ANON_KEY' does not exist on type 'string'.
+src/shared/services/database/providers/supabase-database-provider.ts(34,9): error TS18048: 'env' is possibly 'undefined'.
+src/shared/services/database/providers/supabase-database-provider.ts(34,13): error TS2339: Property 'SUPABASE_SERVICE_ROLE_KEY' does not exist on type 'string'.
+src/shared/services/database/providers/supabase-database-provider.ts(36,9): error TS18048: 'env' is possibly 'undefined'.
+src/shared/services/database/providers/supabase-database-provider.ts(36,13): error TS2339: Property 'NEXT_PUBLIC_SUPABASE_URL' does not exist on type 'string'.
+src/shared/services/database/providers/supabase-database-provider.ts(37,9): error TS18048: 'env' is possibly 'undefined'.
+src/shared/services/database/providers/supabase-database-provider.ts(37,13): error TS2339: Property 'SUPABASE_SERVICE_ROLE_KEY' does not exist on type 'string'.
+src/shared/services/database/providers/supabase-database-provider.ts(110,9): error TS2322: Type 'number | null' is not assignable to type 'number | undefined'.
+src/shared/services/database/providers/supabase-database-provider.ts(167,15): error TS2352: Conversion of type 'GenericStringError[] | null' to type 'T[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+src/shared/services/database/providers/supabase-database-provider.ts(169,9): error TS2322: Type 'number | null' is not assignable to type 'number | undefined'.
+src/shared/services/database/providers/supabase-database-provider.ts(267,9): error TS2322: Type 'number | null' is not assignable to type 'number | undefined'.
+src/shared/services/database/providers/supabase-database-provider.ts(318,9): error TS2322: Type 'number | null' is not assignable to type 'number | undefined'.
+src/shared/services/database/providers/supabase-database-provider.ts(351,9): error TS2322: Type 'number | null' is not assignable to type 'number | undefined'.
+src/shared/services/database/providers/supabase-database-provider.ts(420,9): error TS2769: No overload matches this call.
+src/shared/services/database/providers/supabase-database-provider.ts(426,10): error TS7006: Parameter 'payload' implicitly has an 'any' type.
+src/shared/services/index.ts(26,3): error TS2305: Module '"./api"' has no exported member 'ResponseData'.
+src/shared/services/payments/payment-factory.ts(71,7): error TS2307: Cannot find module './providers/paddle-payment-provider' or its corresponding type declarations.
+src/shared/services/payments/payment-factory.ts(79,7): error TS2307: Cannot find module './providers/lemonsqueezy-payment-provider' or its corresponding type declarations.
+src/shared/services/payments/providers/stripe-payment-provider.ts(28,17): error TS2554: Expected 1 arguments, but got 0.
+src/shared/services/payments/providers/stripe-payment-provider.ts(30,10): error TS18048: 'env' is possibly 'undefined'.
+src/shared/services/payments/providers/stripe-payment-provider.ts(30,14): error TS2339: Property 'STRIPE_SECRET_KEY' does not exist on type 'string'.
+src/shared/services/payments/providers/stripe-payment-provider.ts(34,30): error TS18048: 'env' is possibly 'undefined'.
+src/shared/services/payments/providers/stripe-payment-provider.ts(34,34): error TS2339: Property 'STRIPE_SECRET_KEY' does not exist on type 'string'.
+src/shared/services/payments/providers/stripe-payment-provider.ts(39,26): error TS18048: 'env' is possibly 'undefined'.
+src/shared/services/payments/providers/stripe-payment-provider.ts(39,30): error TS2339: Property 'STRIPE_WEBHOOK_SECRET' does not exist on type 'string'.
+src/shared/services/payments/providers/stripe-payment-provider.ts(61,28): error TS2724: '"stripe".Stripe' has no exported member named 'StripeError'. Did you mean 'StripeRawError'?
+src/shared/services/payments/providers/stripe-payment-provider.ts(91,28): error TS2724: '"stripe".Stripe' has no exported member named 'StripeError'. Did you mean 'StripeRawError'?
+src/shared/services/payments/providers/stripe-payment-provider.ts(126,28): error TS2724: '"stripe".Stripe' has no exported member named 'StripeError'. Did you mean 'StripeRawError'?
+src/shared/services/payments/providers/stripe-payment-provider.ts(179,28): error TS2724: '"stripe".Stripe' has no exported member named 'StripeError'. Did you mean 'StripeRawError'?
+src/shared/services/payments/providers/stripe-payment-provider.ts(294,28): error TS2724: '"stripe".Stripe' has no exported member named 'StripeError'. Did you mean 'StripeRawError'?
+src/shared/services/payments/providers/stripe-payment-provider.ts(338,28): error TS2724: '"stripe".Stripe' has no exported member named 'StripeError'. Did you mean 'StripeRawError'?
+src/shared/services/payments/providers/stripe-payment-provider.ts(535,41): error TS2724: '"stripe".Stripe' has no exported member named 'StripeError'. Did you mean 'StripeRawError'?
+src/shared/services/rbac/providers/supabase-rbac-provider.ts(20,17): error TS2554: Expected 1 arguments, but got 0.
+src/shared/services/rbac/providers/supabase-rbac-provider.ts(22,10): error TS18048: 'env' is possibly 'undefined'.
+src/shared/services/rbac/providers/supabase-rbac-provider.ts(22,14): error TS2339: Property 'NEXT_PUBLIC_SUPABASE_URL' does not exist on type 'string'.
+src/shared/services/rbac/providers/supabase-rbac-provider.ts(22,43): error TS18048: 'env' is possibly 'undefined'.
+src/shared/services/rbac/providers/supabase-rbac-provider.ts(22,47): error TS2339: Property 'SUPABASE_SERVICE_ROLE_KEY' does not exist on type 'string'.
+src/shared/services/rbac/providers/supabase-rbac-provider.ts(28,7): error TS18048: 'env' is possibly 'undefined'.
+src/shared/services/rbac/providers/supabase-rbac-provider.ts(28,11): error TS2339: Property 'NEXT_PUBLIC_SUPABASE_URL' does not exist on type 'string'.
+src/shared/services/rbac/providers/supabase-rbac-provider.ts(29,7): error TS18048: 'env' is possibly 'undefined'.
+src/shared/services/rbac/providers/supabase-rbac-provider.ts(29,11): error TS2339: Property 'SUPABASE_SERVICE_ROLE_KEY' does not exist on type 'string'.
+src/shared/services/rbac/rbac-factory.ts(71,7): error TS2307: Cannot find module './providers/database-rbac-provider' or its corresponding type declarations.
+src/shared/services/storage/encryption.service.ts(50,56): error TS2345: Argument of type 'Uint8Array<ArrayBuffer>' is not assignable to parameter of type 'ArrayBufferLike'.
+src/shared/services/storage/encryption.service.ts(51,49): error TS2345: Argument of type 'Uint8Array<ArrayBuffer>' is not assignable to parameter of type 'ArrayBufferLike'.
+src/shared/services/theme/theme-factory.ts(351,9): error TS2322: Type '{ [x: string]: string | undefined; background: string; foreground: string; card: string; cardForeground: string; popover: string; popoverForeground: string; primary: string; primaryForeground: string; ... 10 more ...; ring: string; }' is not assignable to type 'ThemeColors'.
+src/shared/services/theme/theme-factory.ts(352,9): error TS2322: Type '{ [x: string]: string | undefined; background: string; foreground: string; card: string; cardForeground: string; popover: string; popoverForeground: string; primary: string; primaryForeground: string; ... 10 more ...; ring: string; }' is not assignable to type 'ThemeColors'.
+src/shared/stores/index.ts(10,3): error TS2304: Cannot find name 'useAuthStore'.
+src/shared/stores/index.ts(11,3): error TS2552: Cannot find name 'useSessionStore'. Did you mean 'sessionStorage'?

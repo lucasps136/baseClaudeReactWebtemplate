@@ -255,6 +255,7 @@ export class ApiService implements IApiService {
     };
   }
 
+  // eslint-disable-next-line complexity -- Complex error handling with multiple error types
   private handleExecutionError(
     error: unknown,
     request: IApiRequest,

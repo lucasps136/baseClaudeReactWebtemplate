@@ -1,4 +1,6 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+
+import { getEnv } from "@/config/env";
 import type {
   IDatabaseProvider,
   IDatabaseRecord,
@@ -13,7 +15,6 @@ import type {
   IRealtimeEvent,
   RealtimeCallback,
 } from "@/shared/types/database";
-import { getEnv } from "@/config/env";
 
 export class SupabaseDatabaseProvider implements IDatabaseProvider {
   private client: SupabaseClient;
@@ -360,7 +361,7 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
   // Raw Queries
   async query<T = any>(
     sql: string,
-    params: any[] = [],
+    _params: any[] = [], // eslint-disable-line @typescript-eslint/no-unused-vars
   ): Promise<IDatabaseResponse<T[]>> {
     try {
       // Supabase não tem execução direta de SQL via JS client

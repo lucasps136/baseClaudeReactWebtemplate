@@ -1,6 +1,9 @@
 // Export principal do módulo de temas
-export { ThemeFactory } from "./theme-factory";
+import type { ICustomTheme, ThemePreset } from "@/shared/types/theme";
+
 import { ThemeFactory } from "./theme-factory";
+
+export { ThemeFactory } from "./theme-factory";
 
 // Re-export types
 export type {
@@ -12,7 +15,6 @@ export type {
   ICreateThemeOptions,
   ThemePreset,
 } from "@/shared/types/theme";
-import type { ICustomTheme, ThemePreset } from "@/shared/types/theme";
 
 // Re-export provider components
 export {
