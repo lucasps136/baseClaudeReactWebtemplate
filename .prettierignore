@@ -1,0 +1,2 @@
+# Temporarily ignore session store during eslint fix
+src/shared/stores/session.store.ts

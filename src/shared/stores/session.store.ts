@@ -30,41 +30,16 @@ export const useSessionStore = create<SessionStore>()(
 
         // Actions
         createSession: (sessionId, expiresAt): void => {
-          set(
-            {
-              sessionId,
-              expiresAt,
-              lastActivity: new Date(),
-              isActive: true,
-            },
-            false,
-            "session/create",
-          );
+          set({ sessionId, expiresAt, lastActivity: new Date(), isActive: true }, false, "session/create");
         },
-
         refreshSession: (expiresAt): void => {
-          set(
-            { expiresAt, lastActivity: new Date() },
-            false,
-            "session/refresh",
-          );
+          set({ expiresAt, lastActivity: new Date() }, false, "session/refresh");
         },
-
         updateActivity: (): void => {
           set({ lastActivity: new Date() }, false, "session/updateActivity");
         },
-
         destroySession: (): void => {
-          set(
-            {
-              sessionId: null,
-              lastActivity: null,
-              expiresAt: null,
-              isActive: false,
-            },
-            false,
-            "session/destroy",
-          );
+          set({ sessionId: null, lastActivity: null, expiresAt: null, isActive: false }, false, "session/destroy");
         },
 
         isSessionValid: (): boolean => {

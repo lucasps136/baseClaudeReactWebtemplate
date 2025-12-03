@@ -1,9 +1,7 @@
 "use client";
-
 import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes";
 import * as React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
-
 import { ThemeFactory } from "@/shared/services/theme/ThemeFactory";
 import type {
   ICustomTheme,
@@ -11,10 +9,8 @@ import type {
   IThemeConfig,
   IThemeColors,
 } from "@/shared/types/theme";
-
 // Context extensível (Open/Closed Principle)
 const ExtendedThemeContext = createContext<IThemeContextType | null>(null);
-
 // Hook para usar o contexto estendido (Interface Segregation)
 export const useExtendedTheme = (): IThemeContextType => {
   const context = useContext(ExtendedThemeContext);
@@ -25,22 +21,18 @@ export const useExtendedTheme = (): IThemeContextType => {
   }
   return context;
 };
-
 // Hook especializado para cores (Single Responsibility)
 export const useThemeColors = (): {
   colors: IThemeColors | null;
   mode: "light" | "dark";
 } => {
   const { currentTheme, availableThemes, resolvedTheme } = useExtendedTheme();
-
   const getCurrentColors = (): IThemeColors | null => {
     const theme = availableThemes.find((t) => t.id === currentTheme);
     if (!theme) return null;
-
     const mode = resolvedTheme === "dark" ? "dark" : "light";
     return theme.colors[mode];
   };
-
   return {
     colors: getCurrentColors(),
     mode: resolvedTheme as "light" | "dark",
