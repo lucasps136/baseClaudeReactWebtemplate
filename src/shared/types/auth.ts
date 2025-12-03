@@ -4,7 +4,7 @@ export interface IUser {
   name?: string;
   avatar?: string;
   role?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface IAuthSession {
@@ -23,7 +23,7 @@ export interface IRegisterCredentials {
   email: string;
   password: string;
   name?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface IResetPasswordData {
@@ -33,7 +33,7 @@ export interface IResetPasswordData {
 export interface IAuthError {
   code: string;
   message: string;
-  details?: any;
+  details?: unknown;
 }
 
 export interface IAuthState {
@@ -76,5 +76,5 @@ export type AuthProviderType = "supabase" | "clerk" | "auth0" | "nextauth";
 
 export interface IAuthProviderConfig {
   type: AuthProviderType;
-  options: Record<string, any>;
+  options: Record<string, unknown>;
 }

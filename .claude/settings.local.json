@@ -11,7 +11,12 @@
       "Bash(npm run lint:*)",
       "Bash(npm run test:modules:coverage:*)",
       "Bash(paste:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(npm run build:*)",
+      "Bash(find:*)",
+      "Bash(tee:*)",
+      "Bash(timeout 45 npm run build:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

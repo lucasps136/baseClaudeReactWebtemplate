@@ -1,9 +1,11 @@
 // Export principal do módulo de temas
 import type { ICustomTheme, ThemePreset } from "@/shared/types/theme";
 
-import { ThemeFactory } from "./theme-factory";
+import { ThemeFactory } from "./ThemeFactory";
 
-export { ThemeFactory } from "./theme-factory";
+export { ThemeFactory } from "./ThemeFactory";
+export { ThemeValidator } from "./theme-validator";
+export { baseThemes } from "./theme-presets";
 
 // Re-export types
 export type {
@@ -37,7 +39,7 @@ export {
 
 // Helper para criar temas facilmente
 export const createCustomThemes = {
-  fromPreset: (id: string, name: string, preset: ThemePreset) =>
+  fromPreset: (id: string, name: string, preset: ThemePreset): ICustomTheme =>
     ThemeFactory.createTheme(id, name, { preset }),
 
   fromPrimary: (
@@ -45,12 +47,14 @@ export const createCustomThemes = {
     name: string,
     primaryLight: string,
     primaryDark: string,
-  ) => ThemeFactory.createThemeFromPrimary(id, name, primaryLight, primaryDark),
+  ): ICustomTheme =>
+    ThemeFactory.createThemeFromPrimary(id, name, primaryLight, primaryDark),
 
-  fromColor: (id: string, name: string, baseColor: string) =>
+  fromColor: (id: string, name: string, baseColor: string): ICustomTheme =>
     ThemeFactory.generateThemeFromColor(id, name, baseColor),
 
-  custom: (theme: ICustomTheme) => ThemeFactory.createCustomTheme(theme),
+  custom: (theme: ICustomTheme): ICustomTheme =>
+    ThemeFactory.createCustomTheme(theme),
 };
 
 // Temas predefinidos prontos para uso

@@ -163,7 +163,7 @@ export class PaymentConfigBuilder {
   //   return this;
   // }
 
-  withCustomOptions(options: Record<string, any>): this {
+  withCustomOptions(options: Record<string, unknown>): this {
     this.config.options = { ...this.config.options, ...options };
     return this;
   }

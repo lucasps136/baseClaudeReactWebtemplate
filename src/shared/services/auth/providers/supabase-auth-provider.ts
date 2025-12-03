@@ -1,4 +1,10 @@
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import {
+  createClient,
+  type SupabaseClient,
+  type User as SupabaseUser,
+  type Session as SupabaseSession,
+  type AuthError as SupabaseAuthError,
+} from "@supabase/supabase-js";
 
 import { getEnv } from "@/config/env";
 import type {
@@ -308,7 +314,7 @@ export class SupabaseAuthProvider implements IAuthProvider {
   }
 
   // Mappers para conversão de tipos (Single Responsibility)
-  private mapSupabaseUser(supabaseUser: any): IUser {
+  private mapSupabaseUser(supabaseUser: SupabaseUser): IUser {
     return {
       id: supabaseUser.id,
       email: supabaseUser.email!,
@@ -319,16 +325,16 @@ export class SupabaseAuthProvider implements IAuthProvider {
     };
   }
 
-  private mapSupabaseSession(supabaseSession: any): IAuthSession {
+  private mapSupabaseSession(supabaseSession: SupabaseSession): IAuthSession {
     return {
       user: this.mapSupabaseUser(supabaseSession.user),
       token: supabaseSession.access_token,
-      expiresAt: new Date(supabaseSession.expires_at * 1000),
+      expiresAt: new Date((supabaseSession.expires_at ?? 0) * 1000),
       refreshToken: supabaseSession.refresh_token,
     };
   }
 
-  private mapSupabaseError(error: any): IAuthError {
+  private mapSupabaseError(error: SupabaseAuthError): IAuthError {
     return {
       code: error.message || "unknown_error",
       message: error.message || "An unknown error occurred",

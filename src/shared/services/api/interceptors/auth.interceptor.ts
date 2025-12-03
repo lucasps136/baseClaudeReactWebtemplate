@@ -1,6 +1,8 @@
 // Authentication Interceptor
 // Automatically injects Supabase auth tokens into requests
 
+import type { SupabaseClient } from "@supabase/supabase-js";
+
 import type {
   IApiRequest,
   ISupabaseService,
@@ -14,9 +16,9 @@ export class AuthInterceptor {
     return async (request: IApiRequest): Promise<IApiRequest> => {
       try {
         // Get current session from Supabase
-        const {
-          data: { session },
-        } = await this.supabaseService.getClient().auth.getSession();
+        const client = this.supabaseService.getClient() as SupabaseClient;
+        const result = await client.auth.getSession();
+        const session = result.data.session;
 
         if (session?.access_token) {
           // Inject Authorization header

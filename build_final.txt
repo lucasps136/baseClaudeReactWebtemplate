@@ -1,0 +1,51 @@
+
+> nextjs-solid-boilerplate@1.0.0 build
+> next build
+
+  ▲ Next.js 14.2.33
+  - Environments: .env.local
+  - Experiments (use with caution):
+    · typedRoutes
+
+   Creating an optimized production build ...
+ ⚠ Compiled with warnings
+
+./src/shared/services/auth/providers/clerk-auth-provider.ts
+Module not found: Can't resolve '@clerk/nextjs' in 'D:\Docs\Bebarter\src\shared\services\auth\providers'
+
+Import trace for requested module:
+./src/shared/services/auth/providers/clerk-auth-provider.ts
+./src/shared/services/auth/auth-factory.ts
+./src/shared/components/providers/auth-provider.tsx
+./src/shared/components/providers/root-provider.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+ ⚠ Compiled with warnings
+
+./src/shared/services/auth/providers/clerk-auth-provider.ts
+Module not found: Can't resolve '@clerk/nextjs' in 'D:\Docs\Bebarter\src\shared\services\auth\providers'
+
+Import trace for requested module:
+./src/shared/services/auth/providers/clerk-auth-provider.ts
+./src/shared/services/auth/auth-factory.ts
+./src/shared/components/providers/auth-provider.tsx
+./src/shared/components/providers/root-provider.tsx
+
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+Failed to compile.
+
+./src/shared/components/providers/auth-provider.tsx:174:5
+Type error: Type '((credentials: ILoginCredentials) => Promise<IAuthSession>) | (() => Promise<{ user: IUser | null; session: IAuthSession | null; }>)' is not assignable to type '(credentials: ILoginCredentials) => Promise<IAuthSession>'.
+  Type '() => Promise<{ user: IAuthState["user"]; session: IAuthState["session"]; }>' is not assignable to type '(credentials: ILoginCredentials) => Promise<IAuthSession>'.
+    Type 'Promise<{ user: IUser | null; session: IAuthSession | null; }>' is not assignable to type 'Promise<IAuthSession>'.
+      Property 'token' is missing in type '{ user: IUser | null; session: IAuthSession | null; }' but required in type 'IAuthSession'.
+
+[0m [90m 172 |[39m[0m
+[0m [90m 173 |[39m     [90m// Ações (delegação para o provider)[39m[0m
+[0m[31m[1m>[22m[39m[90m 174 |[39m     login[33m:[39m[0m
+[0m [90m     |[39m     [31m[1m^[22m[39m[0m
+[0m [90m 175 |[39m       provider[33m?[39m[33m.[39mlogin[33m.[39mbind(provider) [33m?[39m[33m?[39m[0m
+[0m [90m 176 |[39m       ([36masync[39m ()[33m:[39m [33mPromise[39m[33m<[39m{ user[33m:[39m [33mIAuthState[39m[[32m"user"[39m][33m;[39m session[33m:[39m [33mIAuthState[39m[[32m"session"[39m] }[33m>[39m [33m=>[39m {[0m
+[0m [90m 177 |[39m         [36mthrow[39m [36mnew[39m [33mError[39m([32m"Auth provider not initialized"[39m)[33m;[39m[0m
+Next.js build worker exited with code: 1 and signal: null

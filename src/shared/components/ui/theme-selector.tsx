@@ -18,7 +18,7 @@ import {
 } from "@/shared/components/ui/dropdown-menu";
 
 // Componente para trocar entre light/dark/system (Single Responsibility)
-export function ThemeToggle() {
+export function ThemeToggle(): JSX.Element {
   const { setTheme } = useTheme();
 
   return (
@@ -49,7 +49,7 @@ export function ThemeToggle() {
 }
 
 // Componente para seleção de cores de tema (Single Responsibility)
-export function ThemeColorSelector() {
+export function ThemeColorSelector(): JSX.Element {
   const { availableThemes, currentTheme, setTheme } = useExtendedTheme();
 
   return (
@@ -81,7 +81,7 @@ export function ThemeColorSelector() {
 }
 
 // Componente combinado (Composite Pattern)
-export function ThemeSelector() {
+export function ThemeSelector(): JSX.Element {
   return (
     <div className="flex items-center gap-2">
       <ThemeColorSelector />
@@ -96,7 +96,10 @@ interface IThemePreviewProps {
   className?: string;
 }
 
-export function ThemePreview({ themeId, className }: IThemePreviewProps) {
+export function ThemePreview({
+  themeId,
+  className,
+}: IThemePreviewProps): JSX.Element | null {
   const { availableThemes } = useExtendedTheme();
   const theme = availableThemes.find((t) => t.id === themeId);
 
@@ -124,7 +127,7 @@ export function ThemePreview({ themeId, className }: IThemePreviewProps) {
 }
 
 // Grid de seleção visual de temas (Single Responsibility)
-export function ThemeGrid() {
+export function ThemeGrid(): JSX.Element {
   const { availableThemes, currentTheme, setTheme } = useExtendedTheme();
 
   return (

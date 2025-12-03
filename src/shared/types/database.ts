@@ -3,30 +3,30 @@ export interface IDatabaseRecord {
   id: string;
   created_at?: string;
   updated_at?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface IQueryOptions {
   select?: string[];
-  where?: Record<string, any>;
+  where?: Record<string, unknown>;
   orderBy?: { column: string; ascending?: boolean }[];
   limit?: number;
   offset?: number;
 }
 
 export interface IInsertData {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface IUpdateData {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface IUpsertData extends IInsertData {
   id?: string;
 }
 
-export interface IDatabaseResponse<T = any> {
+export interface IDatabaseResponse<T = unknown> {
   data: T | null;
   error: IDatabaseError | null;
   count?: number;
@@ -35,7 +35,7 @@ export interface IDatabaseResponse<T = any> {
 export interface IDatabaseError {
   code: string;
   message: string;
-  details?: any;
+  details?: unknown;
   hint?: string;
 }
 
@@ -50,7 +50,7 @@ export interface IRealtimeSubscription {
   unsubscribe: () => void;
 }
 
-export interface IRealtimeEvent<T = any> {
+export interface IRealtimeEvent<T = unknown> {
   eventType: "INSERT" | "UPDATE" | "DELETE";
   new?: T;
   old?: T;
@@ -59,13 +59,13 @@ export interface IRealtimeEvent<T = any> {
   commit_timestamp: string;
 }
 
-export type RealtimeCallback<T = any> = (event: IRealtimeEvent<T>) => void;
+export type RealtimeCallback<T = unknown> = (event: IRealtimeEvent<T>) => void;
 
 // Interface principal do provider (DIP)
 export interface IDatabaseProvider {
   // Conexão e configuração
   isConnected(): Promise<boolean>;
-  getHealth(): Promise<{ status: "healthy" | "unhealthy"; details?: any }>;
+  getHealth(): Promise<{ status: "healthy" | "unhealthy"; details?: unknown }>;
 
   // CRUD Operations (Single Responsibility)
   // Create
@@ -88,7 +88,7 @@ export interface IDatabaseProvider {
   selectBy<T extends IDatabaseRecord>(
     table: string,
     field: string,
-    value: any,
+    value: unknown,
     options?: Omit<IQueryOptions, "where">,
   ): Promise<IDatabaseResponse<T[]>>;
 
@@ -102,7 +102,7 @@ export interface IDatabaseProvider {
   updateBy<T extends IDatabaseRecord>(
     table: string,
     field: string,
-    value: any,
+    value: unknown,
     data: IUpdateData,
   ): Promise<IDatabaseResponse<T[]>>;
 
@@ -115,7 +115,7 @@ export interface IDatabaseProvider {
   deleteBy<T extends IDatabaseRecord>(
     table: string,
     field: string,
-    value: any,
+    value: unknown,
   ): Promise<IDatabaseResponse<T[]>>;
 
   // Upsert
@@ -126,7 +126,10 @@ export interface IDatabaseProvider {
   ): Promise<IDatabaseResponse<T[]>>;
 
   // Raw Queries (para casos complexos)
-  query<T = any>(sql: string, params?: any[]): Promise<IDatabaseResponse<T[]>>;
+  query<T = unknown>(
+    sql: string,
+    params?: any[],
+  ): Promise<IDatabaseResponse<T[]>>;
 
   // Transações (ACID)
   transaction<T>(
@@ -134,7 +137,7 @@ export interface IDatabaseProvider {
   ): Promise<IDatabaseResponse<T>>;
 
   // Realtime (Observer Pattern)
-  subscribe<T = any>(
+  subscribe<T = unknown>(
     table: string,
     callback: RealtimeCallback<T>,
     options?: { event?: "INSERT" | "UPDATE" | "DELETE" | "*" },
@@ -175,7 +178,7 @@ export type DatabaseProviderType =
 
 export interface IDatabaseProviderConfig {
   type: DatabaseProviderType;
-  options: Record<string, any>;
+  options: Record<string, unknown>;
 }
 
 // Tipos específicos para Supabase

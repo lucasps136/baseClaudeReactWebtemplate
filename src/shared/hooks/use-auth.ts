@@ -4,8 +4,16 @@
  */
 
 import { useAuthStore } from "@/shared/stores/auth.store";
+import type { IAuthState } from "@/shared/types/auth";
 
-export function useAuth() {
+interface IUseAuthReturn {
+  user: IAuthState["user"];
+  isLoading: boolean;
+  isAuthenticated: boolean;
+  error: IAuthState["error"];
+}
+
+export function useAuth(): IUseAuthReturn {
   const user = useAuthStore((state) => state.user);
   const isLoading = useAuthStore((state) => state.isLoading);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);

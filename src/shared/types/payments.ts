@@ -91,7 +91,7 @@ export interface ICheckoutSession {
 export interface IWebhookEvent {
   id: string;
   type: string;
-  data: any;
+  data: unknown;
   created: Date;
   processed: boolean;
 }
@@ -200,7 +200,7 @@ export type PaymentProviderType = "stripe" | "paddle" | "lemonsqueezy";
 
 export interface IPaymentProviderConfig {
   type: PaymentProviderType;
-  options: Record<string, any>;
+  options: Record<string, unknown>;
 }
 
 // Error types
@@ -213,11 +213,11 @@ export interface IPaymentError {
     | "idempotency_error"
     | "invalid_request_error"
     | "rate_limit_error";
-  details?: any;
+  details?: unknown;
 }
 
 // Response wrapper
-export interface IPaymentResponse<T = any> {
+export interface IPaymentResponse<T = unknown> {
   data: T | null;
   error: IPaymentError | null;
 }

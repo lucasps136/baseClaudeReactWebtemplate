@@ -89,6 +89,85 @@ export const useAuthActions = (): IUseAuthActionsReturn => {
   };
 };
 
+/**
+ * Initializes auth provider with error handling
+ * SRP: Responsible only for provider initialization
+ */
+const initializeAuthProvider = async (
+  config: IAuthProviderConfig,
+  onSuccess: (provider: IAuthProvider) => void,
+  onError: (error: unknown) => void,
+): Promise<() => void | null> => {
+  let mounted = true;
+  let unsubscribe: (() => void) | null = null;
+
+  try {
+    await registerDefaultProviders();
+    const authProvider = await AuthProviderFactory.createProvider(config);
+
+    if (!mounted) return () => {};
+
+    onSuccess(authProvider);
+
+    unsubscribe = authProvider.onAuthStateChange((): void => {
+      if (mounted) {
+        onSuccess(authProvider);
+      }
+    });
+
+    return () => {
+      mounted = false;
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  } catch (error) {
+    console.error("Failed to initialize auth provider:", error);
+    if (mounted) {
+      onError(error);
+    }
+    return () => {
+      mounted = false;
+    };
+  }
+};
+
+/**
+ * Creates context value with provider methods
+ * SRP: Responsible only for creating context value
+ */
+const createAuthContextValue = (
+  authState: IAuthState,
+  provider: IAuthProvider | null,
+): IAuthContextType => {
+  const defaultError = (): Promise<never> => {
+    throw new Error("Auth provider not initialized");
+  };
+
+  return {
+    ...authState,
+    provider,
+    login:
+      provider?.login.bind(provider) ??
+      (defaultError as IAuthProvider["login"]),
+    register:
+      provider?.register.bind(provider) ??
+      (defaultError as IAuthProvider["register"]),
+    logout:
+      provider?.logout.bind(provider) ??
+      (defaultError as IAuthProvider["logout"]),
+    resetPassword:
+      provider?.resetPassword.bind(provider) ??
+      (defaultError as IAuthProvider["resetPassword"]),
+    updatePassword:
+      provider?.updatePassword.bind(provider) ??
+      (defaultError as IAuthProvider["updatePassword"]),
+    refreshSession:
+      provider?.refreshSession.bind(provider) ??
+      (defaultError as IAuthProvider["refreshSession"]),
+  };
+};
+
 // Provider Component
 export const AuthProvider = ({
   children,
@@ -105,53 +184,27 @@ export const AuthProvider = ({
 
   // Inicialização do provider (Open/Closed Principle)
   useEffect(() => {
-    let mounted = true;
-    let unsubscribe: (() => void) | null = null;
-
-    const initializeAuth = async (): Promise<void> => {
-      try {
-        // Registrar providers disponíveis
-        await registerDefaultProviders();
-
-        // Criar provider baseado na configuração
-        const authProvider = await AuthProviderFactory.createProvider(config);
-
-        if (!mounted) return;
-
+    const cleanup = initializeAuthProvider(
+      config,
+      (authProvider): void => {
         setProvider(authProvider);
-
-        // Configurar listener para mudanças de estado (Observer Pattern)
-        unsubscribe = authProvider.onAuthStateChange((state): void => {
-          if (mounted) {
-            setAuthState(state);
-          }
-        });
-
-        // Estado inicial
         setAuthState(authProvider.getState());
-      } catch (error) {
-        console.error("Failed to initialize auth provider:", error);
-        if (mounted) {
-          setAuthState((prev) => ({
-            ...prev,
-            isLoading: false,
-            error: {
-              code: "initialization_failed",
-              message: "Failed to initialize authentication",
-              details: error,
-            },
-          }));
-        }
-      }
-    };
-
-    void initializeAuth();
+      },
+      (error): void => {
+        setAuthState((prev) => ({
+          ...prev,
+          isLoading: false,
+          error: {
+            code: "initialization_failed",
+            message: "Failed to initialize authentication",
+            details: error,
+          },
+        }));
+      },
+    );
 
     return (): void => {
-      mounted = false;
-      if (unsubscribe) {
-        unsubscribe();
-      }
+      cleanup.then((cleanupFn) => cleanupFn?.()).catch(console.error);
     };
   }, [config]);
 
@@ -165,43 +218,7 @@ export const AuthProvider = ({
   }, [provider]);
 
   // Context value (Single Responsibility)
-  const contextValue: IAuthContextType = {
-    // Estado
-    ...authState,
-    provider,
-
-    // Ações (delegação para o provider)
-    login:
-      provider?.login.bind(provider) ??
-      (async () => {
-        throw new Error("Auth provider not initialized");
-      }),
-    register:
-      provider?.register.bind(provider) ??
-      (async () => {
-        throw new Error("Auth provider not initialized");
-      }),
-    logout:
-      provider?.logout.bind(provider) ??
-      (async (): Promise<void> => {
-        throw new Error("Auth provider not initialized");
-      }),
-    resetPassword:
-      provider?.resetPassword.bind(provider) ??
-      (async (): Promise<void> => {
-        throw new Error("Auth provider not initialized");
-      }),
-    updatePassword:
-      provider?.updatePassword.bind(provider) ??
-      (async (): Promise<void> => {
-        throw new Error("Auth provider not initialized");
-      }),
-    refreshSession:
-      provider?.refreshSession.bind(provider) ??
-      (async () => {
-        throw new Error("Auth provider not initialized");
-      }),
-  };
+  const contextValue = createAuthContextValue(authState, provider);
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

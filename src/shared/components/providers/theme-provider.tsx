@@ -4,7 +4,7 @@ import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes";
 import * as React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
 
-import { ThemeFactory } from "@/shared/services/theme/theme-factory";
+import { ThemeFactory } from "@/shared/services/theme/ThemeFactory";
 import type {
   ICustomTheme,
   IThemeContextType,
@@ -27,10 +27,13 @@ export const useExtendedTheme = (): IThemeContextType => {
 };
 
 // Hook especializado para cores (Single Responsibility)
-export const useThemeColors = () => {
+export const useThemeColors = (): {
+  colors: IThemeColors | null;
+  mode: "light" | "dark";
+} => {
   const { currentTheme, availableThemes, resolvedTheme } = useExtendedTheme();
 
-  const getCurrentColors = () => {
+  const getCurrentColors = (): IThemeColors | null => {
     const theme = availableThemes.find((t) => t.id === currentTheme);
     if (!theme) return null;
 
@@ -45,7 +48,14 @@ export const useThemeColors = () => {
 };
 
 // Hook para apenas trocar tema (Single Responsibility)
-export const useThemeActions = () => {
+export const useThemeActions = (): Pick<
+  IThemeContextType,
+  | "setTheme"
+  | "toggleTheme"
+  | "registerTheme"
+  | "unregisterTheme"
+  | "updateThemeColors"
+> => {
   const {
     setTheme,
     toggleTheme,
@@ -175,7 +185,7 @@ interface IExtendedThemeProviderProps {
 export function ExtendedThemeProvider({
   children,
   config = {},
-}: IExtendedThemeProviderProps) {
+}: IExtendedThemeProviderProps): JSX.Element {
   const defaultConfig: IThemeConfig = {
     defaultTheme: "default",
     enableSystem: true,
@@ -235,7 +245,7 @@ function ExtendedThemeProviderInner({
   children,
   themeManager,
   availableThemes,
-}: IExtendedThemeProviderInnerProps) {
+}: IExtendedThemeProviderInnerProps): JSX.Element {
   const {
     theme: currentTheme,
     setTheme,
@@ -285,7 +295,7 @@ export function ThemeProvider({
 }: {
   children: React.ReactNode;
   [key: string]: any;
-}) {
+}): JSX.Element {
   return (
     <ExtendedThemeProvider config={props}>{children}</ExtendedThemeProvider>
   );

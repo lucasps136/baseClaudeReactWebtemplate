@@ -2,7 +2,7 @@
  * Global type definitions used throughout the application
  */
 
-export interface IApiResponse<T = any> {
+export interface IApiResponse<T = unknown> {
   data?: T;
   error?: string;
   message?: string;
@@ -104,7 +104,7 @@ export interface IFormFieldError {
   type: string;
 }
 
-export interface IFormState<T = any> {
+export interface IFormState<T = unknown> {
   data: T;
   errors: Record<string, IFormFieldError>;
   isSubmitting: boolean;

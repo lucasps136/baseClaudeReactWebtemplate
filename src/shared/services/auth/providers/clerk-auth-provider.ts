@@ -239,7 +239,7 @@ export class ClerkAuthProvider implements IAuthProvider {
    * Método auxiliar para atualizar estado a partir de dados do Clerk
    * Deve ser chamado quando hooks do Clerk detectarem mudanças
    */
-  updateFromClerkState(clerkUser: any, clerkSession: any): void {
+  updateFromClerkState(clerkUser: unknown, clerkSession: unknown): void {
     if (clerkUser && clerkSession) {
       const user = this.mapClerkUser(clerkUser);
       const session = this.mapClerkSession(clerkSession, clerkUser);
@@ -263,26 +263,38 @@ export class ClerkAuthProvider implements IAuthProvider {
   }
 
   // Mappers para conversão de tipos (Single Responsibility)
-  private mapClerkUser(clerkUser: any): IUser {
+  private mapClerkUser(clerkUser: unknown): IUser {
+    const user = clerkUser as Record<string, unknown>;
     return {
-      id: clerkUser.id,
-      email: clerkUser.emailAddresses?.[0]?.emailAddress || "",
-      name: clerkUser.fullName || clerkUser.firstName || undefined,
-      avatar: clerkUser.imageUrl || undefined,
-      role: clerkUser.publicMetadata?.role || undefined,
+      id: (user.id as string) || "",
+      email:
+        (user.emailAddresses as Array<{ emailAddress: string }>)?.[0]
+          ?.emailAddress || "",
+      name:
+        (user.fullName as string) || (user.firstName as string) || undefined,
+      avatar: (user.imageUrl as string) || undefined,
+      role: (user.publicMetadata as Record<string, unknown>)?.role as
+        | string
+        | undefined,
       metadata: {
-        ...clerkUser.publicMetadata,
-        ...clerkUser.unsafeMetadata,
+        ...(user.publicMetadata as Record<string, unknown>),
+        ...(user.unsafeMetadata as Record<string, unknown>),
       },
     };
   }
 
-  private mapClerkSession(clerkSession: any, clerkUser: any): IAuthSession {
+  private mapClerkSession(
+    clerkSession: unknown,
+    clerkUser: unknown,
+  ): IAuthSession {
+    const session = clerkSession as Record<string, unknown>;
     return {
       user: this.mapClerkUser(clerkUser),
-      token: clerkSession.lastActiveToken?.getRawString() || "",
-      expiresAt: clerkSession.expireAt
-        ? new Date(clerkSession.expireAt)
+      token: ((
+        session.lastActiveToken as { getRawString?: () => string }
+      )?.getRawString?.() || "") as string,
+      expiresAt: session.expireAt
+        ? new Date(session.expireAt as string | number | Date)
         : undefined,
       refreshToken: undefined, // Clerk gerencia refresh tokens internamente
     };

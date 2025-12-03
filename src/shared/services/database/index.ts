@@ -42,12 +42,18 @@ export {
   DatabaseStatus,
 } from "@/shared/components/providers/database-provider";
 
-// Re-import DatabaseConfigBuilder for helpers
+// Re-import types and classes for helpers
+import type { IDatabaseProviderConfig } from "@/shared/types/database";
+
 import { DatabaseConfigBuilder } from "./database-factory";
 
 // Helper para criar configuração facilmente
 export const createDatabaseConfig = {
-  supabase: (url: string, anonKey: string, serviceRoleKey?: string) =>
+  supabase: (
+    url: string,
+    anonKey: string,
+    serviceRoleKey?: string,
+  ): IDatabaseProviderConfig =>
     DatabaseConfigBuilder.create()
       .useSupabase(url, anonKey, serviceRoleKey)
       .build(),

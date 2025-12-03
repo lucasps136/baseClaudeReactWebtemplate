@@ -540,9 +540,16 @@ export class SupabaseRBACProvider implements IRBACProvider {
     isActive: userRole.is_active,
   });
 
-  private mapSupabaseError = (error: any): IRBACError => ({
-    code: error.code || "unknown_error",
-    message: error.message || "An unknown error occurred",
-    details: error,
-  });
+  private mapSupabaseError = (error: unknown): IRBACError => {
+    const errorObj = error as {
+      code?: string;
+      message?: string;
+    };
+
+    return {
+      code: errorObj.code || "unknown_error",
+      message: errorObj.message || "An unknown error occurred",
+      details: error,
+    };
+  };
 }

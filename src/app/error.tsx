@@ -18,7 +18,7 @@ interface IErrorProps {
  * Global error boundary component
  * Catches and displays errors in the application
  */
-export default function Error({ error, reset }: IErrorProps) {
+export default function Error({ error, reset }: IErrorProps): JSX.Element {
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">

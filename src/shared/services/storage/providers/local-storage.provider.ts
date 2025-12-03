@@ -127,7 +127,7 @@ export class LocalStorageProvider implements IStorageProvider {
     return `${this.storageKey}:${key}`;
   }
 
-  private isQuotaExceededError(error: any): boolean {
+  private isQuotaExceededError(error: unknown): boolean {
     return (
       error instanceof DOMException &&
       (error.code === 22 ||

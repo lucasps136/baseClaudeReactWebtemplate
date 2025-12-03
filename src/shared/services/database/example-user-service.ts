@@ -7,7 +7,7 @@
  * NÃO É CÓDIGO DE PRODUÇÃO - APENAS EXEMPLO EDUCACIONAL
  */
 
-import type { IDatabaseRecord } from "@/shared/services/database";
+import type { IDatabaseProvider } from "@/shared/services/database";
 // import type { IDatabaseResponse } from "@/shared/types/database"; // Example file - type not used
 
 /**
@@ -24,11 +24,11 @@ import type { IDatabaseRecord } from "@/shared/services/database";
 /**
  * DEPOIS (Interface Segregada - ISP)
  *
- * Service depende APENAS de IDatabaseRecord
+ * Service depende APENAS de IDatabaseProvider
  * Não tem acesso a Realtime, Storage, Transactions, etc.
  */
 export class UserService {
-  constructor(private db: IDatabaseRecord) {}
+  constructor(private db: IDatabaseProvider) {}
   // ^ Dependência mínima - clara e explícita
 
   async getUsers() {
@@ -62,7 +62,7 @@ export class UserService {
  * BENEFÍCIOS DEMONSTRADOS:
  *
  * 1. TESTES MAIS SIMPLES
- *    - Mock apenas IDatabaseRecord (9 métodos)
+ *    - Mock apenas IDatabaseProvider (9 métodos)
  *    - Antes: mockava IDatabaseProvider (22+ métodos)
  *
  * 2. DEPENDÊNCIAS CLARAS
@@ -70,7 +70,7 @@ export class UserService {
  *    - Não há confusão sobre quais capacidades são usadas
  *
  * 3. FLEXIBILIDADE
- *    - Pode receber qualquer implementação de IDatabaseCRUD
+ *    - Pode receber qualquer implementação de IDatabaseProvider
  *    - Não precisa de implementação completa de IDatabaseProvider
  *
  * 4. MANUTENIBILIDADE
@@ -87,14 +87,14 @@ export class UserService {
  */
 /*
 import { UserService } from "./example-user-service";
-import type { IDatabaseRecord } from "@/shared/services/database";
+import type { IDatabaseProvider } from "@/shared/services/database";
 
 describe("UserService", () => {
-  let mockDb: IDatabaseRecord;
+  let mockDb: IDatabaseProvider;
   let service: UserService;
 
   beforeEach(() => {
-    // Mock apenas IDatabaseRecord - muito mais simples!
+    // Mock apenas IDatabaseProvider - muito mais simples!
     mockDb = {
       select: jest.fn(),
       selectOne: jest.fn(),
@@ -163,7 +163,7 @@ describe("UserService", () => {
  * - Testes complexos
  * - Violação do ISP
  *
- * DEPOIS (IDatabaseRecord):
+ * DEPOIS (IDatabaseProvider):
  * - Mock com 9 métodos
  * - Dependência explícita
  * - Testes simples

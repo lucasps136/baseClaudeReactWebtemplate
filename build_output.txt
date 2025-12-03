@@ -1,0 +1,340 @@
+
+> nextjs-solid-boilerplate@1.0.0 build
+> next build
+
+  ▲ Next.js 14.2.33
+  - Environments: .env.local
+  - Experiments (use with caution):
+    · typedRoutes
+
+   Creating an optimized production build ...
+ ⚠ Compiled with warnings
+
+./src/shared/services/auth/providers/clerk-auth-provider.ts
+Module not found: Can't resolve '@clerk/nextjs' in 'D:\Docs\Bebarter\src\shared\services\auth\providers'
+
+Import trace for requested module:
+./src/shared/services/auth/providers/clerk-auth-provider.ts
+./src/shared/services/auth/auth-factory.ts
+./src/shared/components/providers/auth-provider.tsx
+./src/shared/components/providers/root-provider.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+ ⚠ Compiled with warnings
+
+./src/shared/services/auth/providers/clerk-auth-provider.ts
+Module not found: Can't resolve '@clerk/nextjs' in 'D:\Docs\Bebarter\src\shared\services\auth\providers'
+
+Import trace for requested module:
+./src/shared/services/auth/providers/clerk-auth-provider.ts
+./src/shared/services/auth/auth-factory.ts
+./src/shared/components/providers/auth-provider.tsx
+./src/shared/components/providers/root-provider.tsx
+
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+
+./src/app/page.tsx
+11:16  Warning: Function 'HomePage' has too many lines (95). Maximum allowed is 50.  max-lines-per-function
+
+./src/config/routes.ts
+114:52  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/features/users/hooks/useUser.ts
+16:24  Warning: Arrow function has too many lines (58). Maximum allowed is 50.  max-lines-per-function
+
+./src/features/users/hooks/useUsers.ts
+31:25  Warning: Arrow function has too many lines (164). Maximum allowed is 50.  max-lines-per-function
+
+./src/features/users/stores/user.store.ts
+63:5  Warning: Arrow function has too many lines (70). Maximum allowed is 50.  max-lines-per-function
+
+./src/middleware.ts
+21:8  Warning: Function 'middleware' has too many lines (109). Maximum allowed is 50.  max-lines-per-function
+
+./src/shared/components/providers/auth-provider.tsx
+93:29  Warning: Arrow function has too many lines (117). Maximum allowed is 50.  max-lines-per-function
+
+./src/shared/components/providers/database-provider.tsx
+155:33  Warning: Arrow function has too many lines (107). Maximum allowed is 50.  max-lines-per-function
+209:15  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+236:15  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+241:15  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+301:1  Warning: File has too many lines (315). Maximum allowed is 300.  max-lines
+
+./src/shared/components/providers/rbac-provider.tsx
+38:30  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+60:8  Warning: Function 'RBACProvider' has too many lines (66). Maximum allowed is 50.  max-lines-per-function
+60:8  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+66:35  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+101:33  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+109:15  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+112:6  Warning: React Hook useEffect has a missing dependency: 'initializeRBAC'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+139:1  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+155:8  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+177:10  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+187:8  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+
+./src/shared/components/providers/root-provider.tsx
+17:8  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+
+./src/shared/components/providers/theme-provider.tsx
+30:34  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+33:31  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+48:35  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+175:8  Warning: Function 'ExtendedThemeProvider' has too many lines (51). Maximum allowed is 50.  max-lines-per-function
+175:8  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+234:1  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+282:8  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+287:18  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/components/rbac/RBACGuard.tsx
+65:8  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+165:10  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+
+./src/shared/components/rbac/SpecializedGuards.tsx
+20:8  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+48:8  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+75:8  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+
+./src/shared/components/rbac/UtilityGates.tsx
+20:8  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+48:8  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+
+./src/shared/components/ui/dropdown-menu.tsx
+174:43  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+
+./src/shared/components/ui/theme-selector.tsx
+21:8  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+52:8  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+84:8  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+99:8  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+127:8  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+
+./src/shared/hooks/use-auth.ts
+8:8  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+
+./src/shared/hooks/use-local-storage.ts
+3:8  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+
+./src/shared/hooks/use-mounted.ts
+3:8  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+
+./src/shared/hooks/use-rbac.ts
+18:8  Warning: Function 'useRBAC' has too many lines (85). Maximum allowed is 50.  max-lines-per-function
+
+./src/shared/services/api/api.service.ts
+301:1  Warning: File has too many lines (448). Maximum allowed is 300.  max-lines
+326:65  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+339:70  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+348:59  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+357:33  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+380:31  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+384:31  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+392:46  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+411:10  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/services/api/api.types.ts
+138:3  Warning: Constructor has too many parameters (5). Maximum allowed is 4.  max-params
+194:16  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/services/api/interceptors/logging.interceptor.ts
+57:27  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+57:33  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/services/auth/auth-factory.ts
+50:50  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+
+./src/shared/services/auth/providers/clerk-auth-provider.ts
+242:35  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+242:54  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+266:35  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+280:41  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+280:57  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/services/auth/providers/supabase-auth-provider.ts
+301:1  Warning: File has too many lines (338). Maximum allowed is 300.  max-lines
+311:41  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+322:47  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+331:35  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/services/database/database-factory.ts
+55:58  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+190:45  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/services/database/example-user-service.ts
+34:3  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+40:3  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+44:3  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+48:3  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+48:30  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+52:3  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+52:42  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+56:3  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+
+./src/shared/services/database/index.ts
+50:3  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+
+./src/shared/services/database/providers/supabase-database-provider.ts
+22:38  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+62:15  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+121:3  Warning: Async method 'select' has too many lines (57). Maximum allowed is 50.  max-lines-per-function
+121:15  Warning: Async method 'select' has a complexity of 11. Maximum allowed is 10.  complexity
+205:12  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+246:12  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+301:1  Warning: File has too many lines (622). Maximum allowed is 300.  max-lines
+305:12  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+362:19  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+364:14  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+408:23  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+419:31  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+424:14  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+425:19  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+427:45  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+614:35  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/services/dependency-container.ts
+16:53  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+17:56  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+18:63  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/services/logger/logger.types.ts
+8:29  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+15:31  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+17:69  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+18:69  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+22:31  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/services/logger/providers/console-logger.provider.ts
+77:52  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+93:31  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+121:31  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+129:31  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+137:31  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+145:31  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/services/payments/payment-factory.ts
+59:57  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+166:45  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+184:3  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+
+./src/shared/services/payments/providers/stripe-payment-provider.ts
+301:1  Warning: File has too many lines (541). Maximum allowed is 300.  max-lines
+361:36  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+532:36  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/services/rbac/providers/supabase-rbac-provider.ts
+90:25  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+185:25  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+301:1  Warning: File has too many lines (548). Maximum allowed is 300.  max-lines
+329:30  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+514:36  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+523:48  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+532:44  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+543:38  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/services/rbac/rbac-factory.ts
+59:54  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+137:45  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+155:3  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+
+./src/shared/services/setup.ts
+20:33  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+59:38  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+
+./src/shared/services/storage/providers/local-storage.provider.ts
+130:39  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/services/storage/providers/session-storage.provider.ts
+116:39  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/services/storage/storage.service.ts
+301:1  Warning: File has too many lines (613). Maximum allowed is 300.  max-lines
+537:58  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/services/storage/storage.types.ts
+257:16  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/services/theme/index.ts
+42:3  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+45:3  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+52:3  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+55:3  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+
+./src/shared/services/theme/theme-presets.ts
+301:1  Warning: File has too many lines (318). Maximum allowed is 300.  max-lines
+
+./src/shared/stores/index.ts
+11:34  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+
+./src/shared/stores/session.store.ts
+24:7  Warning: Arrow function has too many lines (52). Maximum allowed is 50.  max-lines-per-function
+
+./src/shared/stores/ui.store.ts
+12:11  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+35:36  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+43:5  Warning: Arrow function has too many lines (90). Maximum allowed is 50.  max-lines-per-function
+
+./src/shared/types/auth.ts
+7:29  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+26:29  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+36:13  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+79:27  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/types/database.ts
+6:18  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+11:26  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+18:18  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+22:18  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+29:40  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+38:13  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+53:37  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+62:34  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+68:69  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+91:12  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+105:12  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+118:12  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+129:13  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+129:40  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+137:17  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+178:27  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/types/global.ts
+5:35  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+107:33  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/types/payments.ts
+94:9  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+149:30  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+203:27  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+216:13  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+220:39  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/types/rbac.ts
+116:27  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+129:36  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+137:13  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+231:29  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/utils/utils.ts
+9:8  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+71:46  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+71:56  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+Failed to compile.
+
+./src/shared/components/providers/auth-provider.tsx:174:5
+Type error: Type '((credentials: ILoginCredentials) => Promise<IAuthSession>) | (() => Promise<{ user: IUser | null; session: IAuthSession | null; }>)' is not assignable to type '(credentials: ILoginCredentials) => Promise<IAuthSession>'.
+  Type '() => Promise<{ user: IAuthState["user"]; session: IAuthState["session"]; }>' is not assignable to type '(credentials: ILoginCredentials) => Promise<IAuthSession>'.
+    Type 'Promise<{ user: IUser | null; session: IAuthSession | null; }>' is not assignable to type 'Promise<IAuthSession>'.
+      Property 'token' is missing in type '{ user: IUser | null; session: IAuthSession | null; }' but required in type 'IAuthSession'.
+
+[0m [90m 172 |[39m[0m
+[0m [90m 173 |[39m     [90m// Ações (delegação para o provider)[39m[0m
+[0m[31m[1m>[22m[39m[90m 174 |[39m     login[33m:[39m[0m
+[0m [90m     |[39m     [31m[1m^[22m[39m[0m
+[0m [90m 175 |[39m       provider[33m?[39m[33m.[39mlogin[33m.[39mbind(provider) [33m?[39m[33m?[39m[0m
+[0m [90m 176 |[39m       ([36masync[39m ()[33m:[39m [33mPromise[39m[33m<[39m{ user[33m:[39m [33mIAuthState[39m[[32m"user"[39m][33m;[39m session[33m:[39m [33mIAuthState[39m[[32m"session"[39m] }[33m>[39m [33m=>[39m {[0m
+[0m [90m 177 |[39m         [36mthrow[39m [36mnew[39m [33mError[39m([32m"Auth provider not initialized"[39m)[33m;[39m[0m
+Next.js build worker exited with code: 1 and signal: null

@@ -5,21 +5,29 @@ export interface ILogEntry {
   level: LogLevel;
   context?: string;
   message: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ILogger {
   debug(
     message: string,
     context?: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ): void;
-  info(message: string, context?: string, metadata?: Record<string, any>): void;
-  warn(message: string, context?: string, metadata?: Record<string, any>): void;
+  info(
+    message: string,
+    context?: string,
+    metadata?: Record<string, unknown>,
+  ): void;
+  warn(
+    message: string,
+    context?: string,
+    metadata?: Record<string, unknown>,
+  ): void;
   error(
     message: string,
     context?: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ): void;
 }
 

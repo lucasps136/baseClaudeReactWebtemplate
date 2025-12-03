@@ -7,6 +7,7 @@ import type {
   RequestInterceptor,
   IResponseInterceptor,
 } from "../api.types";
+import { ApiError } from "../api.types";
 
 export class LoggingInterceptor {
   constructor(
@@ -54,7 +55,7 @@ export class LoggingInterceptor {
         return response;
       },
 
-      onRejected: (error: any): any => {
+      onRejected: (error: ApiError): ApiError => {
         if (this.enabled) {
           console.error(
             `❌ API Error: ${error.status || "Unknown"} ${error.statusText || "Error"}`,

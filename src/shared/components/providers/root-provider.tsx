@@ -14,7 +14,7 @@ interface IRootProviderProps {
  * SOLID: Single Responsibility (composição de providers)
  * DIP: Providers podem ser trocados via configuração
  */
-export function RootProvider({ children }: IRootProviderProps) {
+export function RootProvider({ children }: IRootProviderProps): JSX.Element {
   return (
     <ThemeProvider
       attribute="class"

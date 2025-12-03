@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
+import type { IAuthError } from "@/shared/types/auth";
+
 export interface IUser {
   id: string;
   email: string;
@@ -12,14 +14,14 @@ interface IAuthState {
   user: IUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  error: string | null;
+  error: IAuthError | null;
 }
 
 interface IAuthActions {
   setUser: (user: IUser) => void;
   clearUser: () => void;
   setLoading: (loading: boolean) => void;
-  setError: (error: string | null) => void;
+  setError: (error: IAuthError | null) => void;
 }
 
 export type AuthStore = IAuthState & IAuthActions;

@@ -2,7 +2,7 @@
  * Global loading UI component
  * Displayed while pages are loading
  */
-export default function Loading() {
+export default function Loading(): JSX.Element {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="flex flex-col items-center space-y-4">

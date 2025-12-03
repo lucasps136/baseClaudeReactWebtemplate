@@ -47,7 +47,7 @@ export class AuthProviderFactory {
 }
 
 // Auto-registro de providers disponíveis
-export const registerDefaultProviders = async () => {
+export const registerDefaultProviders = async (): Promise<void> => {
   // Supabase Provider (padrão)
   AuthProviderFactory.registerProvider("supabase", async () => {
     const { SupabaseAuthProvider } = await import(

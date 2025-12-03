@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { ThemeSelector } from "@/shared/components/ui/theme-selector";
 
-export default function HomePage() {
+export default function HomePage(): JSX.Element {
   return (
     <main className="container mx-auto py-12">
       <div className="flex flex-col items-center text-center space-y-8">

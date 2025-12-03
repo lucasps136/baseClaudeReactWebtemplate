@@ -17,7 +17,6 @@ import type {
   IDatabaseProviderConfig,
 } from "@/shared/types/database";
 
-// Context (Dependency Inversion)
 interface IDatabaseContextType {
   provider: IDatabaseProvider | null;
   isConnected: boolean;
@@ -27,13 +26,44 @@ interface IDatabaseContextType {
 
 const DatabaseContext = createContext<IDatabaseContextType | null>(null);
 
-// Provider Props
 interface IDatabaseProviderProps {
   children: ReactNode;
   config?: IDatabaseProviderConfig;
 }
 
-// Hook para usar o contexto (Interface Segregation)
+interface IUseDatabaseOperationsReturn {
+  insert: IDatabaseProvider["insert"];
+  select: IDatabaseProvider["select"];
+  selectOne: IDatabaseProvider["selectOne"];
+  selectBy: IDatabaseProvider["selectBy"];
+  update: IDatabaseProvider["update"];
+  updateBy: IDatabaseProvider["updateBy"];
+  delete: IDatabaseProvider["delete"];
+  deleteBy: IDatabaseProvider["deleteBy"];
+  upsert: IDatabaseProvider["upsert"];
+  count: IDatabaseProvider["count"];
+  exists: IDatabaseProvider["exists"];
+  query: IDatabaseProvider["query"];
+  transaction: IDatabaseProvider["transaction"];
+}
+
+interface IUseDatabaseRealtimeReturn {
+  subscribe: IDatabaseProvider["subscribe"];
+  unsubscribe: IDatabaseProvider["unsubscribe"];
+}
+
+interface IUseDatabaseStorageReturn {
+  uploadFile: IDatabaseProvider["uploadFile"];
+  downloadFile: IDatabaseProvider["downloadFile"];
+  deleteFile: IDatabaseProvider["deleteFile"];
+}
+
+interface IUseDatabaseStatusReturn {
+  isConnected: boolean;
+  isLoading: boolean;
+  error: string | null;
+}
+
 export const useDatabase = (): IDatabaseContextType => {
   const context = useContext(DatabaseContext);
   if (!context) {
@@ -42,8 +72,7 @@ export const useDatabase = (): IDatabaseContextType => {
   return context;
 };
 
-// Hook especializado para operações CRUD (Single Responsibility)
-export const useDatabaseOperations = () => {
+export const useDatabaseOperations = (): IUseDatabaseOperationsReturn => {
   const { provider } = useDatabase();
 
   if (!provider) {
@@ -51,39 +80,23 @@ export const useDatabaseOperations = () => {
   }
 
   return {
-    // Create
     insert: provider.insert.bind(provider),
-
-    // Read
     select: provider.select.bind(provider),
     selectOne: provider.selectOne.bind(provider),
     selectBy: provider.selectBy.bind(provider),
-
-    // Update
     update: provider.update.bind(provider),
     updateBy: provider.updateBy.bind(provider),
-
-    // Delete
     delete: provider.delete.bind(provider),
     deleteBy: provider.deleteBy.bind(provider),
-
-    // Upsert
     upsert: provider.upsert.bind(provider),
-
-    // Utilities
     count: provider.count.bind(provider),
     exists: provider.exists.bind(provider),
-
-    // Raw queries
     query: provider.query.bind(provider),
-
-    // Transactions
     transaction: provider.transaction.bind(provider),
   };
 };
 
-// Hook especializado para realtime (Single Responsibility)
-export const useDatabaseRealtime = () => {
+export const useDatabaseRealtime = (): IUseDatabaseRealtimeReturn => {
   const { provider } = useDatabase();
 
   if (!provider) {
@@ -96,8 +109,7 @@ export const useDatabaseRealtime = () => {
   };
 };
 
-// Hook especializado para storage (Single Responsibility)
-export const useDatabaseStorage = () => {
+export const useDatabaseStorage = (): IUseDatabaseStorageReturn => {
   const { provider } = useDatabase();
 
   if (!provider) {
@@ -111,43 +123,67 @@ export const useDatabaseStorage = () => {
   };
 };
 
-// Hook para status de conexão (Single Responsibility)
-export const useDatabaseStatus = () => {
+export const useDatabaseStatus = (): IUseDatabaseStatusReturn => {
   const { isConnected, isLoading, error } = useDatabase();
   return { isConnected, isLoading, error };
 };
 
-// Provider Component
+const initializeDatabaseProvider = async (
+  config: IDatabaseProviderConfig,
+): Promise<IDatabaseProvider> => {
+  await registerDefaultDatabaseProviders();
+  return await DatabaseProviderFactory.createProvider(config);
+};
+
+const handleHealthCheck = async (
+  provider: IDatabaseProvider,
+  setIsConnected: (connected: boolean) => void,
+  setError: (error: string | null) => void,
+): Promise<void> => {
+  try {
+    const health = await provider.getHealth();
+    setIsConnected(health.status === "healthy");
+
+    if (health.status === "unhealthy") {
+      const errorMsg =
+        health.details &&
+        typeof health.details === "object" &&
+        "error" in health.details
+          ? String(health.details.error)
+          : "Unknown error";
+      setError(`Database unhealthy: ${errorMsg}`);
+    } else {
+      setError(null);
+    }
+  } catch (error) {
+    setIsConnected(false);
+    setError("Health check failed");
+  }
+};
+
 export const DatabaseProvider = ({
   children,
   config = { type: "supabase", options: {} },
-}: IDatabaseProviderProps) => {
+}: IDatabaseProviderProps): JSX.Element => {
   const [provider, setProvider] = useState<IDatabaseProvider | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Inicialização do provider (Open/Closed Principle)
   useEffect(() => {
     let mounted = true;
 
-    const initializeDatabase = async () => {
+    const initializeDatabase = async (): Promise<void> => {
       try {
         setIsLoading(true);
         setError(null);
 
-        // Registrar providers disponíveis
-        await registerDefaultDatabaseProviders();
-
-        // Criar provider baseado na configuração
-        const databaseProvider =
-          await DatabaseProviderFactory.createProvider(config);
+        const databaseProvider = await initializeDatabaseProvider(config);
 
         if (!mounted) return;
 
         setProvider(databaseProvider);
 
-        // Verificar conexão
         const connected = await databaseProvider.isConnected();
         setIsConnected(connected);
 
@@ -172,46 +208,30 @@ export const DatabaseProvider = ({
 
     initializeDatabase();
 
-    return () => {
+    return (): void => {
       mounted = false;
     };
   }, [config]);
 
-  // Health check periódico
   useEffect(() => {
     if (!provider) return;
 
-    const healthCheckInterval = setInterval(async () => {
-      try {
-        const health = await provider.getHealth();
-        setIsConnected(health.status === "healthy");
+    const healthCheckInterval = setInterval(
+      () => handleHealthCheck(provider, setIsConnected, setError),
+      30000,
+    );
 
-        if (health.status === "unhealthy") {
-          setError(
-            `Database unhealthy: ${health.details?.error || "Unknown error"}`,
-          );
-        } else {
-          setError(null);
-        }
-      } catch (error) {
-        setIsConnected(false);
-        setError("Health check failed");
-      }
-    }, 30000); // Check every 30 seconds
-
-    return () => clearInterval(healthCheckInterval);
+    return (): void => clearInterval(healthCheckInterval);
   }, [provider]);
 
-  // Cleanup na desmontagem
   useEffect(() => {
-    return () => {
+    return (): void => {
       if (provider) {
         provider.cleanup();
       }
     };
   }, [provider]);
 
-  // Context value (Single Responsibility)
   const contextValue: IDatabaseContextType = {
     provider,
     isConnected,
@@ -226,7 +246,6 @@ export const DatabaseProvider = ({
   );
 };
 
-// HOC para componentes que precisam de database (Higher-Order Component Pattern)
 export function withDatabase<P extends object>(
   Component: React.ComponentType<P>,
   options: { requireConnection?: boolean; fallback?: ReactNode } = {},
@@ -236,7 +255,7 @@ export function withDatabase<P extends object>(
     fallback = <div>Loading database...</div>,
   } = options;
 
-  return function DatabaseConnectedComponent(props: P) {
+  return function DatabaseConnectedComponent(props: P): JSX.Element {
     const { isConnected, isLoading } = useDatabaseStatus();
 
     if (isLoading) {
@@ -251,7 +270,6 @@ export function withDatabase<P extends object>(
   };
 }
 
-// Componente para verificação de conexão (Single Responsibility)
 interface IDatabaseStatusProps {
   children: ReactNode;
   fallback?: ReactNode;
@@ -262,7 +280,7 @@ export const DatabaseStatus = ({
   children,
   fallback = <div>Loading database...</div>,
   requireConnection = true,
-}: IDatabaseStatusProps) => {
+}: IDatabaseStatusProps): JSX.Element => {
   const { isConnected, isLoading, error } = useDatabaseStatus();
 
   if (isLoading) {

@@ -74,7 +74,7 @@ export class ConsoleLoggerProvider implements ILogger {
     return formatted;
   }
 
-  private formatMetadata(metadata?: Record<string, any>): string {
+  private formatMetadata(metadata?: Record<string, unknown>): string {
     if (!metadata || Object.keys(metadata).length === 0) {
       return "";
     }
@@ -90,7 +90,7 @@ export class ConsoleLoggerProvider implements ILogger {
     level: LogLevel,
     message: string,
     context?: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ): void {
     if (!this.shouldLog(level)) {
       return;
@@ -118,7 +118,7 @@ export class ConsoleLoggerProvider implements ILogger {
   debug(
     message: string,
     context?: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ): void {
     this.log("debug", message, context, metadata);
   }
@@ -126,7 +126,7 @@ export class ConsoleLoggerProvider implements ILogger {
   info(
     message: string,
     context?: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ): void {
     this.log("info", message, context, metadata);
   }
@@ -134,7 +134,7 @@ export class ConsoleLoggerProvider implements ILogger {
   warn(
     message: string,
     context?: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ): void {
     this.log("warn", message, context, metadata);
   }
@@ -142,7 +142,7 @@ export class ConsoleLoggerProvider implements ILogger {
   error(
     message: string,
     context?: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ): void {
     this.log("error", message, context, metadata);
   }

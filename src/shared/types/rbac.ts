@@ -113,7 +113,7 @@ export interface IAssignRoleOptions {
 
 export interface IRBACProviderConfig {
   type: RBACProviderType;
-  options: Record<string, any>;
+  options: Record<string, unknown>;
 }
 
 // Provider types for Factory Pattern
@@ -126,7 +126,7 @@ export interface IRBACClaims {
 }
 
 // Response types
-export interface IRBACResponse<T = any> {
+export interface IRBACResponse<T = unknown> {
   data: T | null;
   error: IRBACError | null;
 }
@@ -134,7 +134,7 @@ export interface IRBACResponse<T = any> {
 export interface IRBACError {
   code: string;
   message: string;
-  details?: any;
+  details?: unknown;
 }
 
 // Pre-defined roles and permissions (from database schema)
@@ -228,7 +228,7 @@ export interface IOrganization {
   id: string;
   name: string;
   ownerId: string;
-  settings?: Record<string, any>;
+  settings?: Record<string, unknown>;
   createdAt: Date;
   updatedAt: Date;
 }

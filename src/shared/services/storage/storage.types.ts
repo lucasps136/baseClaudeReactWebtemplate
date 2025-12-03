@@ -254,5 +254,5 @@ export interface IStorageServiceDependencies {
 
 // Re-export external types
 export interface ISupabaseService {
-  getClient(): any; // Supabase client
+  getClient(): unknown; // Supabase client
 }

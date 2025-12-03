@@ -4,6 +4,7 @@
 import { z } from "zod";
 
 import type {
+  IApiErrorResponse,
   IApiRequest,
   IApiResponse,
   IApiService,
@@ -26,9 +27,9 @@ const apiRequestSchema = z.object({
   headers: z.record(z.string()).optional(),
   body: z.unknown().optional(),
   timeout: z.number().positive().max(60000).optional(),
-  signal: z.any().optional(),
-  cache: z.any().optional(),
-  credentials: z.any().optional(),
+  signal: z.instanceof(AbortSignal).optional(),
+  cache: z.custom<RequestCache>().optional(),
+  credentials: z.custom<RequestCredentials>().optional(),
 });
 
 // Unused schema - kept for future validation if needed
@@ -323,11 +324,13 @@ export class ApiService implements IApiService {
     );
   }
 
-  private async parseErrorResponse(response: Response): Promise<any> {
+  private async parseErrorResponse(
+    response: Response,
+  ): Promise<IApiErrorResponse> {
     try {
       const contentType = response.headers.get("content-type");
       if (contentType?.includes("application/json")) {
-        return await response.json();
+        return (await response.json()) as IApiErrorResponse;
       }
 
       return await this.createTextErrorResponse(response);
@@ -336,7 +339,9 @@ export class ApiService implements IApiService {
     }
   }
 
-  private async createTextErrorResponse(response: Response): Promise<any> {
+  private async createTextErrorResponse(
+    response: Response,
+  ): Promise<IApiErrorResponse> {
     return {
       error: response.statusText,
       message: (await response.text()) || response.statusText,
@@ -345,7 +350,7 @@ export class ApiService implements IApiService {
     };
   }
 
-  private createDefaultErrorResponse(response: Response): any {
+  private createDefaultErrorResponse(response: Response): IApiErrorResponse {
     return {
       error: response.statusText,
       message: response.statusText,
@@ -354,7 +359,7 @@ export class ApiService implements IApiService {
     };
   }
 
-  private normalizeError(error: any, request: IApiRequest): ApiError {
+  private normalizeError(error: unknown, request: IApiRequest): ApiError {
     // Already an ApiError - return as-is
     if (error instanceof ApiError) {
       return error;
@@ -371,17 +376,15 @@ export class ApiService implements IApiService {
     }
 
     // Generic error
-    return new NetworkError(
-      `Request failed: ${error.message || error}`,
-      request,
-    );
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    return new NetworkError(`Request failed: ${errorMessage}`, request);
   }
 
-  private isAbortError(error: any): boolean {
+  private isAbortError(error: unknown): boolean {
     return error instanceof DOMException && error.name === "AbortError";
   }
 
-  private isFetchError(error: any): boolean {
+  private isFetchError(error: unknown): error is TypeError {
     return error instanceof TypeError && error.message.includes("fetch");
   }
 
@@ -389,7 +392,10 @@ export class ApiService implements IApiService {
     request: IApiRequest,
   ): (status: number) => boolean {
     // Check if request config has custom validateStatus
-    const customValidateStatus = (request as any).validateStatus;
+    const requestWithValidation = request as IApiRequest & {
+      validateStatus?: (status: number) => boolean;
+    };
+    const customValidateStatus = requestWithValidation.validateStatus;
     if (customValidateStatus && typeof customValidateStatus === "function") {
       return customValidateStatus;
     }
@@ -401,14 +407,21 @@ export class ApiService implements IApiService {
   private mergeConfig(config?: IRequestConfig): Partial<IApiRequest> {
     if (!config) return {};
 
-    return {
+    const merged: Partial<IApiRequest> & {
+      validateStatus?: (status: number) => boolean;
+    } = {
       headers: config.headers,
       timeout: config.timeout || this.DEFAULT_TIMEOUT,
       signal: config.signal,
       cache: config.cache,
       credentials: config.credentials,
-      validateStatus: config.validateStatus,
-    } as any;
+    };
+
+    if (config.validateStatus) {
+      merged.validateStatus = config.validateStatus;
+    }
+
+    return merged;
   }
 
   private async validateRequest(request: IApiRequest): Promise<void> {

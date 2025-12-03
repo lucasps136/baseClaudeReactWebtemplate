@@ -529,7 +529,7 @@ export class StripePaymentProvider implements IPaymentProvider {
     status: session.status as ICheckoutSession["status"],
   });
 
-  private mapStripeError = (error: any): IPaymentError => {
+  private mapStripeError = (error: unknown): IPaymentError => {
     const stripeError = error as Stripe.StripeRawError;
     return {
       code: stripeError.code || "unknown_error",

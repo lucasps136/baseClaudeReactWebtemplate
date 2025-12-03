@@ -16,7 +16,7 @@ const envSchema = z.object({
   STRIPE_WEBHOOK_SECRET: z.string().min(1, "Stripe Webhook Secret is required"),
 });
 
-function validateEnv() {
+function validateEnv(): z.infer<typeof envSchema> {
   try {
     return envSchema.parse(process.env);
   } catch (error) {
@@ -28,6 +28,6 @@ function validateEnv() {
 export const env = validateEnv();
 
 // Helper function for accessing env variables (without parameters - returns all env)
-export function getEnv() {
+export function getEnv(): z.infer<typeof envSchema> {
   return env;
 }

@@ -1,12 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// Commented out until authentication is implemented
-// import {
-//   isProtectedRoute,
-//   isAuthRoute,
-//   isAdminRoute,
-//   redirects,
-// } from "@/config/routes";
+/**
+ * Adds security headers to response
+ * SRP: Responsible only for setting security headers
+ */
+const addSecurityHeaders = (response: NextResponse): void => {
+  response.headers.set("X-Frame-Options", "DENY");
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  response.headers.set("Referrer-Policy", "origin-when-cross-origin");
+  response.headers.set(
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=()",
+  );
+};
+
+/**
+ * Checks if request should skip middleware
+ * SRP: Responsible only for determining if middleware should run
+ */
+const shouldSkipMiddleware = (pathname: string): boolean => {
+  return (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/api/public") ||
+    pathname.includes(".")
+  );
+};
 
 /**
  * Middleware for handling routing, authentication, and redirects
@@ -19,29 +37,16 @@ import { NextRequest, NextResponse } from "next/server";
  * TEMPLATE NOTE: Uncomment and modify the authentication logic based on your auth provider
  */
 export function middleware(request: NextRequest): NextResponse {
-  // Get pathname from the request URL
   const { pathname } = request.nextUrl;
 
   // Skip middleware for static files and API routes that don't need auth
-  if (
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/api/public") ||
-    pathname.includes(".")
-  ) {
+  if (shouldSkipMiddleware(pathname)) {
     return NextResponse.next();
   }
 
   // Security headers for all requests
   const response = NextResponse.next();
-
-  // Add security headers
-  response.headers.set("X-Frame-Options", "DENY");
-  response.headers.set("X-Content-Type-Options", "nosniff");
-  response.headers.set("Referrer-Policy", "origin-when-cross-origin");
-  response.headers.set(
-    "Permissions-Policy",
-    "camera=(), microphone=(), geolocation=()",
-  );
+  addSecurityHeaders(response);
 
   // EXAMPLE: Route protection using centralized configuration
   // Uncomment and modify based on your authentication strategy
@@ -88,43 +93,6 @@ export function middleware(request: NextRequest): NextResponse {
   }
   */
 
-  // EXAMPLE: Locale/internationalization handling
-  /*
-  const locales = ['en', 'pt', 'es'];
-  const defaultLocale = 'en';
-
-  // Check if there is any supported locale in the pathname
-  const pathnameHasLocale = locales.some(
-    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
-  );
-
-  if (!pathnameHasLocale) {
-    // Get locale from Accept-Language header or use default
-    const locale = request.headers.get('accept-language')?.split(',')[0]?.split('-')[0] || defaultLocale;
-    const supportedLocale = locales.includes(locale) ? locale : defaultLocale;
-
-    return NextResponse.redirect(
-      new URL(`/${supportedLocale}${pathname}`, request.url)
-    );
-  }
-  */
-
-  // EXAMPLE: A/B testing
-  /*
-  const bucket = Math.random() < 0.5 ? 'a' : 'b';
-  response.cookies.set('bucket', bucket);
-  */
-
-  // EXAMPLE: Rate limiting (basic implementation)
-  /*
-  const ip = request.ip || 'unknown';
-  const rateLimit = 10; // requests per minute
-  const windowMs = 60 * 1000; // 1 minute
-
-  // In a real implementation, use Redis or database
-  // This is just for demonstration
-  */
-
   return response;
 }
 
@@ -142,6 +110,6 @@ export const config = {
      * - favicon.ico (favicon file)
      * - public folder files
      */
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\..*).*)",
   ],
 };

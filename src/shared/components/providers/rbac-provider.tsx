@@ -18,7 +18,11 @@ import {
   registerDefaultRBACProviders,
   createRBACConfig,
 } from "@/shared/services/rbac/rbac-factory";
-import type { IRBACProvider, IRBACError } from "@/shared/types/rbac";
+import type {
+  IRBACProvider,
+  IRBACError,
+  IRBACProviderConfig,
+} from "@/shared/types/rbac";
 
 interface IRBACContextValue {
   provider: IRBACProvider | null;
@@ -57,13 +61,16 @@ interface IRBACProviderProps {
  *   <App />
  * </RBACProvider>
  */
-export function RBACProvider({ children, config }: IRBACProviderProps) {
+export function RBACProvider({
+  children,
+  config,
+}: IRBACProviderProps): JSX.Element {
   const [provider, setProvider] = useState<IRBACProvider | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [error, setError] = useState<IRBACError | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const initializeRBAC = async () => {
+  const initializeRBAC = async (): Promise<void> => {
     try {
       setLoading(true);
       setError(null);
@@ -98,7 +105,7 @@ export function RBACProvider({ children, config }: IRBACProviderProps) {
     }
   };
 
-  const reinitialize = async () => {
+  const reinitialize = async (): Promise<void> => {
     await initializeRBAC();
   };
 
@@ -106,7 +113,7 @@ export function RBACProvider({ children, config }: IRBACProviderProps) {
     initializeRBAC();
 
     // Cleanup on unmount
-    return () => {
+    return (): void => {
       RBACManager.cleanup().catch(console.error);
     };
   }, []);
@@ -136,7 +143,7 @@ export function useRBACContext(): IRBACContextValue {
 }
 
 // Helper function to create default configuration
-function createDefaultConfig() {
+function createDefaultConfig(): IRBACProviderConfig {
   const env = getEnv();
 
   // Default to Supabase (env variables are now required)
@@ -155,7 +162,7 @@ interface IRBACErrorBoundaryProps {
 export function RBACErrorBoundary({
   children,
   fallback = <div>RBAC Error: Unable to load permissions</div>,
-}: IRBACErrorBoundaryProps) {
+}: IRBACErrorBoundaryProps): JSX.Element {
   const { error, loading } = useRBACContext();
 
   if (loading) {
@@ -174,7 +181,7 @@ export function withRBACProvider<P extends object>(
   Component: React.ComponentType<P>,
   providerProps?: Omit<IRBACProviderProps, "children">,
 ) {
-  return function ComponentWithRBAC(props: P) {
+  return function ComponentWithRBAC(props: P): JSX.Element {
     return (
       <RBACProvider {...providerProps}>
         <Component {...props} />
@@ -184,7 +191,7 @@ export function withRBACProvider<P extends object>(
 }
 
 // Initialization status component
-export function RBACInitializationStatus() {
+export function RBACInitializationStatus(): JSX.Element {
   const { isInitialized, loading, error } = useRBACContext();
 
   if (loading) {

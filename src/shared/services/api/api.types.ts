@@ -191,7 +191,7 @@ export interface IApiServiceDependencies {
 
 // Re-export external types (will be properly imported)
 export interface ISupabaseService {
-  getClient(): any; // Supabase client
+  getClient(): unknown; // Supabase client - type varies by implementation
 }
 
 export interface IValidationService {
