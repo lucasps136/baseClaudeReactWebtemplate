@@ -128,6 +128,7 @@ export const useDatabaseStatus = (): IUseDatabaseStatusReturn => {
   return { isConnected, isLoading, error };
 };
 
+// SRP: Initialize database provider
 const initializeDatabaseProvider = async (
   config: IDatabaseProviderConfig,
 ): Promise<IDatabaseProvider> => {
@@ -135,6 +136,15 @@ const initializeDatabaseProvider = async (
   return await DatabaseProviderFactory.createProvider(config);
 };
 
+// SRP: Extract error message from health details
+const extractHealthErrorMessage = (details: unknown): string => {
+  if (details && typeof details === "object" && "error" in details) {
+    return String(details.error);
+  }
+  return "Unknown error";
+};
+
+// SRP: Handle health check
 const handleHealthCheck = async (
   provider: IDatabaseProvider,
   setIsConnected: (connected: boolean) => void,
@@ -145,12 +155,7 @@ const handleHealthCheck = async (
     setIsConnected(health.status === "healthy");
 
     if (health.status === "unhealthy") {
-      const errorMsg =
-        health.details &&
-        typeof health.details === "object" &&
-        "error" in health.details
-          ? String(health.details.error)
-          : "Unknown error";
+      const errorMsg = extractHealthErrorMessage(health.details);
       setError(`Database unhealthy: ${errorMsg}`);
     } else {
       setError(null);
@@ -161,15 +166,19 @@ const handleHealthCheck = async (
   }
 };
 
-export const DatabaseProvider = ({
-  children,
-  config = { type: "supabase", options: {} },
-}: IDatabaseProviderProps): JSX.Element => {
-  const [provider, setProvider] = useState<IDatabaseProvider | null>(null);
-  const [isConnected, setIsConnected] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+// SRP: Database initialization logic
+interface IDatabaseStateSetters {
+  setProvider: (provider: IDatabaseProvider | null) => void;
+  setIsConnected: (connected: boolean) => void;
+  setIsLoading: (loading: boolean) => void;
+  setError: (error: string | null) => void;
+}
 
+const useInitializeDatabase = (
+  config: IDatabaseProviderConfig,
+  stateSetters: IDatabaseStateSetters,
+): void => {
+  const { setProvider, setIsConnected, setIsLoading, setError } = stateSetters;
   useEffect(() => {
     let mounted = true;
 
@@ -211,7 +220,24 @@ export const DatabaseProvider = ({
     return (): void => {
       mounted = false;
     };
-  }, [config]);
+  }, [config, setProvider, setIsConnected, setIsLoading, setError]);
+};
+
+export const DatabaseProvider = ({
+  children,
+  config = { type: "supabase", options: {} },
+}: IDatabaseProviderProps): JSX.Element => {
+  const [provider, setProvider] = useState<IDatabaseProvider | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useInitializeDatabase(config, {
+    setProvider,
+    setIsConnected,
+    setIsLoading,
+    setError,
+  });
 
   useEffect(() => {
     if (!provider) return;

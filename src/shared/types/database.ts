@@ -128,7 +128,7 @@ export interface IDatabaseProvider {
   // Raw Queries (para casos complexos)
   query<T = unknown>(
     sql: string,
-    params?: any[],
+    params?: unknown[],
   ): Promise<IDatabaseResponse<T[]>>;
 
   // Transações (ACID)

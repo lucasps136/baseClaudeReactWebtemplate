@@ -11,6 +11,29 @@ interface IUseUserReturn {
   clearUser: () => void;
 }
 
+// Validation (SRP: Input validation)
+const validateUserId = (id: string): string | null => {
+  if (!id) return "User ID is required";
+  return null;
+};
+
+// Error Handling (SRP: Error message conversion)
+const getErrorMessage = (error: unknown): string => {
+  return error instanceof Error ? error.message : "Failed to fetch user";
+};
+
+// Service Call (SRP: API communication)
+const fetchUserFromService = async (
+  id: string, // eslint-disable-line @typescript-eslint/no-unused-vars
+): Promise<IUserProfile | null> => {
+  // TODO: Replace with actual service call when implemented
+  // const userService = getUserService()
+  // return await userService.getUserById(id)
+
+  // Mock implementation for now
+  return null;
+};
+
 // Custom hook following Single Responsibility
 // Only handles single user operations
 export const useUser = (): IUseUserReturn => {
@@ -25,8 +48,9 @@ export const useUser = (): IUseUserReturn => {
 
   const fetchUser = useCallback(
     async (id: string): Promise<IUserProfile | null> => {
-      if (!id) {
-        setUserError("User ID is required");
+      const validationError = validateUserId(id);
+      if (validationError) {
+        setUserError(validationError);
         return null;
       }
 
@@ -34,19 +58,12 @@ export const useUser = (): IUseUserReturn => {
         setUserLoading(true);
         setUserError(null);
 
-        // TODO: Replace with actual service call when implemented
-        // const userService = getUserService()
-        // const user = await userService.getUserById(id)
-
-        // Mock implementation for now
-        const user = null; // await userService.getUserById(id)
+        const user = await fetchUserFromService(id);
 
         setCurrentUser(user);
         return user;
       } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : "Failed to fetch user";
-        setUserError(errorMessage);
+        setUserError(getErrorMessage(error));
         return null;
       } finally {
         setUserLoading(false);

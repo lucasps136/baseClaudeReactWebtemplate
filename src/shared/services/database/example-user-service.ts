@@ -31,29 +31,40 @@ export class UserService {
   constructor(private db: IDatabaseProvider) {}
   // ^ Dependência mínima - clara e explícita
 
-  async getUsers() {
+  async getUsers(): Promise<ReturnType<IDatabaseProvider["select"]>> {
     return this.db.select("users", {
       orderBy: [{ column: "created_at", ascending: false }],
     });
   }
 
-  async getUserById(id: string) {
+  async getUserById(
+    id: string,
+  ): Promise<ReturnType<IDatabaseProvider["selectOne"]>> {
     return this.db.selectOne("users", id);
   }
 
-  async getUserByEmail(email: string) {
+  async getUserByEmail(
+    email: string,
+  ): Promise<ReturnType<IDatabaseProvider["selectBy"]>> {
     return this.db.selectBy("users", "email", email);
   }
 
-  async createUser(userData: any) {
+  async createUser(
+    userData: Record<string, unknown>,
+  ): Promise<ReturnType<IDatabaseProvider["insert"]>> {
     return this.db.insert("users", userData);
   }
 
-  async updateUser(id: string, userData: any) {
+  async updateUser(
+    id: string,
+    userData: Record<string, unknown>,
+  ): Promise<ReturnType<IDatabaseProvider["update"]>> {
     return this.db.update("users", id, userData);
   }
 
-  async deleteUser(id: string) {
+  async deleteUser(
+    id: string,
+  ): Promise<ReturnType<IDatabaseProvider["delete"]>> {
     return this.db.delete("users", id);
   }
 }

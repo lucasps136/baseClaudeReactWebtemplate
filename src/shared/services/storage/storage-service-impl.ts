@@ -33,8 +33,7 @@ export class StorageServiceImpl implements IStorageService {
   private secureOps: SecureOperations;
   private cleanupStrategies: CleanupStrategies;
 
-  constructor(_supabaseService: ISupabaseService) {
-    // eslint-disable-line @typescript-eslint/no-unused-vars
+  constructor() {
     this.initializeProviders();
     this.encryptionService = new EncryptionService();
     this.crossTabSync = new CrossTabSyncService();
@@ -160,7 +159,9 @@ export class StorageServiceImpl implements IStorageService {
 
 // Factory function
 export const createStorageService = (
-  supabaseService: ISupabaseService,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _supabaseService: ISupabaseService,
 ): IStorageService => {
-  return new StorageServiceImpl(supabaseService);
+  // supabaseService parameter kept for future use but not currently needed
+  return new StorageServiceImpl();
 };

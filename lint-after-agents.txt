@@ -1,0 +1,89 @@
+
+> nextjs-solid-boilerplate@1.0.0 lint
+> next lint
+
+
+./src/app/page.tsx
+74:16  Warning: Function 'HomePage' has too many lines (52). Maximum allowed is 50.  max-lines-per-function
+
+./src/features/users/hooks/useUser.ts
+16:24  Warning: Arrow function has too many lines (58). Maximum allowed is 50.  max-lines-per-function
+
+./src/features/users/hooks/useUsers.ts
+112:25  Warning: Arrow function has too many lines (143). Maximum allowed is 50.  max-lines-per-function
+
+./src/features/users/stores/user.store.ts
+63:5  Warning: Arrow function has too many lines (70). Maximum allowed is 50.  max-lines-per-function
+
+./src/middleware.ts
+39:8  Warning: Function 'middleware' has too many lines (59). Maximum allowed is 50.  max-lines-per-function
+
+./src/shared/components/providers/auth-provider.tsx
+172:29  Warning: Arrow function has too many lines (55). Maximum allowed is 50.  max-lines-per-function
+
+./src/shared/components/providers/database-provider.tsx
+176:9  Warning: Arrow function has too many parameters (5). Maximum allowed is 4.  max-params
+301:1  Warning: File has too many lines (321). Maximum allowed is 300.  max-lines
+
+./src/shared/components/providers/rbac-provider.tsx
+94:8  Warning: Function 'RBACProvider' has too many lines (53). Maximum allowed is 50.  max-lines-per-function
+133:6  Warning: React Hook useEffect has a missing dependency: 'initializeRBAC'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/shared/components/providers/theme-provider.tsx
+185:8  Warning: Function 'ExtendedThemeProvider' has too many lines (51). Maximum allowed is 50.  max-lines-per-function
+301:1  Warning: File has too many lines (304). Maximum allowed is 300.  max-lines
+
+./src/shared/hooks/use-rbac.ts
+47:8  Warning: Function 'useRBAC' has too many lines (81). Maximum allowed is 50.  max-lines-per-function
+
+./src/shared/services/api/api.service.ts
+147:30  Error: Require statement not part of import statement.  @typescript-eslint/no-var-requires
+
+./src/shared/services/api/api.types.ts
+138:3  Warning: Constructor has too many parameters (5). Maximum allowed is 4.  max-params
+
+./src/shared/services/api/operations/http-methods.ts
+4:1  Error: There should be at least one empty line between import groups  import/order
+
+./src/shared/services/auth/providers/clerk-auth-provider.ts
+301:1  Warning: File has too many lines (302). Maximum allowed is 300.  max-lines
+
+./src/shared/services/auth/providers/supabase-auth-provider-old.ts
+301:1  Warning: File has too many lines (344). Maximum allowed is 300.  max-lines
+
+./src/shared/services/database/providers/supabase/crud-operations.ts
+48:12  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+50:6  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+67:32  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+67:73  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+79:12  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+82:6  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+149:3  Warning: Async method 'selectBy' has too many parameters (5). Maximum allowed is 4.  max-params
+196:3  Warning: Async method 'updateBy' has too many parameters (5). Maximum allowed is 4.  max-params
+301:1  Warning: File has too many lines (317). Maximum allowed is 300.  max-lines
+
+./src/shared/services/payments/providers/operations/subscription-operations.ts
+14:3  Warning: Async method 'createSubscription' has too many parameters (5). Maximum allowed is 4.  max-params
+
+./src/shared/services/payments/providers/operations/webhook-operations.ts
+32:12  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/shared/services/payments/providers/stripe-payment-provider.ts
+301:1  Warning: File has too many lines (541). Maximum allowed is 300.  max-lines
+
+./src/shared/services/rbac/providers/supabase-rbac-provider.ts
+301:1  Warning: File has too many lines (578). Maximum allowed is 300.  max-lines
+
+./src/shared/services/storage/storage-service-impl.ts
+36:15  Error: '_supabaseService' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/shared/services/theme/theme-presets.ts
+301:1  Warning: File has too many lines (318). Maximum allowed is 300.  max-lines
+
+./src/shared/stores/session.store.ts
+24:7  Warning: Arrow function has too many lines (52). Maximum allowed is 50.  max-lines-per-function
+
+./src/shared/stores/ui.store.ts
+65:5  Warning: Arrow function has too many lines (83). Maximum allowed is 50.  max-lines-per-function
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules

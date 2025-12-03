@@ -9,6 +9,7 @@ import {
   useContext,
   useEffect,
   useState,
+  useCallback,
   type ReactNode,
 } from "react";
 
@@ -39,9 +40,39 @@ interface IRBACProviderProps {
   // Optional custom configuration
   config?: {
     provider?: "supabase" | "database";
-    options?: Record<string, any>;
+    options?: Record<string, unknown>;
   };
 }
+
+// SRP: Create RBAC configuration from props or environment
+const createRBACConfiguration = (
+  config?: IRBACProviderProps["config"],
+): IRBACProviderConfig => {
+  if (config) {
+    return {
+      type: config.provider || "supabase",
+      options: config.options || {},
+    };
+  }
+  return createDefaultConfig();
+};
+
+// SRP: Convert error to RBAC error format
+const createRBACError = (err: unknown): IRBACError => {
+  return {
+    code: "initialization_failed",
+    message: err instanceof Error ? err.message : "Failed to initialize RBAC",
+    details: err,
+  };
+};
+
+// SRP: Initialize RBAC with error handling
+const performRBACInitialization = async (
+  rbacConfig: IRBACProviderConfig,
+): Promise<IRBACProvider> => {
+  await registerDefaultRBACProviders();
+  return await RBACManager.initialize(rbacConfig);
+};
 
 /**
  * RBAC Provider Component
@@ -61,6 +92,7 @@ interface IRBACProviderProps {
  *   <App />
  * </RBACProvider>
  */
+
 export function RBACProvider({
   children,
   config,
@@ -70,44 +102,28 @@ export function RBACProvider({
   const [error, setError] = useState<IRBACError | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const initializeRBAC = async (): Promise<void> => {
+  const initializeRBAC = useCallback(async (): Promise<void> => {
     try {
       setLoading(true);
       setError(null);
 
-      // Register default providers if not already registered
-      await registerDefaultRBACProviders();
-
-      // Create configuration based on props or environment
-      const rbacConfig = config
-        ? {
-            type: config.provider || "supabase",
-            options: config.options || {},
-          }
-        : createDefaultConfig();
-
-      // Initialize RBAC manager
-      const rbacProvider = await RBACManager.initialize(rbacConfig);
+      const rbacConfig = createRBACConfiguration(config);
+      const rbacProvider = await performRBACInitialization(rbacConfig);
 
       setProvider(rbacProvider);
       setIsInitialized(true);
     } catch (err) {
-      const rbacError: IRBACError = {
-        code: "initialization_failed",
-        message:
-          err instanceof Error ? err.message : "Failed to initialize RBAC",
-        details: err,
-      };
+      const rbacError = createRBACError(err);
       setError(rbacError);
       console.error("RBAC initialization failed:", rbacError);
     } finally {
       setLoading(false);
     }
-  };
+  }, [config]);
 
-  const reinitialize = async (): Promise<void> => {
+  const reinitialize = useCallback(async (): Promise<void> => {
     await initializeRBAC();
-  };
+  }, [initializeRBAC]);
 
   useEffect(() => {
     initializeRBAC();
@@ -116,7 +132,7 @@ export function RBACProvider({
     return (): void => {
       RBACManager.cleanup().catch(console.error);
     };
-  }, []);
+  }, [initializeRBAC]);
 
   const contextValue: IRBACContextValue = {
     provider,

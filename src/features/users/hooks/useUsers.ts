@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-import { useUserStore } from "../stores/user.store";
+import { useUserStore, type UserStore } from "../stores/user.store";
 import type {
   IUserListFilter,
   ICreateUserInput,
@@ -26,6 +26,7 @@ interface IUseUsersReturn {
   setFilter: (filter: Partial<IUserListFilter>) => void;
 }
 
+// Service Layer (SRP: Handle API communication)
 /**
  * Fetches users from the service
  */
@@ -85,8 +86,9 @@ const updateUserInService = async (
 /**
  * Deletes user from service
  */
-const deleteUserFromService = async (id: string): Promise<void> => {
-  // eslint-disable-line @typescript-eslint/no-unused-vars
+const deleteUserFromService = async (
+  id: string, // eslint-disable-line @typescript-eslint/no-unused-vars
+): Promise<void> => {
   // TODO: Replace with actual service call
   // const userService = getUserService()
   // await userService.deleteUser(id)
@@ -95,11 +97,74 @@ const deleteUserFromService = async (id: string): Promise<void> => {
   return Promise.resolve();
 };
 
+// Error Handling (SRP: Convert errors to user-friendly messages)
+/**
+ * Converts error to user-friendly message
+ */
+const getErrorMessage = (error: unknown, defaultMessage: string): string => {
+  return error instanceof Error ? error.message : defaultMessage;
+};
+
+// Helper: Fetch users operation
+const useFetchUsers = (
+  filter: IUserListFilter,
+  setters: UserStore,
+): ((newFilter?: Partial<IUserListFilter>) => Promise<void>) => {
+  return useCallback(
+    async (newFilter?: Partial<IUserListFilter>): Promise<void> => {
+      try {
+        setters.setUsersLoading(true);
+        setters.setUsersError(null);
+
+        const mergedFilter = { ...filter, ...newFilter };
+        if (newFilter) {
+          setters.setFilter(newFilter);
+        }
+
+        const result = await fetchUsersFromService(mergedFilter);
+        setters.setUsers(result.users);
+        setters.setTotal(result.total);
+        setters.setHasMore(result.hasMore);
+      } catch (error) {
+        setters.setUsersError(getErrorMessage(error, "Failed to fetch users"));
+      } finally {
+        setters.setUsersLoading(false);
+      }
+    },
+    [filter, setters],
+  );
+};
+
+// Helper: Create user operation
+const useCreateUser = (
+  setters: UserStore,
+): ((input: ICreateUserInput) => Promise<IUserProfile>) => {
+  return useCallback(
+    async (input: ICreateUserInput): Promise<IUserProfile> => {
+      try {
+        setters.setUsersLoading(true);
+        setters.setUsersError(null);
+        const newUser = await createUserInService(input);
+        setters.addUser(newUser);
+        return newUser;
+      } catch (error) {
+        const errorMessage = getErrorMessage(error, "Failed to create user");
+        setters.setUsersError(errorMessage);
+        throw new Error(errorMessage);
+      } finally {
+        setters.setUsersLoading(false);
+      }
+    },
+    [setters],
+  );
+};
+
 /**
  * Custom hook following Single Responsibility
  * Only handles user list operations
  */
 export const useUsers = (): IUseUsersReturn => {
+  const storeState = useUserStore();
   const {
     users,
     isLoadingUsers,
@@ -107,73 +172,15 @@ export const useUsers = (): IUseUsersReturn => {
     filter,
     hasMore,
     total,
-    setUsers,
-    addUser,
     updateUser: updateUserInStore,
     removeUser,
     setUsersLoading,
     setUsersError,
     setFilter,
-    setHasMore,
-    setTotal,
-  } = useUserStore();
+  } = storeState;
 
-  const fetchUsers = useCallback(
-    async (newFilter?: Partial<IUserListFilter>): Promise<void> => {
-      try {
-        setUsersLoading(true);
-        setUsersError(null);
-
-        const mergedFilter = { ...filter, ...newFilter };
-        if (newFilter) {
-          setFilter(newFilter);
-        }
-
-        const result = await fetchUsersFromService(mergedFilter);
-
-        setUsers(result.users);
-        setTotal(result.total);
-        setHasMore(result.hasMore);
-      } catch (error) {
-        setUsersError(
-          error instanceof Error ? error.message : "Failed to fetch users",
-        );
-      } finally {
-        setUsersLoading(false);
-      }
-    },
-    [
-      filter,
-      setUsers,
-      setUsersLoading,
-      setUsersError,
-      setFilter,
-      setTotal,
-      setHasMore,
-    ],
-  );
-
-  const createUser = useCallback(
-    async (input: ICreateUserInput): Promise<IUserProfile> => {
-      try {
-        setUsersLoading(true);
-        setUsersError(null);
-
-        const newUser = await createUserInService(input);
-
-        addUser(newUser);
-        return newUser;
-      } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : "Failed to create user";
-        setUsersError(errorMessage);
-        throw new Error(errorMessage);
-      } finally {
-        setUsersLoading(false);
-      }
-    },
-    [addUser, setUsersLoading, setUsersError],
-  );
+  const fetchUsers = useFetchUsers(filter, storeState);
+  const createUser = useCreateUser(storeState);
 
   const updateUserById = useCallback(
     async (
@@ -183,14 +190,11 @@ export const useUsers = (): IUseUsersReturn => {
       try {
         setUsersLoading(true);
         setUsersError(null);
-
         const updates = await updateUserInService(id, input);
-
         updateUserInStore(id, updates);
         return updates;
       } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : "Failed to update user";
+        const errorMessage = getErrorMessage(error, "Failed to update user");
         setUsersError(errorMessage);
         throw new Error(errorMessage);
       } finally {
@@ -205,13 +209,10 @@ export const useUsers = (): IUseUsersReturn => {
       try {
         setUsersLoading(true);
         setUsersError(null);
-
         await deleteUserFromService(id);
-
         removeUser(id);
       } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : "Failed to delete user";
+        const errorMessage = getErrorMessage(error, "Failed to delete user");
         setUsersError(errorMessage);
         throw new Error(errorMessage);
       } finally {
@@ -223,21 +224,17 @@ export const useUsers = (): IUseUsersReturn => {
 
   const loadMore = useCallback(async (): Promise<void> => {
     if (!hasMore || isLoadingUsers) return;
-
     const nextOffset = users.length;
     await fetchUsers({ ...filter, offset: nextOffset });
   }, [hasMore, isLoadingUsers, users.length, filter, fetchUsers]);
 
   return {
-    // State
     users,
     isLoadingUsers,
     usersError,
     filter,
     hasMore,
     total,
-
-    // Actions
     fetchUsers,
     createUser,
     updateUser: updateUserById,

@@ -56,7 +56,7 @@ export class RBACProviderFactory {
 }
 
 // Auto-registration of available providers
-export const registerDefaultRBACProviders = async () => {
+export const registerDefaultRBACProviders = async (): Promise<void> => {
   // Supabase Provider (default)
   RBACProviderFactory.registerProvider("supabase", async () => {
     const { SupabaseRBACProvider } = await import(
@@ -152,7 +152,7 @@ export class RBACConfigBuilder {
 
 // Preset configurations for common scenarios
 export const createRBACConfig = {
-  supabase: (url: string, serviceKey: string) =>
+  supabase: (url: string, serviceKey: string): IRBACProviderConfig =>
     RBACConfigBuilder.create().useSupabase(url, serviceKey).build(),
 
   // NOTE: Preset for unimplemented provider - uncomment when ready

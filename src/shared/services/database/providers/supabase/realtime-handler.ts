@@ -1,7 +1,11 @@
 // Realtime Handler for Supabase Database Provider
 // Single Responsibility: Realtime subscriptions and events
 
-import type { SupabaseClient, RealtimeChannel } from "@supabase/supabase-js";
+import type {
+  SupabaseClient,
+  RealtimeChannel,
+  RealtimePostgresChangesPayload,
+} from "@supabase/supabase-js";
 
 import type {
   IRealtimeSubscription,
@@ -25,15 +29,15 @@ export class RealtimeHandler {
     const channel = this.client
       .channel(subscriptionId)
       .on(
-        "postgres_changes" as any,
+        "postgres_changes",
         {
           event,
           schema: "public",
           table,
-        } as any,
-        (payload: any) => {
+        },
+        (payload: RealtimePostgresChangesPayload<T>) => {
           const realtimeEvent: IRealtimeEvent<T> = {
-            eventType: payload.eventType as any,
+            eventType: payload.eventType as "INSERT" | "UPDATE" | "DELETE",
             new: payload.new as T,
             old: payload.old as T,
             table: payload.table,

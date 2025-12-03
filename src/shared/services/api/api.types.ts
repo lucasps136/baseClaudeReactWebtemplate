@@ -134,16 +134,26 @@ export interface IApiService {
 }
 
 // Error classes
+export interface IApiErrorOptions {
+  status: number;
+  statusText: string;
+  response?: IApiErrorResponse;
+  request?: IApiRequest;
+}
+
 export class ApiError extends Error {
-  constructor(
-    message: string,
-    public status: number,
-    public statusText: string,
-    public response?: IApiErrorResponse,
-    public request?: IApiRequest,
-  ) {
+  public status: number;
+  public statusText: string;
+  public response?: IApiErrorResponse;
+  public request?: IApiRequest;
+
+  constructor(message: string, options: IApiErrorOptions) {
     super(message);
     this.name = "ApiError";
+    this.status = options.status;
+    this.statusText = options.statusText;
+    this.response = options.response;
+    this.request = options.request;
   }
 }
 

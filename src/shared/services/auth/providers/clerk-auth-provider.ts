@@ -1,8 +1,4 @@
-/**
- * Clerk Auth Provider
- * Implementação completa usando @clerk/nextjs SDK
- * Segue padrões SOLID e interface IAuthProvider
- */
+// Clerk Auth Provider - SOLID implementation of IAuthProvider
 
 import { logger } from "@/shared/services/logger";
 import type {

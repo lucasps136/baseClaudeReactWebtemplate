@@ -9,7 +9,7 @@ interface IUIState {
   modal: {
     isOpen: boolean;
     type: string | null;
-    data: any;
+    data: Record<string, unknown> | null;
   };
 }
 
@@ -32,106 +32,101 @@ interface IUIActions {
   ) => void;
   removeNotification: (id: string) => void;
   clearNotifications: () => void;
-  openModal: (type: string, data?: any) => void;
+  openModal: (type: string, data?: Record<string, unknown>) => void;
   closeModal: () => void;
 }
 
 export type UIStore = IUIState & IUIActions;
 
+// SRP: Create notification with ID and timestamp
+const createNotification = (
+  notification: Omit<INotification, "id" | "timestamp">,
+): INotification => {
+  return {
+    ...notification,
+    id: crypto.randomUUID(),
+    timestamp: new Date(),
+  };
+};
+
+// SRP: Schedule auto-removal of notification
+const scheduleNotificationRemoval = (
+  id: string,
+  removeNotification: (id: string) => void,
+  delay: number = 5000,
+): void => {
+  setTimeout(() => {
+    removeNotification(id);
+  }, delay);
+};
+
+// Initial state factory
+const createInitialState = (): IUIState => ({
+  theme: "system" as const,
+  sidebarOpen: false,
+  loading: false,
+  notifications: [],
+  modal: {
+    isOpen: false,
+    type: null,
+    data: null,
+  },
+});
+
+// Actions factory
+const createUIActions = (
+  set: Parameters<Parameters<typeof create<UIStore>>[0]>[0],
+  get: Parameters<Parameters<typeof create<UIStore>>[0]>[1],
+): IUIActions => ({
+  setTheme: (theme: ITheme): void => set({ theme }, false, "ui/setTheme"),
+  toggleSidebar: (): void =>
+    set(
+      (state) => ({ sidebarOpen: !state.sidebarOpen }),
+      false,
+      "ui/toggleSidebar",
+    ),
+  setSidebarOpen: (sidebarOpen: boolean): void =>
+    set({ sidebarOpen }, false, "ui/setSidebarOpen"),
+  setLoading: (loading: boolean): void =>
+    set({ loading }, false, "ui/setLoading"),
+  addNotification: (notification: INotificationInput): void => {
+    const newNotification = createNotification(notification);
+    set(
+      (state) => ({ notifications: [...state.notifications, newNotification] }),
+      false,
+      "ui/addNotification",
+    );
+    if (notification.autoClose !== false) {
+      const { removeNotification } = get();
+      scheduleNotificationRemoval(newNotification.id, removeNotification);
+    }
+  },
+  removeNotification: (id: string): void =>
+    set(
+      (state) => ({
+        notifications: state.notifications.filter((n) => n.id !== id),
+      }),
+      false,
+      "ui/removeNotification",
+    ),
+  clearNotifications: (): void =>
+    set({ notifications: [] }, false, "ui/clearNotifications"),
+  openModal: (type: IModalType, data: unknown = null): void =>
+    set({ modal: { isOpen: true, type, data } }, false, "ui/openModal"),
+  closeModal: (): void =>
+    set(
+      { modal: { isOpen: false, type: null, data: null } },
+      false,
+      "ui/closeModal",
+    ),
+});
+
 export const useUIStore = create<UIStore>()(
   devtools(
     (set, get) => ({
-      // State
-      theme: "system",
-      sidebarOpen: false,
-      loading: false,
-      notifications: [],
-      modal: {
-        isOpen: false,
-        type: null,
-        data: null,
-      },
-
-      // Actions
-      setTheme: (theme): void => set({ theme }, false, "ui/setTheme"),
-
-      toggleSidebar: (): void =>
-        set(
-          (state) => ({ sidebarOpen: !state.sidebarOpen }),
-          false,
-          "ui/toggleSidebar",
-        ),
-
-      setSidebarOpen: (sidebarOpen): void =>
-        set({ sidebarOpen }, false, "ui/setSidebarOpen"),
-
-      setLoading: (loading): void => set({ loading }, false, "ui/setLoading"),
-
-      addNotification: (notification): void => {
-        const id = crypto.randomUUID();
-        const newNotification: INotification = {
-          ...notification,
-          id,
-          timestamp: new Date(),
-        };
-
-        set(
-          (state) => ({
-            notifications: [...state.notifications, newNotification],
-          }),
-          false,
-          "ui/addNotification",
-        );
-
-        // Auto-remove after 5 seconds if autoClose is true (default)
-        if (notification.autoClose !== false) {
-          setTimeout(() => {
-            const { removeNotification } = get();
-            removeNotification(id);
-          }, 5000);
-        }
-      },
-
-      removeNotification: (id): void =>
-        set(
-          (state) => ({
-            notifications: state.notifications.filter((n) => n.id !== id),
-          }),
-          false,
-          "ui/removeNotification",
-        ),
-
-      clearNotifications: (): void =>
-        set({ notifications: [] }, false, "ui/clearNotifications"),
-
-      openModal: (type, data = null): void =>
-        set(
-          {
-            modal: {
-              isOpen: true,
-              type,
-              data,
-            },
-          },
-          false,
-          "ui/openModal",
-        ),
-
-      closeModal: (): void =>
-        set(
-          {
-            modal: {
-              isOpen: false,
-              type: null,
-              data: null,
-            },
-          },
-          false,
-          "ui/closeModal",
-        ),
+      ...createInitialState(),
+      ...createUIActions(set, get),
     }),
-    {
-      name: "ui-store",
-    },
+    { name: "ui-store" },
   ),
 );

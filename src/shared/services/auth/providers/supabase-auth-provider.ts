@@ -1,3 +1,6 @@
+// Supabase Auth Provider - Modular Implementation
+// Main provider class that composes all operations
+
 import {
   createClient,
   type SupabaseClient,
@@ -18,16 +21,17 @@ import type {
   IAuthError,
 } from "@/shared/types/auth";
 
+import { AuthOperations } from "./operations/auth-operations";
+import { SessionOperations } from "./operations/session-operations";
+import { StateManager } from "./operations/state-manager";
+
 export class SupabaseAuthProvider implements IAuthProvider {
   private client: SupabaseClient;
-  private state: IAuthState = {
-    user: null,
-    session: null,
-    isLoading: true,
-    isAuthenticated: false,
-    error: null,
-  };
-  private listeners: ((state: IAuthState) => void)[] = [];
+
+  // Composed operations
+  private authOps: AuthOperations;
+  private sessionOps: SessionOperations;
+  private stateManager: StateManager;
 
   constructor() {
     const env = getEnv();
@@ -35,44 +39,31 @@ export class SupabaseAuthProvider implements IAuthProvider {
       env.NEXT_PUBLIC_SUPABASE_URL,
       env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     );
+
+    // Initialize composed operations
+    this.authOps = new AuthOperations(this.client);
+    this.sessionOps = new SessionOperations(this.client);
+    this.stateManager = new StateManager();
   }
 
-  // Single Responsibility: Estado
+  // State management - delegated to StateManager
   getState(): IAuthState {
-    return { ...this.state };
+    return this.stateManager.getState();
   }
 
-  private setState(partial: Partial<IAuthState>): void {
-    this.state = { ...this.state, ...partial };
-    this.notifyListeners();
-  }
-
-  private notifyListeners(): void {
-    this.listeners.forEach((listener) => listener(this.getState()));
-  }
-
-  // Single Responsibility: Autenticação
+  // Authentication operations - delegated to AuthOperations
   async login(credentials: ILoginCredentials): Promise<IAuthSession> {
     try {
-      this.setState({ isLoading: true, error: null });
+      this.stateManager.setState({ isLoading: true, error: null });
 
-      const { data, error } = await this.client.auth.signInWithPassword({
-        email: credentials.email,
-        password: credentials.password,
-      });
+      const { user, session } = await this.authOps.login(
+        credentials,
+        this.mapSupabaseUser,
+        this.mapSupabaseSession,
+        this.mapSupabaseError,
+      );
 
-      if (error) {
-        throw this.mapSupabaseError(error);
-      }
-
-      if (!data.session || !data.user) {
-        throw new Error("Login failed - no session created");
-      }
-
-      const user = this.mapSupabaseUser(data.user);
-      const session = this.mapSupabaseSession(data.session);
-
-      this.setState({
+      this.stateManager.setState({
         user,
         session,
         isLoading: false,
@@ -83,7 +74,7 @@ export class SupabaseAuthProvider implements IAuthProvider {
       return session;
     } catch (error) {
       const authError = error as IAuthError;
-      this.setState({
+      this.stateManager.setState({
         isLoading: false,
         error: authError,
         isAuthenticated: false,
@@ -94,31 +85,16 @@ export class SupabaseAuthProvider implements IAuthProvider {
 
   async register(credentials: IRegisterCredentials): Promise<IAuthSession> {
     try {
-      this.setState({ isLoading: true, error: null });
+      this.stateManager.setState({ isLoading: true, error: null });
 
-      const { data, error } = await this.client.auth.signUp({
-        email: credentials.email,
-        password: credentials.password,
-        options: {
-          data: {
-            name: credentials.name,
-            ...credentials.metadata,
-          },
-        },
-      });
+      const { user, session } = await this.authOps.register(
+        credentials,
+        this.mapSupabaseUser,
+        this.mapSupabaseSession,
+        this.mapSupabaseError,
+      );
 
-      if (error) {
-        throw this.mapSupabaseError(error);
-      }
-
-      if (!data.session || !data.user) {
-        throw new Error("Registration failed - no session created");
-      }
-
-      const user = this.mapSupabaseUser(data.user);
-      const session = this.mapSupabaseSession(data.session);
-
-      this.setState({
+      this.stateManager.setState({
         user,
         session,
         isLoading: false,
@@ -129,7 +105,7 @@ export class SupabaseAuthProvider implements IAuthProvider {
       return session;
     } catch (error) {
       const authError = error as IAuthError;
-      this.setState({
+      this.stateManager.setState({
         isLoading: false,
         error: authError,
         isAuthenticated: false,
@@ -140,15 +116,11 @@ export class SupabaseAuthProvider implements IAuthProvider {
 
   async logout(): Promise<void> {
     try {
-      this.setState({ isLoading: true, error: null });
+      this.stateManager.setState({ isLoading: true, error: null });
 
-      const { error } = await this.client.auth.signOut();
+      await this.authOps.logout(this.mapSupabaseError);
 
-      if (error) {
-        throw this.mapSupabaseError(error);
-      }
-
-      this.setState({
+      this.stateManager.setState({
         user: null,
         session: null,
         isLoading: false,
@@ -157,7 +129,7 @@ export class SupabaseAuthProvider implements IAuthProvider {
       });
     } catch (error) {
       const authError = error as IAuthError;
-      this.setState({
+      this.stateManager.setState({
         isLoading: false,
         error: authError,
       });
@@ -165,82 +137,41 @@ export class SupabaseAuthProvider implements IAuthProvider {
     }
   }
 
-  // Single Responsibility: Sessão
+  // Session operations - delegated to SessionOperations
   async getCurrentUser(): Promise<IUser | null> {
-    try {
-      const {
-        data: { user },
-        error,
-      } = await this.client.auth.getUser();
-
-      if (error) {
-        throw this.mapSupabaseError(error);
-      }
-
-      return user ? this.mapSupabaseUser(user) : null;
-    } catch (error) {
-      console.error("Error getting current user:", error);
-      return null;
-    }
+    return this.sessionOps.getCurrentUser(
+      this.mapSupabaseUser,
+      this.mapSupabaseError,
+    );
   }
 
   async getCurrentSession(): Promise<IAuthSession | null> {
-    try {
-      const {
-        data: { session },
-        error,
-      } = await this.client.auth.getSession();
-
-      if (error) {
-        throw this.mapSupabaseError(error);
-      }
-
-      return session ? this.mapSupabaseSession(session) : null;
-    } catch (error) {
-      console.error("Error getting current session:", error);
-      return null;
-    }
+    return this.sessionOps.getCurrentSession(
+      this.mapSupabaseSession,
+      this.mapSupabaseError,
+    );
   }
 
   async refreshSession(): Promise<IAuthSession | null> {
-    try {
-      const { data, error } = await this.client.auth.refreshSession();
+    const { user, session } = await this.sessionOps.refreshSession(
+      this.mapSupabaseUser,
+      this.mapSupabaseSession,
+      this.mapSupabaseError,
+    );
 
-      if (error) {
-        throw this.mapSupabaseError(error);
-      }
+    this.stateManager.setState({
+      user,
+      session,
+      isAuthenticated: !!user,
+      error: null,
+    });
 
-      if (!data.session) {
-        return null;
-      }
-
-      const session = this.mapSupabaseSession(data.session);
-      const user = data.user ? this.mapSupabaseUser(data.user) : null;
-
-      this.setState({
-        user,
-        session,
-        isAuthenticated: !!user,
-        error: null,
-      });
-
-      return session;
-    } catch (error) {
-      console.error("Error refreshing session:", error);
-      return null;
-    }
+    return session;
   }
 
-  // Single Responsibility: Recuperação de senha
   async resetPassword(data: IResetPasswordData): Promise<void> {
     try {
-      const { error } = await this.client.auth.resetPasswordForEmail(
-        data.email,
-      );
-
-      if (error) {
-        throw this.mapSupabaseError(error);
-      }
+      await this.sessionOps.resetPassword(data, this.mapSupabaseError);
     } catch (error) {
       throw error as IAuthError;
     }
@@ -248,39 +179,25 @@ export class SupabaseAuthProvider implements IAuthProvider {
 
   async updatePassword(newPassword: string): Promise<void> {
     try {
-      const { error } = await this.client.auth.updateUser({
-        password: newPassword,
-      });
-
-      if (error) {
-        throw this.mapSupabaseError(error);
-      }
+      await this.sessionOps.updatePassword(newPassword, this.mapSupabaseError);
     } catch (error) {
       throw error as IAuthError;
     }
   }
 
-  // Observer Pattern: Listeners
+  // Observer Pattern - delegated to StateManager
   onAuthStateChange(callback: (state: IAuthState) => void): () => void {
-    this.listeners.push(callback);
-
-    // Retorna função para remover listener
-    return () => {
-      const index = this.listeners.indexOf(callback);
-      if (index > -1) {
-        this.listeners.splice(index, 1);
-      }
-    };
+    return this.stateManager.addListener(callback);
   }
 
-  // Inicialização e cleanup
+  // Initialization and cleanup
   async initialize(): Promise<void> {
     try {
-      // Verificar sessão atual
+      // Verify current session
       const session = await this.getCurrentSession();
       const user = session ? await this.getCurrentUser() : null;
 
-      this.setState({
+      this.stateManager.setState({
         user,
         session,
         isLoading: false,
@@ -288,12 +205,12 @@ export class SupabaseAuthProvider implements IAuthProvider {
         error: null,
       });
 
-      // Configurar listener para mudanças de auth
+      // Setup listener for auth changes
       this.client.auth.onAuthStateChange((event, session) => {
         const user = session?.user ? this.mapSupabaseUser(session.user) : null;
         const mappedSession = session ? this.mapSupabaseSession(session) : null;
 
-        this.setState({
+        this.stateManager.setState({
           user,
           session: mappedSession,
           isAuthenticated: !!user,
@@ -301,7 +218,7 @@ export class SupabaseAuthProvider implements IAuthProvider {
         });
       });
     } catch (error) {
-      this.setState({
+      this.stateManager.setState({
         isLoading: false,
         error: error as IAuthError,
       });
@@ -309,36 +226,32 @@ export class SupabaseAuthProvider implements IAuthProvider {
   }
 
   async cleanup(): Promise<void> {
-    this.listeners = [];
-    // Supabase client cleanup é automático
+    this.stateManager.clearListeners();
+    // Supabase client cleanup is automatic
   }
 
-  // Mappers para conversão de tipos (Single Responsibility)
-  private mapSupabaseUser(supabaseUser: SupabaseUser): IUser {
-    return {
-      id: supabaseUser.id,
-      email: supabaseUser.email!,
-      name: supabaseUser.user_metadata?.name,
-      avatar: supabaseUser.user_metadata?.avatar_url,
-      role: supabaseUser.user_metadata?.role,
-      metadata: supabaseUser.user_metadata,
-    };
-  }
+  // Mappers for type conversion (Single Responsibility)
+  private mapSupabaseUser = (supabaseUser: SupabaseUser): IUser => ({
+    id: supabaseUser.id,
+    email: supabaseUser.email!,
+    name: supabaseUser.user_metadata?.name,
+    avatar: supabaseUser.user_metadata?.avatar_url,
+    role: supabaseUser.user_metadata?.role,
+    metadata: supabaseUser.user_metadata,
+  });
 
-  private mapSupabaseSession(supabaseSession: SupabaseSession): IAuthSession {
-    return {
-      user: this.mapSupabaseUser(supabaseSession.user),
-      token: supabaseSession.access_token,
-      expiresAt: new Date((supabaseSession.expires_at ?? 0) * 1000),
-      refreshToken: supabaseSession.refresh_token,
-    };
-  }
+  private mapSupabaseSession = (
+    supabaseSession: SupabaseSession,
+  ): IAuthSession => ({
+    user: this.mapSupabaseUser(supabaseSession.user),
+    token: supabaseSession.access_token,
+    expiresAt: new Date((supabaseSession.expires_at ?? 0) * 1000),
+    refreshToken: supabaseSession.refresh_token,
+  });
 
-  private mapSupabaseError(error: SupabaseAuthError): IAuthError {
-    return {
-      code: error.message || "unknown_error",
-      message: error.message || "An unknown error occurred",
-      details: error,
-    };
-  }
+  private mapSupabaseError = (error: SupabaseAuthError): IAuthError => ({
+    code: error.message || "unknown_error",
+    message: error.message || "An unknown error occurred",
+    details: error,
+  });
 }

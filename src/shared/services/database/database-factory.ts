@@ -52,7 +52,7 @@ export class DatabaseProviderFactory {
 }
 
 // Auto-registro de providers disponíveis
-export const registerDefaultDatabaseProviders = async () => {
+export const registerDefaultDatabaseProviders = async (): Promise<void> => {
   // Supabase Provider (padrão)
   DatabaseProviderFactory.registerProvider("supabase", async () => {
     const { SupabaseDatabaseProvider } = await import(

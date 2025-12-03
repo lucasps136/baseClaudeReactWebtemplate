@@ -1,7 +1,10 @@
 // CRUD Operations for Supabase Database Provider
 // Single Responsibility: Create, Read, Update, Delete operations
 
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type {
+  SupabaseClient,
+  PostgrestFilterBuilder,
+} from "@supabase/supabase-js";
 
 import type {
   IDatabaseRecord,
@@ -13,10 +16,25 @@ import type {
   IDatabaseError,
 } from "@/shared/types/database";
 
+// Options for selectBy method
+interface ISelectByOptions {
+  field: string;
+  value: unknown;
+  options: Omit<IQueryOptions, "where">;
+  mapError: (error: unknown) => IDatabaseError;
+}
+
+// Options for updateBy method
+interface IUpdateByOptions {
+  field: string;
+  value: unknown;
+  data: IUpdateData;
+  mapError: (error: unknown) => IDatabaseError;
+}
+
 export class CrudOperations {
   constructor(private client: SupabaseClient) {}
 
-  // Create
   async insert<T extends IDatabaseRecord>(
     table: string,
     data: IInsertData | IInsertData[],
@@ -43,7 +61,55 @@ export class CrudOperations {
     }
   }
 
-  // Read
+  // SRP: Apply where conditions to query
+  private applyWhereConditions<T>(
+    query: PostgrestFilterBuilder<T, T[], unknown>,
+    where: IQueryOptions["where"],
+  ): PostgrestFilterBuilder<T, T[], unknown> {
+    if (!where) return query;
+
+    Object.entries(where).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        query = query.in(key, value);
+      } else if (value === null) {
+        query = query.is(key, null);
+      } else {
+        query = query.eq(key, value);
+      }
+    });
+
+    return query;
+  }
+
+  // SRP: Apply ordering to query
+  private applyOrdering<T>(
+    query: PostgrestFilterBuilder<T, T[], unknown>,
+    orderBy: IQueryOptions["orderBy"],
+  ): PostgrestFilterBuilder<T, T[], unknown> {
+    if (!orderBy) return query;
+
+    orderBy.forEach(({ column, ascending = true }) => {
+      query = query.order(column, { ascending });
+    });
+
+    return query;
+  }
+
+  // SRP: Apply pagination to query
+  private applyPagination<T>(
+    query: PostgrestFilterBuilder<T, T[], unknown>,
+    limit: number | undefined,
+    offset: number | undefined,
+  ): PostgrestFilterBuilder<T, T[], unknown> {
+    if (limit) {
+      query = query.limit(limit);
+    }
+    if (offset) {
+      query = query.range(offset, offset + (limit || 1000) - 1);
+    }
+    return query;
+  }
+
   async select<T extends IDatabaseRecord>(
     table: string,
     options: IQueryOptions,
@@ -56,36 +122,9 @@ export class CrudOperations {
           count: "exact",
         });
 
-      // Where conditions
-      if (options.where) {
-        Object.entries(options.where).forEach(([key, value]) => {
-          if (Array.isArray(value)) {
-            query = query.in(key, value);
-          } else if (value === null) {
-            query = query.is(key, null);
-          } else {
-            query = query.eq(key, value);
-          }
-        });
-      }
-
-      // Order by
-      if (options.orderBy) {
-        options.orderBy.forEach(({ column, ascending = true }) => {
-          query = query.order(column, { ascending });
-        });
-      }
-
-      // Pagination
-      if (options.limit) {
-        query = query.limit(options.limit);
-      }
-      if (options.offset) {
-        query = query.range(
-          options.offset,
-          options.offset + (options.limit || 1000) - 1,
-        );
-      }
+      query = this.applyWhereConditions(query, options.where);
+      query = this.applyOrdering(query, options.orderBy);
+      query = this.applyPagination(query, options.limit, options.offset);
 
       const { data, error, count } = await query;
 
@@ -129,11 +168,9 @@ export class CrudOperations {
 
   async selectBy<T extends IDatabaseRecord>(
     table: string,
-    field: string,
-    value: unknown,
-    options: Omit<IQueryOptions, "where">,
-    mapError: (error: unknown) => IDatabaseError,
+    selectOptions: ISelectByOptions,
   ): Promise<IDatabaseResponse<T[]>> {
+    const { field, value, options, mapError } = selectOptions;
     return this.select<T>(
       table,
       {
@@ -144,7 +181,6 @@ export class CrudOperations {
     );
   }
 
-  // Update
   async update<T extends IDatabaseRecord>(
     table: string,
     id: string,
@@ -176,11 +212,9 @@ export class CrudOperations {
 
   async updateBy<T extends IDatabaseRecord>(
     table: string,
-    field: string,
-    value: unknown,
-    data: IUpdateData,
-    mapError: (error: unknown) => IDatabaseError,
+    updateOptions: IUpdateByOptions,
   ): Promise<IDatabaseResponse<T[]>> {
+    const { field, value, data, mapError } = updateOptions;
     try {
       const {
         data: result,
@@ -209,7 +243,6 @@ export class CrudOperations {
     }
   }
 
-  // Delete
   async delete<T extends IDatabaseRecord>(
     table: string,
     id: string,
@@ -262,7 +295,6 @@ export class CrudOperations {
     }
   }
 
-  // Upsert
   async upsert<T extends IDatabaseRecord>(
     table: string,
     data: IUpsertData | IUpsertData[],

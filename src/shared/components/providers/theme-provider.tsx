@@ -181,28 +181,29 @@ interface IExtendedThemeProviderProps {
   config?: Partial<IThemeConfig>;
 }
 
+// SRP: Create default theme configuration
+const createDefaultThemeConfig = (): IThemeConfig => ({
+  defaultTheme: "default",
+  enableSystem: true,
+  themes: [
+    ThemeFactory.createTheme("default", "Default"),
+    ThemeFactory.createTheme("blue", "Blue", { preset: "blue" }),
+    ThemeFactory.createTheme("green", "Green", { preset: "green" }),
+    ThemeFactory.createTheme("orange", "Orange", { preset: "orange" }),
+    ThemeFactory.createTheme("red", "Red", { preset: "red" }),
+    ThemeFactory.createTheme("violet", "Violet", { preset: "violet" }),
+    ThemeFactory.createTheme("slate", "Slate", { preset: "slate" }),
+  ],
+  storageKey: "theme",
+  attribute: "data-theme",
+});
+
 // Componente Provider Principal
 export function ExtendedThemeProvider({
   children,
   config = {},
 }: IExtendedThemeProviderProps): JSX.Element {
-  const defaultConfig: IThemeConfig = {
-    defaultTheme: "default",
-    enableSystem: true,
-    themes: [
-      ThemeFactory.createTheme("default", "Default"),
-      ThemeFactory.createTheme("blue", "Blue", { preset: "blue" }),
-      ThemeFactory.createTheme("green", "Green", { preset: "green" }),
-      ThemeFactory.createTheme("orange", "Orange", { preset: "orange" }),
-      ThemeFactory.createTheme("red", "Red", { preset: "red" }),
-      ThemeFactory.createTheme("violet", "Violet", { preset: "violet" }),
-      ThemeFactory.createTheme("slate", "Slate", { preset: "slate" }),
-    ],
-    storageKey: "theme",
-    attribute: "data-theme",
-  };
-
-  const finalConfig = { ...defaultConfig, ...config };
+  const finalConfig = { ...createDefaultThemeConfig(), ...config };
   const [themeManager] = useState(() => new ThemeManager(finalConfig.themes));
   const [availableThemes, setAvailableThemes] = useState<ICustomTheme[]>(
     finalConfig.themes,
@@ -294,8 +295,7 @@ export function ThemeProvider({
   ...props
 }: {
   children: React.ReactNode;
-  [key: string]: any;
-}): JSX.Element {
+} & Partial<IThemeConfig>): JSX.Element {
   return (
     <ExtendedThemeProvider config={props}>{children}</ExtendedThemeProvider>
   );

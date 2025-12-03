@@ -100,13 +100,12 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
     value: unknown,
     options: Omit<IQueryOptions, "where"> = {},
   ): Promise<IDatabaseResponse<T[]>> {
-    return this.crud.selectBy<T>(
-      table,
+    return this.crud.selectBy<T>(table, {
       field,
       value,
       options,
-      this.mapSupabaseError,
-    );
+      mapError: this.mapSupabaseError,
+    });
   }
 
   async update<T extends IDatabaseRecord>(
@@ -123,13 +122,12 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
     value: unknown,
     data: IUpdateData,
   ): Promise<IDatabaseResponse<T[]>> {
-    return this.crud.updateBy<T>(
-      table,
+    return this.crud.updateBy<T>(table, {
       field,
       value,
       data,
-      this.mapSupabaseError,
-    );
+      mapError: this.mapSupabaseError,
+    });
   }
 
   async delete<T extends IDatabaseRecord>(

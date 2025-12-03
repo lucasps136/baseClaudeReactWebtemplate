@@ -6,7 +6,7 @@ import { twMerge } from "tailwind-merge";
  * @param inputs - Class values to merge
  * @returns Merged class string
  */
-export function cn(...inputs: ClassValue[]) {
+export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
 }
 
@@ -68,7 +68,7 @@ export function generateId(length = 8): string {
  * @param wait - Wait time in milliseconds
  * @returns Debounced function
  */
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: never[]) => unknown>(
   func: T,
   wait: number,
 ): (...args: Parameters<T>) => void {

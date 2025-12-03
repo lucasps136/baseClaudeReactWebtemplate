@@ -8,7 +8,7 @@ import { useAuthStore } from "./auth.store";
 import { useSessionStore } from "./session.store";
 
 // Store utilities
-export const resetAllStores = () => {
+export const resetAllStores = (): void => {
   // This function can be used to reset all stores
   // Useful for logout or testing scenarios
   useAuthStore.getState().clearUser();

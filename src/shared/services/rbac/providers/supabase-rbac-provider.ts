@@ -87,7 +87,7 @@ export class SupabaseRBACProvider implements IRBACProvider {
 
   async updateRole(roleId: string, data: Partial<IRole>): Promise<IRole> {
     try {
-      const updateData: any = {};
+      const updateData: Record<string, unknown> = {};
       if (data.name) updateData.name = data.name;
       if (data.description !== undefined)
         updateData.description = data.description;
@@ -182,7 +182,7 @@ export class SupabaseRBACProvider implements IRBACProvider {
     data: Partial<IPermission>,
   ): Promise<IPermission> {
     try {
-      const updateData: any = {};
+      const updateData: Record<string, unknown> = {};
       if (data.name) updateData.name = data.name;
       if (data.description !== undefined)
         updateData.description = data.description;
@@ -326,14 +326,20 @@ export class SupabaseRBACProvider implements IRBACProvider {
 
       if (error) throw error;
 
-      return data.map((item: any) => ({
-        id: "", // Not returned by function
-        name: item.permission_name,
-        description: "",
-        resource: item.resource,
-        action: item.action,
-        createdAt: new Date(),
-      }));
+      return data.map(
+        (item: {
+          permission_name: string;
+          resource: string;
+          action: string;
+        }) => ({
+          id: "", // Not returned by function
+          name: item.permission_name,
+          description: "",
+          resource: item.resource,
+          action: item.action,
+          createdAt: new Date(),
+        }),
+      );
     } catch (error) {
       throw this.mapSupabaseError(error);
     }
@@ -511,7 +517,14 @@ export class SupabaseRBACProvider implements IRBACProvider {
   }
 
   // Mappers (Single Responsibility)
-  private mapSupabaseRole = (role: any): IRole => ({
+  private mapSupabaseRole = (role: {
+    id: string;
+    name: string;
+    description?: string;
+    is_system: boolean;
+    created_at: string;
+    updated_at: string;
+  }): IRole => ({
     id: role.id,
     name: role.name,
     description: role.description,
@@ -520,7 +533,14 @@ export class SupabaseRBACProvider implements IRBACProvider {
     updatedAt: new Date(role.updated_at),
   });
 
-  private mapSupabasePermission = (permission: any): IPermission => ({
+  private mapSupabasePermission = (permission: {
+    id: string;
+    name: string;
+    description?: string;
+    resource: string;
+    action: string;
+    created_at: string;
+  }): IPermission => ({
     id: permission.id,
     name: permission.name,
     description: permission.description,
@@ -529,7 +549,16 @@ export class SupabaseRBACProvider implements IRBACProvider {
     createdAt: new Date(permission.created_at),
   });
 
-  private mapSupabaseUserRole = (userRole: any): IUserRole => ({
+  private mapSupabaseUserRole = (userRole: {
+    id: string;
+    user_id: string;
+    role_id: string;
+    organization_id?: string;
+    assigned_by?: string;
+    assigned_at: string;
+    expires_at?: string;
+    is_active: boolean;
+  }): IUserRole => ({
     id: userRole.id,
     userId: userRole.user_id,
     roleId: userRole.role_id,

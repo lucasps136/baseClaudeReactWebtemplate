@@ -17,7 +17,7 @@ import {
 import type { ISupabaseService, IValidationService } from "./index";
 
 // Setup services with proper dependency injection
-export const setupServices = () => {
+export const setupServices = (): void => {
   const env = getEnv();
 
   // Supabase configuration from environment
@@ -56,7 +56,7 @@ export const setupServices = () => {
 };
 
 // Call this during app initialization
-export const initializeServices = () => {
+export const initializeServices = (): void => {
   try {
     setupServices();
   } catch (error) {

@@ -70,40 +70,37 @@ const StatusBadges = (): JSX.Element => (
   </div>
 );
 
-// SRP: Feature data configuration
-const getFeatures = (): IFeatureCardProps[] => [
-  {
-    icon: "🏗️",
-    title: "SOLID Architecture",
-    description:
-      "Built following SOLID principles for maintainable and scalable code",
-    items: [
-      "Single Responsibility",
-      "Open/Closed Principle",
-      "Dependency Inversion",
-    ],
-  },
-  {
-    icon: "⚡",
-    title: "Modern Stack",
-    description: "Latest technologies for optimal developer experience",
-    items: ["Next.js 14+ App Router", "TypeScript", "Tailwind CSS + shadcn/ui"],
-  },
-  {
-    icon: "🔌",
-    title: "MCP Ready",
-    description: "Pre-configured MCP servers for enhanced development",
-    items: [
-      "Playwright automation",
-      "Figma integration",
-      "Supabase connection",
-    ],
-  },
-];
-
 // Main page component (Open/Closed: Easy to extend with new sections)
 export default function HomePage(): JSX.Element {
-  const features = getFeatures();
+  const features: IFeatureCardProps[] = [
+    {
+      icon: "🏗️",
+      title: "SOLID Architecture",
+      description:
+        "Built following SOLID principles for maintainable and scalable code",
+      items: [
+        "Single Responsibility",
+        "Open/Closed Principle",
+        "Dependency Inversion",
+      ],
+    },
+    {
+      icon: "⚡",
+      title: "Modern Stack",
+      description: "Latest technologies for optimal developer experience",
+      items: ["Next.js 14+ App Router", "TypeScript", "Tailwind CSS + shadcn/ui"],
+    },
+    {
+      icon: "🔌",
+      title: "MCP Ready",
+      description: "Pre-configured MCP servers for enhanced development",
+      items: [
+        "Playwright automation",
+        "Figma integration",
+        "Supabase connection",
+      ],
+    },
+  ];
 
   return (
     <main className="container mx-auto py-12">

@@ -146,7 +146,7 @@ export interface IPaymentProvider {
 
   // Webhooks
   verifyWebhookSignature(payload: string, signature: string): boolean;
-  processWebhookEvent(event: any): Promise<IWebhookEvent>;
+  processWebhookEvent(event: Record<string, unknown>): Promise<IWebhookEvent>;
 
   // ICustomer Portal
   createCustomerPortalSession(

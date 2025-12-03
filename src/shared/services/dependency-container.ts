@@ -13,9 +13,9 @@ export interface IDependencyContainer {
 
 // Single Responsibility - only manages service dependencies
 export class DependencyContainer implements IDependencyContainer {
-  private services = new Map<string, ServiceFactory<any>>();
-  private singletons = new Map<string, ServiceInstance<any>>();
-  private singletonFactories = new Map<string, ServiceFactory<any>>();
+  private services = new Map<string, ServiceFactory<unknown>>();
+  private singletons = new Map<string, ServiceInstance<unknown>>();
+  private singletonFactories = new Map<string, ServiceFactory<unknown>>();
 
   register<T>(key: string, factory: ServiceFactory<T>): void {
     this.services.set(key, factory);

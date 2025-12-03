@@ -56,7 +56,7 @@ export class PaymentProviderFactory {
 }
 
 // Auto-registration of available providers
-export const registerDefaultPaymentProviders = async () => {
+export const registerDefaultPaymentProviders = async (): Promise<void> => {
   // Stripe Provider (default)
   PaymentProviderFactory.registerProvider("stripe", async () => {
     const { StripePaymentProvider } = await import(
@@ -181,7 +181,11 @@ export class PaymentConfigBuilder {
 
 // Preset configurations for common scenarios
 export const createPaymentConfig = {
-  stripe: (publishableKey: string, secretKey: string, webhookSecret?: string) =>
+  stripe: (
+    publishableKey: string,
+    secretKey: string,
+    webhookSecret?: string,
+  ): IPaymentProviderConfig =>
     PaymentConfigBuilder.create()
       .useStripe(publishableKey, secretKey, webhookSecret)
       .build(),

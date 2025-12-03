@@ -111,7 +111,7 @@ export const isProtectedRoute = (pathname: string): boolean => {
 };
 
 export const isAuthRoute = (pathname: string): boolean => {
-  return routeGroups.authOnly.includes(pathname as any);
+  return (routeGroups.authOnly as readonly string[]).includes(pathname);
 };
 
 export const isAdminRoute = (pathname: string): boolean => {

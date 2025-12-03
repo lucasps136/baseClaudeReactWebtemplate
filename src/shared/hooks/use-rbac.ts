@@ -15,6 +15,35 @@ import type {
   IUseRBACReturn,
 } from "@/shared/types/rbac";
 
+// SRP: Reset RBAC state when no user
+const clearRBACData = (
+  setUserRoles: (roles: IRole[]) => void,
+  setUserPermissions: (permissions: IPermission[]) => void,
+  setLoading: (loading: boolean) => void,
+): void => {
+  setUserRoles([]);
+  setUserPermissions([]);
+  setLoading(false);
+};
+
+// SRP: Fetch roles and permissions from provider
+const fetchRBACDataFromProvider = async (
+  userId: string,
+  organizationId?: string,
+): Promise<{
+  roles: IRole[];
+  permissions: IPermission[];
+}> => {
+  const rbacProvider = getRBACProvider();
+
+  const [roles, permissions] = await Promise.all([
+    rbacProvider.getUserRoles(userId, organizationId),
+    rbacProvider.getUserPermissions(userId, organizationId),
+  ]);
+
+  return { roles, permissions };
+};
+
 export function useRBAC(organizationId?: string): IUseRBACReturn {
   const { user } = useAuth();
   const [userRoles, setUserRoles] = useState<IRole[]>([]);
@@ -25,9 +54,7 @@ export function useRBAC(organizationId?: string): IUseRBACReturn {
   // Fetch user roles and permissions
   const fetchRBACData = useCallback(async () => {
     if (!user?.id) {
-      setUserRoles([]);
-      setUserPermissions([]);
-      setLoading(false);
+      clearRBACData(setUserRoles, setUserPermissions, setLoading);
       return;
     }
 
@@ -35,12 +62,10 @@ export function useRBAC(organizationId?: string): IUseRBACReturn {
       setLoading(true);
       setError(null);
 
-      const rbacProvider = getRBACProvider();
-
-      const [roles, permissions] = await Promise.all([
-        rbacProvider.getUserRoles(user.id, organizationId),
-        rbacProvider.getUserPermissions(user.id, organizationId),
-      ]);
+      const { roles, permissions } = await fetchRBACDataFromProvider(
+        user.id,
+        organizationId,
+      );
 
       setUserRoles(roles);
       setUserPermissions(permissions);
