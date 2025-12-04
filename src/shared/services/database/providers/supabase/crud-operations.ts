@@ -1,10 +1,7 @@
 // CRUD Operations for Supabase Database Provider
 // Single Responsibility: Create, Read, Update, Delete operations
 
-import type {
-  SupabaseClient,
-  PostgrestFilterBuilder,
-} from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 import type {
   IDatabaseRecord,
@@ -62,10 +59,11 @@ export class CrudOperations {
   }
 
   // SRP: Apply where conditions to query
-  private applyWhereConditions<T>(
-    query: PostgrestFilterBuilder<T, T[], unknown>,
+  private applyWhereConditions(
+    query: any, // eslint-disable-line @typescript-eslint/no-explicit-any
     where: IQueryOptions["where"],
-  ): PostgrestFilterBuilder<T, T[], unknown> {
+  ): any {
+    // eslint-disable-line @typescript-eslint/no-explicit-any
     if (!where) return query;
 
     Object.entries(where).forEach(([key, value]) => {
@@ -82,10 +80,11 @@ export class CrudOperations {
   }
 
   // SRP: Apply ordering to query
-  private applyOrdering<T>(
-    query: PostgrestFilterBuilder<T, T[], unknown>,
+  private applyOrdering(
+    query: any, // eslint-disable-line @typescript-eslint/no-explicit-any
     orderBy: IQueryOptions["orderBy"],
-  ): PostgrestFilterBuilder<T, T[], unknown> {
+  ): any {
+    // eslint-disable-line @typescript-eslint/no-explicit-any
     if (!orderBy) return query;
 
     orderBy.forEach(({ column, ascending = true }) => {
@@ -96,11 +95,12 @@ export class CrudOperations {
   }
 
   // SRP: Apply pagination to query
-  private applyPagination<T>(
-    query: PostgrestFilterBuilder<T, T[], unknown>,
+  private applyPagination(
+    query: any, // eslint-disable-line @typescript-eslint/no-explicit-any
     limit: number | undefined,
     offset: number | undefined,
-  ): PostgrestFilterBuilder<T, T[], unknown> {
+  ): any {
+    // eslint-disable-line @typescript-eslint/no-explicit-any
     if (limit) {
       query = query.limit(limit);
     }

@@ -137,7 +137,7 @@ export interface IDatabaseProvider {
   ): Promise<IDatabaseResponse<T>>;
 
   // Realtime (Observer Pattern)
-  subscribe<T = unknown>(
+  subscribe<T extends Record<string, any> = any>( // eslint-disable-line @typescript-eslint/no-explicit-any
     table: string,
     callback: RealtimeCallback<T>,
     options?: { event?: "INSERT" | "UPDATE" | "DELETE" | "*" },

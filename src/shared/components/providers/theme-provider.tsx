@@ -1,7 +1,9 @@
 "use client";
+
 import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes";
 import * as React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
+
 import { ThemeFactory } from "@/shared/services/theme/ThemeFactory";
 import type {
   ICustomTheme,

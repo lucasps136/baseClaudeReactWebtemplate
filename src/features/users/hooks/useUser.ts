@@ -53,13 +53,10 @@ export const useUser = (): IUseUserReturn => {
         setUserError(validationError);
         return null;
       }
-
       try {
         setUserLoading(true);
         setUserError(null);
-
         const user = await fetchUserFromService(id);
-
         setCurrentUser(user);
         return user;
       } catch (error) {

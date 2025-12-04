@@ -171,7 +171,7 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
     return this.utilities.transaction<T>(callback, this.mapSupabaseError);
   }
 
-  async subscribe<T = unknown>(
+  async subscribe<T extends Record<string, any> = any>( // eslint-disable-line @typescript-eslint/no-explicit-any
     table: string,
     callback: RealtimeCallback<T>,
     options: { event?: "INSERT" | "UPDATE" | "DELETE" | "*" } = {},

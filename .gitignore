@@ -69,3 +69,4 @@ yarn-error.log*
 .claude/commands/tasks.md
 .specify/
 specs/
+.claude/*

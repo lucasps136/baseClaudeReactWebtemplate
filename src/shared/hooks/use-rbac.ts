@@ -50,23 +50,19 @@ export function useRBAC(organizationId?: string): IUseRBACReturn {
   const [userPermissions, setUserPermissions] = useState<IPermission[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<IRBACError | null>(null);
-
   // Fetch user roles and permissions
   const fetchRBACData = useCallback(async () => {
     if (!user?.id) {
       clearRBACData(setUserRoles, setUserPermissions, setLoading);
       return;
     }
-
     try {
       setLoading(true);
       setError(null);
-
       const { roles, permissions } = await fetchRBACDataFromProvider(
         user.id,
         organizationId,
       );
-
       setUserRoles(roles);
       setUserPermissions(permissions);
     } catch (err) {
@@ -77,7 +73,6 @@ export function useRBAC(organizationId?: string): IUseRBACReturn {
       setLoading(false);
     }
   }, [user?.id, organizationId]);
-
   // Check if user has specific permission
   const hasPermission = useCallback(
     (permission: string): boolean => {
@@ -85,7 +80,6 @@ export function useRBAC(organizationId?: string): IUseRBACReturn {
     },
     [userPermissions],
   );
-
   // Check if user has specific role
   const hasRole = useCallback(
     (role: string): boolean => {
@@ -93,7 +87,6 @@ export function useRBAC(organizationId?: string): IUseRBACReturn {
     },
     [userRoles],
   );
-
   // Check if user can access resource with action
   const canAccess = useCallback(
     (resource: string, action: string): boolean => {
@@ -102,17 +95,14 @@ export function useRBAC(organizationId?: string): IUseRBACReturn {
     },
     [hasPermission],
   );
-
   // Refetch RBAC data
   const refetch = useCallback(async () => {
     await fetchRBACData();
   }, [fetchRBACData]);
-
   // Fetch data on mount and when dependencies change
   useEffect(() => {
     fetchRBACData();
   }, [fetchRBACData]);
-
   return {
     userRoles,
     userPermissions,

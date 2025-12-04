@@ -159,20 +159,22 @@ export class ApiError extends Error {
 
 export class NetworkError extends ApiError {
   constructor(message: string, request?: IApiRequest) {
-    super(message, 0, "Network Error", undefined, request);
+    super(message, {
+      status: 0,
+      statusText: "Network Error",
+      request,
+    });
     this.name = "NetworkError";
   }
 }
 
 export class TimeoutError extends ApiError {
   constructor(timeout: number, request?: IApiRequest) {
-    super(
-      `Request timeout after ${timeout}ms`,
-      0,
-      "Timeout",
-      undefined,
+    super(`Request timeout after ${timeout}ms`, {
+      status: 0,
+      statusText: "Timeout",
       request,
-    );
+    });
     this.name = "TimeoutError";
   }
 }

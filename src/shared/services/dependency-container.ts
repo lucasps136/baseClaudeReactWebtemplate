@@ -33,7 +33,7 @@ export class DependencyContainer implements IDependencyContainer {
         const instance = factory();
         this.singletons.set(key, instance);
       }
-      return this.singletons.get(key)!;
+      return this.singletons.get(key) as T;
     }
 
     // Check if it's a regular service

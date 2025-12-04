@@ -178,10 +178,8 @@ export const useUsers = (): IUseUsersReturn => {
     setUsersError,
     setFilter,
   } = storeState;
-
   const fetchUsers = useFetchUsers(filter, storeState);
   const createUser = useCreateUser(storeState);
-
   const updateUserById = useCallback(
     async (
       id: string,
@@ -203,7 +201,6 @@ export const useUsers = (): IUseUsersReturn => {
     },
     [updateUserInStore, setUsersLoading, setUsersError],
   );
-
   const deleteUser = useCallback(
     async (id: string): Promise<void> => {
       try {
@@ -221,13 +218,11 @@ export const useUsers = (): IUseUsersReturn => {
     },
     [removeUser, setUsersLoading, setUsersError],
   );
-
   const loadMore = useCallback(async (): Promise<void> => {
     if (!hasMore || isLoadingUsers) return;
     const nextOffset = users.length;
     await fetchUsers({ ...filter, offset: nextOffset });
   }, [hasMore, isLoadingUsers, users.length, filter, fetchUsers]);
-
   return {
     users,
     isLoadingUsers,

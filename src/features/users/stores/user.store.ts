@@ -62,28 +62,22 @@ export const useUserStore = create<UserStore>()(
   devtools(
     (set) => ({
       ...initialState,
-
       // Single user actions
       setCurrentUser: (currentUser: IUserProfile | null): void =>
         set({ currentUser, userError: null }, false, "user/setCurrentUser"),
-
       setUserLoading: (isLoadingUser: boolean): void =>
         set({ isLoadingUser }, false, "user/setUserLoading"),
-
       setUserError: (userError: string | null): void =>
         set({ userError }, false, "user/setUserError"),
-
       // List actions
       setUsers: (users: IUserProfile[]): void =>
         set({ users, usersError: null }, false, "user/setUsers"),
-
       addUser: (user: IUserProfile): void =>
         set(
           (state) => ({ users: [...state.users, user] }),
           false,
           "user/addUser",
         ),
-
       updateUser: (id: string, updates: Partial<IUserProfile>): void =>
         set(
           (state) => ({
@@ -98,7 +92,6 @@ export const useUserStore = create<UserStore>()(
           false,
           "user/updateUser",
         ),
-
       removeUser: (id: string): void =>
         set(
           (state) => ({
@@ -109,25 +102,19 @@ export const useUserStore = create<UserStore>()(
           false,
           "user/removeUser",
         ),
-
       setUsersLoading: (isLoadingUsers: boolean): void =>
         set({ isLoadingUsers }, false, "user/setUsersLoading"),
-
       setUsersError: (usersError: string | null): void =>
         set({ usersError }, false, "user/setUsersError"),
-
       setFilter: (filterUpdates: Partial<IUserListFilter>): void =>
         set(
           (state) => ({ filter: { ...state.filter, ...filterUpdates } }),
           false,
           "user/setFilter",
         ),
-
       setHasMore: (hasMore: boolean): void =>
         set({ hasMore }, false, "user/setHasMore"),
-
       setTotal: (total: number): void => set({ total }, false, "user/setTotal"),
-
       reset: (): void => set(initialState, false, "user/reset"),
     }),
     {

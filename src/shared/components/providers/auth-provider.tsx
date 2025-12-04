@@ -181,7 +181,6 @@ export const AuthProvider = ({
     isAuthenticated: false,
     error: null,
   });
-
   // Inicialização do provider (Open/Closed Principle)
   useEffect(() => {
     const cleanup = initializeAuthProvider(
@@ -202,12 +201,10 @@ export const AuthProvider = ({
         }));
       },
     );
-
     return (): void => {
       cleanup.then((cleanupFn) => cleanupFn?.()).catch(console.error);
     };
   }, [config]);
-
   // Cleanup na desmontagem
   useEffect(() => {
     return (): void => {
@@ -216,10 +213,8 @@ export const AuthProvider = ({
       }
     };
   }, [provider]);
-
   // Context value (Single Responsibility)
   const contextValue = createAuthContextValue(authState, provider);
-
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );

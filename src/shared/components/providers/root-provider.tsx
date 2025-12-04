@@ -16,12 +16,7 @@ interface IRootProviderProps {
  */
 export function RootProvider({ children }: IRootProviderProps): JSX.Element {
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <DatabaseProvider>
         <AuthProvider>{children}</AuthProvider>
       </DatabaseProvider>

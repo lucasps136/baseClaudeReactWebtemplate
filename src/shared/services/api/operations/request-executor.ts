@@ -168,17 +168,17 @@ export class RequestExecutor {
   ): Promise<Error> {
     const { ApiError } = await import("../api.types");
     const errorResponse = await this.parseErrorResponse(response);
+    const message =
+      "message" in errorResponse && typeof errorResponse.message === "string"
+        ? errorResponse.message
+        : `HTTP ${response.status}: ${response.statusText}`;
 
-    return new ApiError(
-      errorResponse.message ||
-        `HTTP ${response.status}: ${response.statusText}`,
-      {
-        status: response.status,
-        statusText: response.statusText,
-        response: errorResponse,
-        request,
-      },
-    );
+    return new ApiError(message, {
+      status: response.status,
+      statusText: response.statusText,
+      response: errorResponse as IErrorResponse,
+      request,
+    });
   }
 
   private async parseErrorResponse(

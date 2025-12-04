@@ -38,19 +38,15 @@ const shouldSkipMiddleware = (pathname: string): boolean => {
  */
 export function middleware(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
-
   // Skip middleware for static files and API routes that don't need auth
   if (shouldSkipMiddleware(pathname)) {
     return NextResponse.next();
   }
-
   // Security headers for all requests
   const response = NextResponse.next();
   addSecurityHeaders(response);
-
   // EXAMPLE: Route protection using centralized configuration
   // Uncomment and modify based on your authentication strategy
-
   /*
   // Import route helpers first:
   // import { isProtectedRoute, isAuthRoute, isAdminRoute, redirects } from "@/config/routes";

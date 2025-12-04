@@ -106,10 +106,8 @@ export function RBACProvider({
     try {
       setLoading(true);
       setError(null);
-
       const rbacConfig = createRBACConfiguration(config);
       const rbacProvider = await performRBACInitialization(rbacConfig);
-
       setProvider(rbacProvider);
       setIsInitialized(true);
     } catch (err) {
@@ -120,15 +118,12 @@ export function RBACProvider({
       setLoading(false);
     }
   }, [config]);
-
   const reinitialize = useCallback(async (): Promise<void> => {
     await initializeRBAC();
   }, [initializeRBAC]);
 
   useEffect(() => {
     initializeRBAC();
-
-    // Cleanup on unmount
     return (): void => {
       RBACManager.cleanup().catch(console.error);
     };

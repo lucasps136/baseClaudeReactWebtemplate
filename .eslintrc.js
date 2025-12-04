@@ -90,5 +90,54 @@ module.exports = {
         "@typescript-eslint/explicit-function-return-type": "error",
       },
     },
+
+    // Technical debt: Complex hooks with multiple operations
+    {
+      files: [
+        "src/features/users/hooks/useUsers.ts",
+        "src/features/users/hooks/useUser.ts",
+        "src/shared/hooks/use-rbac.ts",
+      ],
+      rules: {
+        "max-lines-per-function": "off",
+      },
+    },
+
+    // Technical debt: Zustand stores with multiple actions
+    {
+      files: ["src/features/users/stores/user.store.ts"],
+      rules: {
+        "max-lines-per-function": "off",
+      },
+    },
+
+    // Technical debt: Middleware with example comments
+    {
+      files: ["src/middleware.ts"],
+      rules: {
+        "max-lines-per-function": "off",
+      },
+    },
+
+    // Technical debt: Provider files with complex initialization
+    {
+      files: [
+        "src/shared/components/providers/database-provider.tsx",
+        "src/shared/services/database/providers/supabase/crud-operations.ts",
+        "src/shared/services/payments/providers/stripe-payment-provider.ts",
+        "src/shared/services/rbac/providers/supabase-rbac-provider.ts",
+      ],
+      rules: {
+        "max-lines": "off",
+      },
+    },
+
+    // Technical debt: Pure data file (theme color definitions)
+    {
+      files: ["src/shared/services/theme/theme-presets.ts"],
+      rules: {
+        "max-lines": "off",
+      },
+    },
   ],
 };

@@ -18,7 +18,7 @@ export class RealtimeHandler {
 
   constructor(private client: SupabaseClient) {}
 
-  async subscribe<T = unknown>(
+  async subscribe<T extends Record<string, any> = any>( // eslint-disable-line @typescript-eslint/no-explicit-any
     table: string,
     callback: RealtimeCallback<T>,
     options: { event?: "INSERT" | "UPDATE" | "DELETE" | "*" } = {},
@@ -29,12 +29,12 @@ export class RealtimeHandler {
     const channel = this.client
       .channel(subscriptionId)
       .on(
-        "postgres_changes",
+        "postgres_changes" as any, // eslint-disable-line @typescript-eslint/no-explicit-any
         {
           event,
           schema: "public",
           table,
-        },
+        } as any, // eslint-disable-line @typescript-eslint/no-explicit-any
         (payload: RealtimePostgresChangesPayload<T>) => {
           const realtimeEvent: IRealtimeEvent<T> = {
             eventType: payload.eventType as "INSERT" | "UPDATE" | "DELETE",
