@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useOrdersUiStore } from "../stores/orders-ui.store";
-import type { CreateOrdersUiInput, UpdateOrdersUiInput } from "../types";
+import type { CreateOrderInput, UpdateOrderInput, Order } from "../types";
 
 export const useOrdersUi = () => {
   const {
@@ -37,7 +37,7 @@ export const useOrdersUi = () => {
   }, [setItems, setLoading, setError]);
 
   const createItem = useCallback(
-    async (input: CreateOrdersUiInput) => {
+    async (input: CreateOrderInput) => {
       try {
         setLoading(true);
         setError(null);
@@ -48,7 +48,7 @@ export const useOrdersUi = () => {
           ...input,
           createdAt: new Date(),
           updatedAt: new Date(),
-        };
+        } as unknown as Order;
 
         addItem(newItem);
         return newItem;
@@ -65,7 +65,7 @@ export const useOrdersUi = () => {
   );
 
   const updateItemById = useCallback(
-    async (id: string, input: UpdateOrdersUiInput) => {
+    async (id: string, input: UpdateOrderInput) => {
       try {
         setLoading(true);
         setError(null);

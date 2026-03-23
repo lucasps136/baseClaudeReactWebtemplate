@@ -1,17 +1,17 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import type { PaymentsUiItem } from "../types";
+import type { Payment } from "../types";
 
 interface PaymentsUiState {
-  items: PaymentsUiItem[];
+  items: Payment[];
   isLoading: boolean;
   error: string | null;
 }
 
 interface PaymentsUiActions {
-  setItems: (items: PaymentsUiItem[]) => void;
-  addItem: (item: PaymentsUiItem) => void;
-  updateItem: (id: string, updates: Partial<PaymentsUiItem>) => void;
+  setItems: (items: Payment[]) => void;
+  addItem: (item: Payment) => void;
+  updateItem: (id: string, updates: Partial<Payment>) => void;
   removeItem: (id: string) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;

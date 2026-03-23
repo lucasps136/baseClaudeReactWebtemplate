@@ -3,33 +3,148 @@
   "name": "Payments Data",
   "version": "1.0.0",
   "category": "data",
-  "description": "PaymentsData module - Auto-generated",
+  "description": "Data layer module for payment processing. Provides SQL schemas, TypeScript queries, and RLS policies for payment management including multiple gateways (Stripe, PagSeguro, MercadoPago), payment methods, and refund tracking.",
   "exports": {
     "schemas": [
       {
-        "name": "payments-data_table",
-        "path": "./schemas"
+        "name": "payments_table",
+        "path": "./schemas/payments.sql",
+        "description": "Complete payments table with RLS policies, indexes, and triggers"
+      }
+    ],
+    "queries": [
+      {
+        "name": "payments_queries",
+        "path": "./queries/payments.queries.ts",
+        "description": "TypeScript query library for payment CRUD operations"
+      }
+    ],
+    "types": [
+      {
+        "name": "Payment",
+        "path": "./queries/payments.queries",
+        "description": "Payment entity interface"
+      },
+      {
+        "name": "PaymentInsert",
+        "path": "./queries/payments.queries",
+        "description": "Payment creation input type"
+      },
+      {
+        "name": "PaymentUpdate",
+        "path": "./queries/payments.queries",
+        "description": "Payment update input type"
+      },
+      {
+        "name": "PaymentFilters",
+        "path": "./queries/payments.queries",
+        "description": "Payment filtering options"
+      },
+      {
+        "name": "PaymentStatus",
+        "path": "./queries/payments.queries",
+        "description": "Payment status enum type"
+      },
+      {
+        "name": "PaymentMethod",
+        "path": "./queries/payments.queries",
+        "description": "Payment method enum type"
+      },
+      {
+        "name": "PaymentGateway",
+        "path": "./queries/payments.queries",
+        "description": "Payment gateway enum type"
       }
     ]
   },
   "dependencies": {
-    "modules": [],
-    "packages": []
+    "modules": ["user-data", "orders-data"],
+    "packages": ["@supabase/supabase-js"]
   },
   "ai": {
-    "summary": "PaymentsData module for data layer",
-    "keywords": ["payments-data", "data"],
-    "use_cases": ["Manage payments-data"],
+    "summary": "Payment data layer providing SQL schemas and TypeScript queries for payment processing with multi-gateway support, payment methods (PIX, credit card, boleto), and complete transaction lifecycle management.",
+    "keywords": [
+      "payments",
+      "payment-processing",
+      "transaction",
+      "gateway",
+      "stripe",
+      "pagarme",
+      "mercadopago",
+      "pix",
+      "credit-card",
+      "boleto",
+      "refund",
+      "payer",
+      "payee",
+      "supabase",
+      "rls",
+      "database",
+      "query",
+      "typescript"
+    ],
+    "use_cases": [
+      "Create payment records for orders",
+      "Track payment lifecycle (pending → completed)",
+      "Process refunds",
+      "Query payments by gateway",
+      "Get payment statistics for dashboards",
+      "Lookup payments by external gateway ID",
+      "Filter payments by method, status, date",
+      "Get payer/payee payment history",
+      "Store gateway responses for debugging"
+    ],
     "reusable": {
-      "schemas": ["paymentsdata_table"]
+      "schemas": ["payments_table"],
+      "types": [
+        "Payment",
+        "PaymentInsert",
+        "PaymentUpdate",
+        "PaymentFilters",
+        "PaymentStatus",
+        "PaymentMethod",
+        "PaymentGateway"
+      ],
+      "functions": [
+        "getPaymentById",
+        "getPaymentByExternalId",
+        "listPayments",
+        "getPaymentsByOrder",
+        "getPaymentsByPayer",
+        "getPaymentsByPayee",
+        "createPayment",
+        "updatePayment",
+        "updatePaymentStatus",
+        "markAsPaid",
+        "markAsFailed",
+        "markAsRefunded",
+        "getPaymentStats"
+      ]
     },
-    "examples": ["import { PaymentsData } from '@/modules/data/payments-data'"]
+    "examples": [
+      "import { createPayment, PaymentInsert } from '@/modules/data/payments-data'",
+      "const payment = await getPaymentByExternalId(supabase, stripePaymentIntentId)",
+      "await markAsPaid(supabase, paymentId, externalId)",
+      "const stats = await getPaymentStats(supabase, userId, 'payee')"
+    ]
   },
   "status": "experimental",
   "createdAt": "2025-11-21T15:06:40.896Z",
-  "updatedAt": "2025-11-21T15:06:40.896Z",
-  "author": "Auto-generated",
+  "updatedAt": "2025-12-09T00:00:00.000Z",
+  "author": "Bebarter Team",
   "license": "MIT",
-  "tags": ["data", "payments-data"],
-  "relatedFiles": []
+  "keywords": [
+    "payments",
+    "payment-processing",
+    "transaction",
+    "gateway",
+    "supabase",
+    "rls"
+  ],
+  "tags": ["data", "payments", "gateway", "supabase", "rls"],
+  "relatedFiles": [
+    { "path": "./schemas/payments.sql", "type": "schema" },
+    { "path": "./queries/payments.queries.ts", "type": "queries" },
+    { "path": "./index.ts", "type": "entry" }
+  ]
 }

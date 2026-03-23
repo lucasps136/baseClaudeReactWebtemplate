@@ -39,7 +39,7 @@ export class DependencyContainer implements IDependencyContainer {
     // Check if it's a regular service
     if (this.services.has(key)) {
       const factory = this.services.get(key)!;
-      return factory();
+      return factory() as T;
     }
 
     throw new Error(`Service '${key}' not registered`);

@@ -1,18 +1,24 @@
-// ProductsUi UI Module
+// Products UI Module
 
 // Components
-export { ProductsUiList } from "./src/components/ProductsUiList";
+export { ProductList } from "./src/components/ProductsUiList";
+export { ProductCard } from "./src/components/ProductCard";
+export { ProductDetail } from "./src/components/ProductDetail";
 
 // Hooks
-export { useProductsUi } from "./src/hooks/useProductsUi";
+export { useProduct } from "./src/hooks/useProduct";
+export { useProducts } from "./src/hooks/useProductsUi";
 
 // Store
-export { useProductsUiStore } from "./src/stores/products-ui.store";
-export type { ProductsUiStore } from "./src/stores/products-ui.store";
+export { useProductStore } from "./src/stores/products-ui.store";
+export type { ProductStore } from "./src/stores/products-ui.store";
 
 // Types
 export type {
-  ProductsUiItem,
-  CreateProductsUiInput,
-  UpdateProductsUiInput,
+  Product,
+  CreateProductInput,
+  UpdateProductInput,
+  ProductListFilter,
+  PaginationState,
+  ProductListResponse,
 } from "./src/types";

@@ -615,8 +615,9 @@ class ModuleMetrics {
       issues.push("Description too short (min 10 chars)");
     }
 
-    // Check keywords
-    if (!module.manifest.keywords || module.manifest.keywords.length < 3) {
+    // Check keywords (accepts both root-level and ai.keywords)
+    const keywords = module.manifest.keywords || module.manifest.ai?.keywords;
+    if (!keywords || keywords.length < 3) {
       issues.push("Need at least 3 keywords");
     }
 

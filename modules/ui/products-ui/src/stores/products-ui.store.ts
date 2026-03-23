@@ -1,71 +1,146 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import type { ProductsUiItem } from "../types";
+import type { Product, ProductListFilter, PaginationState } from "../types";
 
-interface ProductsUiState {
-  items: ProductsUiItem[];
-  isLoading: boolean;
-  error: string | null;
+interface ProductState {
+  // Single product state
+  selectedProduct: Product | null;
+  isLoadingProduct: boolean;
+  productError: string | null;
+
+  // List state
+  products: Product[];
+  isLoadingProducts: boolean;
+  productsError: string | null;
+  filter: ProductListFilter;
+  pagination: PaginationState;
 }
 
-interface ProductsUiActions {
-  setItems: (items: ProductsUiItem[]) => void;
-  addItem: (item: ProductsUiItem) => void;
-  updateItem: (id: string, updates: Partial<ProductsUiItem>) => void;
-  removeItem: (id: string) => void;
-  setLoading: (loading: boolean) => void;
-  setError: (error: string | null) => void;
+interface ProductActions {
+  // Single product actions
+  setSelectedProduct: (product: Product | null) => void;
+  setProductLoading: (loading: boolean) => void;
+  setProductError: (error: string | null) => void;
+
+  // List actions
+  setProducts: (products: Product[]) => void;
+  addProduct: (product: Product) => void;
+  updateProduct: (id: string, updates: Partial<Product>) => void;
+  removeProduct: (id: string) => void;
+  setProductsLoading: (loading: boolean) => void;
+  setProductsError: (error: string | null) => void;
+  setFilter: (filter: Partial<ProductListFilter>) => void;
+  setPagination: (pagination: Partial<PaginationState>) => void;
+
+  // Utility actions
   reset: () => void;
 }
 
-export type ProductsUiStore = ProductsUiState & ProductsUiActions;
+export type ProductStore = ProductState & ProductActions;
 
-const initialState: ProductsUiState = {
-  items: [],
-  isLoading: false,
-  error: null,
+const initialState: ProductState = {
+  selectedProduct: null,
+  isLoadingProduct: false,
+  productError: null,
+  products: [],
+  isLoadingProducts: false,
+  productsError: null,
+  filter: {
+    limit: 20,
+    offset: 0,
+    sortBy: "createdAt",
+    sortOrder: "desc",
+  },
+  pagination: {
+    hasMore: false,
+    total: 0,
+    currentPage: 1,
+    pageSize: 20,
+  },
 };
 
-export const useProductsUiStore = create<ProductsUiStore>()(
+export const useProductStore = create<ProductStore>()(
   devtools(
     (set) => ({
       ...initialState,
 
-      setItems: (items) =>
-        set({ items, error: null }, false, "productsUi/setItems"),
-
-      addItem: (item) =>
+      // Single product actions
+      setSelectedProduct: (selectedProduct) =>
         set(
-          (state) => ({ items: [...state.items, item] }),
+          { selectedProduct, productError: null },
           false,
-          "productsUi/addItem",
+          "product/setSelectedProduct",
         ),
 
-      updateItem: (id, updates) =>
+      setProductLoading: (isLoadingProduct) =>
+        set({ isLoadingProduct }, false, "product/setProductLoading"),
+
+      setProductError: (productError) =>
+        set({ productError }, false, "product/setProductError"),
+
+      // List actions
+      setProducts: (products) =>
+        set({ products, productsError: null }, false, "product/setProducts"),
+
+      addProduct: (product) =>
+        set(
+          (state) => ({ products: [...state.products, product] }),
+          false,
+          "product/addProduct",
+        ),
+
+      updateProduct: (id, updates) =>
         set(
           (state) => ({
-            items: state.items.map((item) =>
-              item.id === id ? { ...item, ...updates } : item,
+            products: state.products.map((product) =>
+              product.id === id ? { ...product, ...updates } : product,
             ),
+            selectedProduct:
+              state.selectedProduct?.id === id
+                ? { ...state.selectedProduct, ...updates }
+                : state.selectedProduct,
           }),
           false,
-          "productsUi/updateItem",
+          "product/updateProduct",
         ),
 
-      removeItem: (id) =>
+      removeProduct: (id) =>
         set(
-          (state) => ({ items: state.items.filter((item) => item.id !== id) }),
+          (state) => ({
+            products: state.products.filter((product) => product.id !== id),
+            selectedProduct:
+              state.selectedProduct?.id === id ? null : state.selectedProduct,
+          }),
           false,
-          "productsUi/removeItem",
+          "product/removeProduct",
         ),
 
-      setLoading: (isLoading) =>
-        set({ isLoading }, false, "productsUi/setLoading"),
+      setProductsLoading: (isLoadingProducts) =>
+        set({ isLoadingProducts }, false, "product/setProductsLoading"),
 
-      setError: (error) => set({ error }, false, "productsUi/setError"),
+      setProductsError: (productsError) =>
+        set({ productsError }, false, "product/setProductsError"),
 
-      reset: () => set(initialState, false, "productsUi/reset"),
+      setFilter: (filterUpdates) =>
+        set(
+          (state) => ({ filter: { ...state.filter, ...filterUpdates } }),
+          false,
+          "product/setFilter",
+        ),
+
+      setPagination: (paginationUpdates) =>
+        set(
+          (state) => ({
+            pagination: { ...state.pagination, ...paginationUpdates },
+          }),
+          false,
+          "product/setPagination",
+        ),
+
+      reset: () => set(initialState, false, "product/reset"),
     }),
-    { name: "productsUi-store" },
+    {
+      name: "product-store",
+    },
   ),
 );

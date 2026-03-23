@@ -1,54 +1,120 @@
 {
   "id": "orders-ui",
-  "name": "Orders Ui",
+  "name": "Orders UI",
   "version": "1.0.0",
   "category": "ui",
-  "description": "OrdersUi module - Auto-generated",
+  "description": "UI components, hooks, and state management for order operations. Includes order listing, detail views, status management, and filtering.",
   "exports": {
     "components": [
       {
-        "name": "OrdersUiList",
-        "path": "./components/OrdersUiList"
+        "name": "OrderCard",
+        "path": "./src/components/OrderCard",
+        "description": "Card component for displaying order summary"
+      },
+      {
+        "name": "OrderList",
+        "path": "./src/components/OrderList",
+        "description": "List component with loading, error, empty states and status filters"
+      },
+      {
+        "name": "OrderDetail",
+        "path": "./src/components/OrderDetail",
+        "description": "Detailed view for single order with status actions"
+      },
+      {
+        "name": "OrderStatusBadge",
+        "path": "./src/components/OrderStatusBadge",
+        "description": "Status badge components for order and payment status"
       }
     ],
     "hooks": [
       {
-        "name": "useOrdersUi",
-        "path": "./hooks/useOrdersUi"
+        "name": "useOrder",
+        "path": "./src/hooks/useOrder",
+        "description": "Hook for single order operations (fetch, update status, cancel)"
+      },
+      {
+        "name": "useOrders",
+        "path": "./src/hooks/useOrders",
+        "description": "Hook for order list operations (fetch, filter, pagination)"
       }
     ],
     "stores": [
       {
-        "name": "useOrdersUiStore",
-        "path": "./stores/orders-ui.store"
+        "name": "useOrderStore",
+        "path": "./src/stores/orders.store",
+        "description": "Zustand store for order state management"
       }
     ],
     "types": [
       {
-        "name": "OrdersUiItem",
-        "path": "./types"
+        "name": "Order",
+        "path": "./src/types",
+        "description": "Order entity type"
+      },
+      {
+        "name": "OrderStatus",
+        "path": "./src/types",
+        "description": "Order status enum type"
+      },
+      {
+        "name": "OrderListFilter",
+        "path": "./src/types",
+        "description": "Filter options for order listing"
       }
     ]
   },
   "dependencies": {
-    "modules": [],
+    "modules": ["orders-logic", "orders-data"],
     "packages": ["react", "zustand"]
   },
   "ai": {
-    "summary": "OrdersUi module for ui layer",
-    "keywords": ["orders-ui", "ui"],
-    "use_cases": ["Manage orders-ui"],
+    "summary": "Complete UI module for order management with components, hooks, and Zustand store. Follows Single Responsibility Principle with separate hooks for single and list operations.",
+    "keywords": [
+      "orders",
+      "ui",
+      "components",
+      "hooks",
+      "zustand",
+      "status",
+      "pagination"
+    ],
+    "use_cases": [
+      "Display order list with filtering by status",
+      "Show order details with status actions",
+      "Manage order state across components",
+      "Handle order status transitions (confirm, ship, deliver, cancel)"
+    ],
     "reusable": {
-      "components": ["OrdersUiList"],
-      "hooks": ["useOrdersUi"]
+      "components": [
+        "OrderCard",
+        "OrderList",
+        "OrderDetail",
+        "OrderStatusBadge",
+        "PaymentStatusBadge"
+      ],
+      "hooks": ["useOrder", "useOrders"]
     },
-    "examples": ["import { OrdersUi } from '@/modules/ui/orders-ui'"]
+    "examples": [
+      "import { OrderList, useOrders } from '@/modules/ui/orders-ui'",
+      "const { orders, fetchOrders, setFilter } = useOrders({ status: 'pending' })",
+      "<OrderCard order={order} onView={handleView} />",
+      "<OrderStatusBadge status={order.status} />"
+    ]
   },
-  "status": "experimental",
+  "status": "stable",
   "createdAt": "2025-11-21T15:15:49.435Z",
-  "updatedAt": "2025-11-21T15:15:49.435Z",
-  "author": "Auto-generated",
+  "updatedAt": "2025-12-09T00:00:00.000Z",
+  "author": "Bebarter Team",
   "license": "MIT",
-  "tags": ["ui", "orders-ui"],
-  "relatedFiles": []
+  "keywords": [
+    "orders",
+    "ui",
+    "components",
+    "hooks",
+    "zustand",
+    "status",
+    "pagination"
+  ],
+  "tags": ["ui", "orders", "react", "zustand", "components", "hooks"]
 }

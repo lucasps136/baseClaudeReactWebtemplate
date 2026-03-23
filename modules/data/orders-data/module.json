@@ -3,33 +3,147 @@
   "name": "Orders Data",
   "version": "1.0.0",
   "category": "data",
-  "description": "OrdersData module - Auto-generated",
+  "description": "Data layer module for marketplace order management. Provides SQL schemas, TypeScript queries, and RLS policies for order lifecycle tracking including status management, payment integration, and shipping.",
   "exports": {
     "schemas": [
       {
-        "name": "orders-data_table",
-        "path": "./schemas"
+        "name": "orders_table",
+        "path": "./schemas/orders.sql",
+        "description": "Complete orders table with RLS policies, indexes, and triggers"
+      }
+    ],
+    "queries": [
+      {
+        "name": "orders_queries",
+        "path": "./queries/orders.queries.ts",
+        "description": "TypeScript query library for order CRUD operations"
+      }
+    ],
+    "types": [
+      {
+        "name": "Order",
+        "path": "./queries/orders.queries",
+        "description": "Order entity interface"
+      },
+      {
+        "name": "OrderInsert",
+        "path": "./queries/orders.queries",
+        "description": "Order creation input type"
+      },
+      {
+        "name": "OrderUpdate",
+        "path": "./queries/orders.queries",
+        "description": "Order update input type"
+      },
+      {
+        "name": "OrderFilters",
+        "path": "./queries/orders.queries",
+        "description": "Order filtering options"
+      },
+      {
+        "name": "OrderStatus",
+        "path": "./queries/orders.queries",
+        "description": "Order status enum type"
+      },
+      {
+        "name": "PaymentStatus",
+        "path": "./queries/orders.queries",
+        "description": "Payment status enum type"
+      },
+      {
+        "name": "ShippingAddress",
+        "path": "./queries/orders.queries",
+        "description": "Shipping address structure"
       }
     ]
   },
   "dependencies": {
-    "modules": [],
-    "packages": []
+    "modules": ["user-data", "products-data"],
+    "packages": ["@supabase/supabase-js"]
   },
   "ai": {
-    "summary": "OrdersData module for data layer",
-    "keywords": ["orders-data", "data"],
-    "use_cases": ["Manage orders-data"],
+    "summary": "Order data layer providing SQL schemas and TypeScript queries for marketplace order management with buyer-seller relationships, status tracking, and payment integration.",
+    "keywords": [
+      "orders",
+      "order-management",
+      "marketplace",
+      "transaction",
+      "buyer",
+      "seller",
+      "order-status",
+      "payment-status",
+      "shipping",
+      "e-commerce",
+      "crud",
+      "supabase",
+      "rls",
+      "database",
+      "query",
+      "typescript"
+    ],
+    "use_cases": [
+      "Create new orders when buyer purchases products",
+      "Track order lifecycle (pending → delivered)",
+      "Manage payment status for orders",
+      "Query buyer's order history",
+      "Query seller's orders for fulfillment",
+      "Get order statistics for dashboards",
+      "Update shipping information",
+      "Cancel orders with status management",
+      "Filter orders by status, date, buyer, seller"
+    ],
     "reusable": {
-      "schemas": ["ordersdata_table"]
+      "schemas": ["orders_table"],
+      "types": [
+        "Order",
+        "OrderInsert",
+        "OrderUpdate",
+        "OrderFilters",
+        "OrderStatus",
+        "PaymentStatus",
+        "ShippingAddress"
+      ],
+      "functions": [
+        "getOrderById",
+        "getOrderByNumber",
+        "listOrders",
+        "getOrdersByBuyer",
+        "getOrdersBySeller",
+        "createOrder",
+        "updateOrder",
+        "updateOrderStatus",
+        "updatePaymentStatus",
+        "cancelOrder",
+        "confirmOrder",
+        "shipOrder",
+        "deliverOrder",
+        "getOrderStats"
+      ]
     },
-    "examples": ["import { OrdersData } from '@/modules/data/orders-data'"]
+    "examples": [
+      "import { createOrder, OrderInsert } from '@/modules/data/orders-data'",
+      "const orders = await listOrders(supabase, { buyerId: userId, status: 'pending' })",
+      "await updateOrderStatus(supabase, orderId, 'shipped')",
+      "const stats = await getOrderStats(supabase, sellerId)"
+    ]
   },
   "status": "experimental",
   "createdAt": "2025-11-21T15:15:49.606Z",
-  "updatedAt": "2025-11-21T15:15:49.606Z",
-  "author": "Auto-generated",
+  "updatedAt": "2025-12-09T00:00:00.000Z",
+  "author": "Bebarter Team",
   "license": "MIT",
-  "tags": ["data", "orders-data"],
-  "relatedFiles": []
+  "keywords": [
+    "orders",
+    "order-management",
+    "marketplace",
+    "transaction",
+    "supabase",
+    "rls"
+  ],
+  "tags": ["data", "orders", "marketplace", "supabase", "rls"],
+  "relatedFiles": [
+    { "path": "./schemas/orders.sql", "type": "schema" },
+    { "path": "./queries/orders.queries.ts", "type": "queries" },
+    { "path": "./index.ts", "type": "entry" }
+  ]
 }

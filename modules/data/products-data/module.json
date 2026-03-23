@@ -3,33 +3,159 @@
   "name": "Products Data",
   "version": "1.0.0",
   "category": "data",
-  "description": "ProductsData module - Auto-generated",
+  "description": "Database schema, queries and types for product management in the Bebarter marketplace. Includes PostgreSQL table definitions, RLS policies, indexes, and TypeScript query functions for Supabase.",
   "exports": {
     "schemas": [
       {
-        "name": "products-data_table",
-        "path": "./schemas"
+        "name": "products_table",
+        "path": "./schemas/products.sql",
+        "description": "Complete products table schema with RLS policies, indexes, triggers and constraints"
+      }
+    ],
+    "migrations": [
+      {
+        "name": "001_create_products_table",
+        "path": "./migrations/001_create_products_table.sql",
+        "description": "Initial migration to create products table"
+      }
+    ],
+    "queries": [
+      {
+        "name": "products_queries",
+        "path": "./queries/products.queries.ts",
+        "description": "TypeScript query functions for product CRUD operations using Supabase SDK"
+      }
+    ],
+    "types": [
+      {
+        "name": "Product",
+        "description": "Product entity type"
+      },
+      {
+        "name": "ProductInsert",
+        "description": "Type for creating new products"
+      },
+      {
+        "name": "ProductUpdate",
+        "description": "Type for updating products"
+      },
+      {
+        "name": "ProductFilters",
+        "description": "Type for filtering products"
+      },
+      {
+        "name": "ProductStatus",
+        "description": "Product status enum: draft, active, sold, archived"
+      },
+      {
+        "name": "Currency",
+        "description": "Currency enum: BRL, USD, EUR, GBP"
       }
     ]
   },
   "dependencies": {
-    "modules": [],
-    "packages": []
+    "modules": ["user-data"],
+    "packages": ["@supabase/supabase-js"]
   },
   "ai": {
-    "summary": "ProductsData module for data layer",
-    "keywords": ["products-data", "data"],
-    "use_cases": ["Manage products-data"],
+    "summary": "Complete database layer for product management with PostgreSQL schemas, RLS policies, indexes, and TypeScript query functions. Designed for Bebarter marketplace with Supabase integration and security-first approach. Supports full product lifecycle: draft, active, sold, archived.",
+    "keywords": [
+      "database",
+      "sql",
+      "postgresql",
+      "supabase",
+      "schema",
+      "products",
+      "marketplace",
+      "e-commerce",
+      "rls",
+      "queries",
+      "typescript",
+      "inventory",
+      "seller"
+    ],
+    "use_cases": [
+      "Create products table in Supabase with complete schema",
+      "Apply RLS policies for secure product access control",
+      "Run migrations for product schema setup",
+      "Use TypeScript query functions for product CRUD operations",
+      "List products with filters (category, seller, status, price range)",
+      "Search products with full-text search",
+      "Manage product inventory and stock levels",
+      "Track product status lifecycle (draft to sold)",
+      "Get product statistics and analytics",
+      "Implement marketplace product catalog"
+    ],
     "reusable": {
-      "schemas": ["productsdata_table"]
+      "schemas": ["products_table"],
+      "types": [
+        "Product",
+        "ProductInsert",
+        "ProductUpdate",
+        "ProductFilters",
+        "ProductStatus",
+        "Currency"
+      ],
+      "queries": [
+        "listProducts",
+        "getProductById",
+        "createProduct",
+        "updateProduct",
+        "deleteProduct",
+        "searchProducts",
+        "getProductsByCategory",
+        "getProductsBySeller",
+        "updateProductStock",
+        "getProductStats"
+      ]
     },
-    "examples": ["import { ProductsData } from '@/modules/data/products-data'"]
+    "examples": [
+      "-- Execute schema in Supabase SQL Editor",
+      "\\i modules/data/products-data/schemas/products.sql",
+      "-- Import and use query functions",
+      "import { listProducts, createProduct, getProductById } from '@/modules/data/products-data/queries/products.queries'",
+      "import type { Product, ProductInsert } from '@/modules/data/products-data/queries/products.queries'",
+      "-- Example: List active products",
+      "const products = await listProducts(supabase, { status: 'active' }, { limit: 20 })",
+      "-- Example: Create product",
+      "const newProduct = await createProduct(supabase, { name: 'Item', price: 100, seller_id: userId })"
+    ]
   },
   "status": "experimental",
   "createdAt": "2025-11-21T15:11:32.823Z",
-  "updatedAt": "2025-11-21T15:11:32.823Z",
-  "author": "Auto-generated",
+  "updatedAt": "2025-12-08T18:00:00.000Z",
+  "author": "Bebarter Team",
   "license": "MIT",
-  "tags": ["data", "products-data"],
-  "relatedFiles": []
+  "keywords": [
+    "database",
+    "postgresql",
+    "supabase",
+    "products",
+    "marketplace",
+    "e-commerce"
+  ],
+  "tags": [
+    "database",
+    "postgresql",
+    "supabase",
+    "sql",
+    "schema",
+    "products",
+    "marketplace",
+    "typescript",
+    "queries",
+    "e-commerce"
+  ],
+  "relatedFiles": [
+    {
+      "path": "database/setup.sql",
+      "type": "REFERENCE",
+      "description": "Main database setup file (this module integrates here)"
+    },
+    {
+      "path": "modules/data/user-data",
+      "type": "DEPENDENCY",
+      "description": "User data module (products reference users table via seller_id)"
+    }
+  ]
 }

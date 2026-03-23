@@ -3,41 +3,170 @@
   "name": "Payments Logic",
   "version": "1.0.0",
   "category": "logic",
-  "description": "PaymentsLogic module - Auto-generated",
+  "description": "Business logic module for payment processing. Provides SOLID-compliant services, Zod validations, and types for payment lifecycle management including multi-gateway support, refunds, and transaction tracking.",
   "exports": {
     "services": [
       {
-        "name": "PaymentsLogicService",
-        "path": "./services/payments-logic.service"
+        "name": "PaymentsService",
+        "path": "./src/services/payments.service",
+        "description": "Main payment business logic service with dependency injection"
+      }
+    ],
+    "validations": [
+      {
+        "name": "PaymentsValidation",
+        "path": "./src/validations/payments.validation",
+        "description": "Zod-based validation class and schemas"
+      }
+    ],
+    "interfaces": [
+      {
+        "name": "IPaymentsRepository",
+        "path": "./src/repositories/payments.repository.interface",
+        "description": "Repository interface for data layer abstraction"
+      },
+      {
+        "name": "IPaymentsValidation",
+        "path": "./src/validations/payments.validation",
+        "description": "Validation interface for custom implementations"
       }
     ],
     "types": [
       {
-        "name": "IPaymentsLogicRepository",
-        "path": "./repositories"
+        "name": "Payment",
+        "path": "./src/types",
+        "description": "Payment entity interface"
+      },
+      {
+        "name": "CreatePaymentDTO",
+        "path": "./src/types",
+        "description": "Payment creation input"
+      },
+      {
+        "name": "UpdatePaymentDTO",
+        "path": "./src/types",
+        "description": "Payment update input"
+      },
+      {
+        "name": "RefundDTO",
+        "path": "./src/types",
+        "description": "Refund request input"
+      },
+      {
+        "name": "PaymentFilters",
+        "path": "./src/types",
+        "description": "Query filters"
+      },
+      {
+        "name": "PaymentStatus",
+        "path": "./src/types",
+        "description": "Payment status enum"
+      },
+      {
+        "name": "PaymentMethod",
+        "path": "./src/types",
+        "description": "Payment method enum"
+      },
+      {
+        "name": "PaymentGateway",
+        "path": "./src/types",
+        "description": "Payment gateway enum"
+      },
+      {
+        "name": "PaginatedResult",
+        "path": "./src/types",
+        "description": "Generic paginated result"
       }
     ]
   },
   "dependencies": {
-    "modules": [],
-    "packages": []
+    "modules": ["payments-data", "orders-data"],
+    "packages": ["zod"]
   },
   "ai": {
-    "summary": "PaymentsLogic module for logic layer",
-    "keywords": ["payments-logic", "logic"],
-    "use_cases": ["Manage payments-logic"],
+    "summary": "SOLID-compliant business logic layer for payment processing with multi-gateway support (Stripe, PagSeguro, MercadoPago), Zod validation, and refund handling.",
+    "keywords": [
+      "payments",
+      "payment-processing",
+      "business-logic",
+      "solid",
+      "validation",
+      "zod",
+      "gateway",
+      "stripe",
+      "pagarme",
+      "mercadopago",
+      "pix",
+      "refund",
+      "service-layer",
+      "dependency-injection",
+      "repository-pattern"
+    ],
+    "use_cases": [
+      "Create payment records with validation",
+      "Process payments through gateways",
+      "Complete payments successfully",
+      "Handle payment failures",
+      "Process refunds with validation",
+      "Track payment status transitions",
+      "Filter and paginate payments",
+      "Get payment statistics for dashboards",
+      "Implement custom repository for different data sources"
+    ],
     "reusable": {
-      "services": ["PaymentsLogicService"]
+      "services": ["PaymentsService"],
+      "validations": [
+        "PaymentsValidation",
+        "createPaymentSchema",
+        "updatePaymentSchema",
+        "refundSchema",
+        "paymentFiltersSchema"
+      ],
+      "interfaces": ["IPaymentsRepository", "IPaymentsValidation"],
+      "types": [
+        "Payment",
+        "CreatePaymentDTO",
+        "UpdatePaymentDTO",
+        "RefundDTO",
+        "PaymentFilters",
+        "PaymentStatus",
+        "PaymentMethod",
+        "PaymentGateway"
+      ]
     },
     "examples": [
-      "import { PaymentsLogic } from '@/modules/logic/payments-logic'"
+      "import { PaymentsService, PaymentsValidation, IPaymentsRepository } from '@/modules/logic/payments-logic'",
+      "const service = new PaymentsService(repository, validation)",
+      "const payment = await service.createPayment({ orderId, payerId, payeeId, amount: 99.90, paymentMethod: 'pix', gateway: 'stripe' })",
+      "await service.completePayment(paymentId, stripePaymentIntentId)",
+      "await service.refundPayment(paymentId, { reason: 'Customer request' })"
     ]
   },
   "status": "experimental",
   "createdAt": "2025-11-21T14:44:46.184Z",
-  "updatedAt": "2025-11-21T14:44:46.184Z",
-  "author": "Auto-generated",
+  "updatedAt": "2025-12-09T00:00:00.000Z",
+  "author": "Bebarter Team",
   "license": "MIT",
-  "tags": ["logic", "payments-logic"],
-  "relatedFiles": []
+  "keywords": [
+    "payments",
+    "payment-processing",
+    "business-logic",
+    "solid",
+    "validation",
+    "zod"
+  ],
+  "tags": ["logic", "payments", "solid", "validation", "zod", "gateway"],
+  "relatedFiles": [
+    { "path": "./src/services/payments.service.ts", "type": "service" },
+    {
+      "path": "./src/validations/payments.validation.ts",
+      "type": "validation"
+    },
+    {
+      "path": "./src/repositories/payments.repository.interface.ts",
+      "type": "interface"
+    },
+    { "path": "./src/types/index.ts", "type": "types" },
+    { "path": "./index.ts", "type": "entry" }
+  ]
 }

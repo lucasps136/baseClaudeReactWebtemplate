@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { usePaymentsUiStore } from "../stores/payments-ui.store";
-import type { CreatePaymentsUiInput, UpdatePaymentsUiInput } from "../types";
+import type { CreatePaymentInput, UpdatePaymentInput, Payment } from "../types";
 
 export const usePaymentsUi = () => {
   const {
@@ -37,7 +37,7 @@ export const usePaymentsUi = () => {
   }, [setItems, setLoading, setError]);
 
   const createItem = useCallback(
-    async (input: CreatePaymentsUiInput) => {
+    async (input: CreatePaymentInput) => {
       try {
         setLoading(true);
         setError(null);
@@ -48,7 +48,7 @@ export const usePaymentsUi = () => {
           ...input,
           createdAt: new Date(),
           updatedAt: new Date(),
-        };
+        } as unknown as Payment;
 
         addItem(newItem);
         return newItem;
@@ -65,7 +65,7 @@ export const usePaymentsUi = () => {
   );
 
   const updateItemById = useCallback(
-    async (id: string, input: UpdatePaymentsUiInput) => {
+    async (id: string, input: UpdatePaymentInput) => {
       try {
         setLoading(true);
         setError(null);

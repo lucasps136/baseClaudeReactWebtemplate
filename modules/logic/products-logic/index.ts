@@ -1,18 +1,30 @@
-// ProductsLogic Logic Module
+// Products Logic Module
+// Business logic layer for product management following SOLID principles
 
 // Services
-export { ProductsLogicService } from "./src/services/products-logic.service";
+export { ProductsService } from "./src/services/products.service";
 
-// Repositories
-export type { IProductsLogicRepository } from "./src/repositories/products-logic.repository.interface";
+// Repository Interfaces
+export type { IProductsRepository } from "./src/repositories/products.repository.interface";
 
-// Validations
-export { ProductsLogicValidation } from "./src/validations/products-logic.validation";
-export type { IProductsLogicValidation } from "./src/validations/products-logic.validation";
+// Validation
+export {
+  ProductsValidation,
+  createProductSchema,
+  updateProductSchema,
+  productFiltersSchema,
+  validateProduct,
+  validateFilters,
+} from "./src/validations/products.validation";
+export type { IProductsValidation } from "./src/validations/products.validation";
 
 // Types
 export type {
-  ProductsLogicItem,
-  CreateProductsLogicInput,
-  UpdateProductsLogicInput,
+  Product,
+  CreateProductDTO,
+  UpdateProductDTO,
+  ProductFilters,
+  PaginatedResult,
+  ProductStatus,
+  Currency,
 } from "./src/types";

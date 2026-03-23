@@ -1,17 +1,17 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import type { OrdersUiItem } from "../types";
+import type { Order } from "../types";
 
 interface OrdersUiState {
-  items: OrdersUiItem[];
+  items: Order[];
   isLoading: boolean;
   error: string | null;
 }
 
 interface OrdersUiActions {
-  setItems: (items: OrdersUiItem[]) => void;
-  addItem: (item: OrdersUiItem) => void;
-  updateItem: (id: string, updates: Partial<OrdersUiItem>) => void;
+  setItems: (items: Order[]) => void;
+  addItem: (item: Order) => void;
+  updateItem: (id: string, updates: Partial<Order>) => void;
   removeItem: (id: string) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;

@@ -62,7 +62,7 @@ export const registerDefaultPaymentProviders = async (): Promise<void> => {
     const { StripePaymentProvider } = await import(
       "./providers/stripe-payment-provider"
     );
-    return new StripePaymentProvider();
+    return new StripePaymentProvider() as unknown as IPaymentProvider;
   });
 
   // NOTE: Provider not yet implemented - uncomment when ready

@@ -238,7 +238,12 @@ export class SupabaseRBACProvider implements IRBACProvider {
 
       if (error) throw error;
 
-      return data.map((item) => this.mapSupabasePermission(item.permissions));
+      return data.flatMap((item: { permissions: unknown | unknown[] }) => {
+        const perms: any[] = Array.isArray(item.permissions)
+          ? item.permissions
+          : [item.permissions];
+        return perms.map((p) => this.mapSupabasePermission(p));
+      });
     } catch (error) {
       throw this.mapSupabaseError(error);
     }
@@ -308,7 +313,12 @@ export class SupabaseRBACProvider implements IRBACProvider {
 
       if (error) throw error;
 
-      return data.map((item) => this.mapSupabaseRole(item.roles));
+      return data.flatMap((item: { roles: unknown | unknown[] }) => {
+        const roles: any[] = Array.isArray(item.roles)
+          ? item.roles
+          : [item.roles];
+        return roles.map((r) => this.mapSupabaseRole(r));
+      });
     } catch (error) {
       throw this.mapSupabaseError(error);
     }

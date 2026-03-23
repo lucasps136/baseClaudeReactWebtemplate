@@ -3,39 +3,156 @@
   "name": "Orders Logic",
   "version": "1.0.0",
   "category": "logic",
-  "description": "OrdersLogic module - Auto-generated",
+  "description": "Business logic module for marketplace order management. Provides SOLID-compliant services, validations with Zod, and type definitions for order lifecycle management including status transitions, payment tracking, and shipping.",
   "exports": {
     "services": [
       {
-        "name": "OrdersLogicService",
-        "path": "./services/orders-logic.service"
+        "name": "OrdersService",
+        "path": "./src/services/orders.service",
+        "description": "Main order business logic service with dependency injection"
+      }
+    ],
+    "validations": [
+      {
+        "name": "OrdersValidation",
+        "path": "./src/validations/orders.validation",
+        "description": "Zod-based validation class and schemas"
+      }
+    ],
+    "interfaces": [
+      {
+        "name": "IOrdersRepository",
+        "path": "./src/repositories/orders.repository.interface",
+        "description": "Repository interface for data layer abstraction"
+      },
+      {
+        "name": "IOrdersValidation",
+        "path": "./src/validations/orders.validation",
+        "description": "Validation interface for custom implementations"
       }
     ],
     "types": [
       {
-        "name": "IOrdersLogicRepository",
-        "path": "./repositories"
+        "name": "Order",
+        "path": "./src/types",
+        "description": "Order entity interface"
+      },
+      {
+        "name": "CreateOrderDTO",
+        "path": "./src/types",
+        "description": "Order creation input"
+      },
+      {
+        "name": "UpdateOrderDTO",
+        "path": "./src/types",
+        "description": "Order update input"
+      },
+      {
+        "name": "OrderFilters",
+        "path": "./src/types",
+        "description": "Query filters"
+      },
+      {
+        "name": "OrderStatus",
+        "path": "./src/types",
+        "description": "Order status enum"
+      },
+      {
+        "name": "PaymentStatus",
+        "path": "./src/types",
+        "description": "Payment status enum"
+      },
+      {
+        "name": "ShippingAddress",
+        "path": "./src/types",
+        "description": "Shipping address structure"
+      },
+      {
+        "name": "PaginatedResult",
+        "path": "./src/types",
+        "description": "Generic paginated result"
       }
     ]
   },
   "dependencies": {
-    "modules": [],
-    "packages": []
+    "modules": ["orders-data"],
+    "packages": ["zod"]
   },
   "ai": {
-    "summary": "OrdersLogic module for logic layer",
-    "keywords": ["orders-logic", "logic"],
-    "use_cases": ["Manage orders-logic"],
+    "summary": "SOLID-compliant business logic layer for order management with Zod validation, status transitions, and dependency injection patterns.",
+    "keywords": [
+      "orders",
+      "order-management",
+      "business-logic",
+      "solid",
+      "validation",
+      "zod",
+      "status-transition",
+      "shipping",
+      "payment",
+      "marketplace",
+      "service-layer",
+      "dependency-injection",
+      "repository-pattern"
+    ],
+    "use_cases": [
+      "Validate order creation data with Zod",
+      "Create orders with business rule validation",
+      "Update order status with transition rules",
+      "Cancel orders with validation",
+      "Track payment status for orders",
+      "Filter and paginate orders",
+      "Get order statistics for dashboards",
+      "Implement custom repository for different data sources"
+    ],
     "reusable": {
-      "services": ["OrdersLogicService"]
+      "services": ["OrdersService"],
+      "validations": [
+        "OrdersValidation",
+        "createOrderSchema",
+        "updateOrderSchema",
+        "orderFiltersSchema"
+      ],
+      "interfaces": ["IOrdersRepository", "IOrdersValidation"],
+      "types": [
+        "Order",
+        "CreateOrderDTO",
+        "UpdateOrderDTO",
+        "OrderFilters",
+        "OrderStatus",
+        "PaymentStatus",
+        "ShippingAddress"
+      ]
     },
-    "examples": ["import { OrdersLogic } from '@/modules/logic/orders-logic'"]
+    "examples": [
+      "import { OrdersService, OrdersValidation, IOrdersRepository } from '@/modules/logic/orders-logic'",
+      "const service = new OrdersService(repository, validation)",
+      "const order = await service.createOrder({ buyerId, sellerId, productId, quantity: 1, unitPrice: 99.90 })",
+      "await service.updateOrderStatus(orderId, 'shipped')"
+    ]
   },
   "status": "experimental",
   "createdAt": "2025-11-21T15:15:49.519Z",
-  "updatedAt": "2025-11-21T15:15:49.519Z",
-  "author": "Auto-generated",
+  "updatedAt": "2025-12-09T00:00:00.000Z",
+  "author": "Bebarter Team",
   "license": "MIT",
-  "tags": ["logic", "orders-logic"],
-  "relatedFiles": []
+  "keywords": [
+    "orders",
+    "order-management",
+    "business-logic",
+    "solid",
+    "validation",
+    "zod"
+  ],
+  "tags": ["logic", "orders", "solid", "validation", "zod"],
+  "relatedFiles": [
+    { "path": "./src/services/orders.service.ts", "type": "service" },
+    { "path": "./src/validations/orders.validation.ts", "type": "validation" },
+    {
+      "path": "./src/repositories/orders.repository.interface.ts",
+      "type": "interface"
+    },
+    { "path": "./src/types/index.ts", "type": "types" },
+    { "path": "./index.ts", "type": "entry" }
+  ]
 }

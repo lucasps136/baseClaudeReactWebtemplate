@@ -1,457 +1,298 @@
-# Tasks: Arquitetura Modular Orientada a IA
+# Tasks: Modular Architecture - Phase 6 Production Integration
 
-**Input**: Documentação completa em `docs/modular-architecture/`
-**Prerequisites**: 00-OVERVIEW.md, Fases 1-6 documentadas
-**Status**: ✅ **FASE 5 & 6 COMPLETAS - SISTEMA PRODUCTION-READY**
-**Date**: 2025-01-11
-**Last Update**: 2025-01-13
+**Input**: Design documents from `/specs/master/`
+**Prerequisites**: plan.md, spec.md (Phases 1-5 complete)
+**Date**: 2025-12-08
+
+## Format: `[ID] [P?] [Story] Description`
+
+- **[P]**: Can run in parallel (different files, no dependencies)
+- **[Story]**: Which user story this task belongs to (US1=Products, US2=Orders, US3=Payments, US4=App Integration, US5=CI/CD)
+- Include exact file paths in descriptions
 
 ## Resumo Executivo
 
-✅ **OBJETIVO ALCANÇADO**: Sistema modular implementado com sucesso
-
-### Transformação Completa
-- ✅ Registry centralizado para descoberta rápida por IA
-- ✅ Manifests autodocumentados (module.json)
-- ✅ 4 categorias de módulos (UI, Logic, Data, Integration)
-- ✅ Agentes especializados por categoria
-- ✅ Reutilização: 73/100 (próximo do target 80%)
-
-### Métricas Alcançadas
-- **Coverage**: 98.24% (target: >70%) ✨ +28%
-- **Quality**: 92/100 (target: >70%) ✨ +22
-- **Testes**: 186/186 passing (100%)
-- **Documentação**: 9.067 linhas
-
-**Duração Real**: 4 horas (coordenação de agentes)
-**Total Tasks**: 131
-**Tasks Concluídas**: 120/131 (92%)
-**Storybook**: 5 tasks puladas (opcional)
+**Status Anterior**: Fases 1-5 completas (92% - 120/131 tasks)
+**Foco Atual**: Fase 6 - Produção (19 novas tasks)
+**Módulos Estáveis**: user-profile-ui, user-logic, user-data
+**Módulos Experimentais**: products-*, orders-*, payments-* (precisam ser finalizados)
 
 ---
 
-## Fase 1: Fundação (1-2 dias) ✅ COMPLETA
+## Phase 1: Validation (Pre-requisites Check)
 
-### Phase 1.1: Estrutura de Diretórios
-- [x] **T001** [P] Criar diretórios principais de módulos em `modules/{ui,logic,data,integration}/`
-- [x] **T002** [P] Criar diretório do registry system em `.modules/{cache,templates,prompts}/`
-- [x] **T003** [P] Criar diretório de scripts em `scripts/modules/`
+**Purpose**: Validate Phase 5 completion before proceeding
 
-### Phase 1.2: Schema TypeScript e Validação
-- [x] **T004** Criar schema Zod completo para manifests em `.modules/schema.ts`
-- [x] **T005** [P] Definir tipos TypeScript exportados (ModuleManifest, Registry, etc.)
-- [x] **T006** [P] Implementar funções de validação (validateManifest, validateRegistry)
+- [ ] T001 Validate existing modules with `npm run modules:validate`
+- [ ] T002 [P] Run quality check with `npm run quality:check` (expect score >70)
+- [ ] T003 [P] Run test coverage with `npm run test:modules:coverage` (expect >70%)
 
-### Phase 1.3: Registry Centralizado
-- [x] **T007** Inicializar `registry.json` vazio em `.modules/registry.json`
-- [x] **T008** Inicializar `installed.json` em `.modules/installed.json`
-- [x] **T009** Criar `.gitignore` para `.modules/` com regras de cache
-
-### Phase 1.4: Configuração TypeScript
-- [x] **T010** Adicionar aliases de módulos no `tsconfig.json` paths
-- [x] **T011** Validar compilação TypeScript sem erros
-
-### Phase 1.5: Ferramentas de Validação
-- [x] **T012** Criar script de validação em `scripts/modules/validate.js`
-- [x] **T013** Adicionar comando `modules:validate` ao `package.json`
-- [x] **T014** Executar validação e garantir que passa
-
-### Phase 1.6: Documentação Base
-- [x] **T015** [P] Criar `modules/README.md` com estrutura e convenções
-- [x] **T016** [P] Criar templates de documentação em `.modules/templates/`
-
-**Checkpoint Fase 1**: ✅ `npm run modules:validate` passou
+**Checkpoint**: All validation passing - Phase 6 can proceed
 
 ---
 
-## Fase 2: Migração Piloto - Feature Users (2-3 dias) ✅ COMPLETA
+## Phase 2: User Story 1 - Products Module Finalization (Priority: P1)
 
-### Phase 2.1: Análise e Planejamento
-- [x] **T017** Analisar feature users existente em `src/features/users/`
-- [x] **T018** Mapear separação em 3 módulos (UI, Logic, Data)
-- [x] **T019** Identificar dependências entre módulos
+**Goal**: Transform products-* modules from experimental to stable status
 
-### Phase 2.2: Módulo UI (user-profile-ui)
-- [x] **T020** Criar estrutura em `modules/ui/user-profile-ui/{components,hooks,stores,docs,tests}`
-- [x] **T021** [P] Mover componentes: UserList.tsx para `modules/ui/user-profile-ui/components/`
-- [x] **T022** [P] Mover hooks: useUser.ts, useUsers.ts para `modules/ui/user-profile-ui/hooks/`
-- [x] **T023** [P] Mover store: user.store.ts para `modules/ui/user-profile-ui/stores/`
-- [x] **T024** Atualizar imports internos do módulo UI
-- [x] **T025** Criar `index.ts` com exports em `modules/ui/user-profile-ui/index.ts`
-- [x] **T026** Criar `module.json` completo com metadata AI em `modules/ui/user-profile-ui/module.json`
+**Independent Test**: `npm run modules:validate` passes for all products-* modules with complete manifests
 
-### Phase 2.3: Módulo Logic (user-logic)
-- [x] **T027** Criar estrutura em `modules/logic/user-logic/{services,types,validations,docs,tests}`
-- [x] **T028** [P] Mover service: user.service.ts para `modules/logic/user-logic/services/`
-- [x] **T029** [P] Mover types: user.types.ts para `modules/logic/user-logic/types/`
-- [x] **T030** Criar `index.ts` com exports em `modules/logic/user-logic/index.ts`
-- [x] **T031** Criar `module.json` completo em `modules/logic/user-logic/module.json`
+### Implementation for User Story 1
 
-### Phase 2.4: Módulo Data (user-data)
-- [x] **T032** Criar estrutura em `modules/data/user-data/{schemas,migrations,docs,tests}`
-- [x] **T033** Extrair schema SQL de `database/setup.sql` para `modules/data/user-data/schemas/users.sql`
-- [x] **T034** Criar `README.md` com documentação do schema em `modules/data/user-data/README.md`
-- [x] **T035** Criar `module.json` em `modules/data/user-data/module.json`
+- [ ] T004 [US1] Analyze src/features/products/ for migration in `src/features/products/`
+- [ ] T005 [P] [US1] Complete products-ui components in `modules/ui/products-ui/src/components/ProductList.tsx`
+- [ ] T006 [P] [US1] Complete products-ui hooks in `modules/ui/products-ui/src/hooks/useProducts.ts`
+- [ ] T007 [P] [US1] Complete products-ui store in `modules/ui/products-ui/src/stores/products.store.ts`
+- [ ] T008 [US1] Complete products-logic service with SOLID patterns in `modules/logic/products-logic/src/services/products.service.ts`
+- [ ] T009 [P] [US1] Complete products-logic validations in `modules/logic/products-logic/src/validations/products.validation.ts`
+- [ ] T010 [US1] Complete products-data schemas in `modules/data/products-data/schemas/products.sql`
+- [ ] T011 [US1] Update module.json with complete AI metadata in `modules/ui/products-ui/module.json`
+- [ ] T012 [P] [US1] Update module.json with complete AI metadata in `modules/logic/products-logic/module.json`
+- [ ] T013 [P] [US1] Update module.json with complete AI metadata in `modules/data/products-data/module.json`
+- [ ] T014 [US1] Sync registry after products completion with `npm run modules:sync`
 
-### Phase 2.5: Atualização de Imports
-- [x] **T036** Criar script de atualização de imports em `scripts/modules/update-imports.js`
-- [x] **T037** Executar script para atualizar imports em toda aplicação
-- [x] **T038** Validar TypeScript após atualização (npm run type-check)
-
-### Phase 2.6: Registro no Registry
-- [x] **T039** Criar script de registro em `scripts/modules/register.js`
-- [x] **T040** Registrar os 3 módulos users no `registry.json`
-- [x] **T041** Atualizar `installed.json` com módulos instalados
-
-### Phase 2.7: Validação da Migração
-- [x] **T042** Executar testes existentes (npm test)
-- [x] **T043** Iniciar dev server e validar funcionalidade users
-- [x] **T044** Executar `modules:validate` e garantir sucesso
-
-**Checkpoint Fase 2**: ✅ 3 módulos funcionando, testes passando, app rodando
+**Checkpoint**: Products modules stable, registry synced
 
 ---
 
-## Fase 3: Automação (3-4 dias) ✅ COMPLETA
+## Phase 3: User Story 2 - Orders Module Finalization (Priority: P2)
 
-### Phase 3.1: Gerador de Módulos
-- [x] **T045** Instalar dependência commander: `npm install --save-dev commander`
-- [x] **T046** Criar `generate-module.js` base em `scripts/modules/generate-module.js`
-- [x] **T047** [P] Implementar função `generateUITemplate()` com componentes/hooks/stores
-- [x] **T048** [P] Implementar função `generateLogicTemplate()` com services/validations
-- [x] **T049** [P] Implementar função `generateDataTemplate()` com schemas SQL
-- [x] **T050** [P] Implementar função `generateIntegrationTemplate()` com providers
-- [x] **T051** Implementar geração automática de `module.json`
-- [x] **T052** Implementar auto-registro no registry
-- [x] **T053** Adicionar comando `generate:module` ao `package.json`
-- [x] **T054** Testar gerador criando módulo exemplo
+**Goal**: Transform orders-* modules from experimental to stable status
 
-### Phase 3.2: CLI de Módulos
-- [x] **T055** Criar CLI principal em `scripts/modules/cli.js`
-- [x] **T056** [P] Implementar comando `list` (listar módulos)
-- [x] **T057** [P] Implementar comando `search` (buscar por keyword)
-- [x] **T058** [P] Implementar comando `info` (detalhes de módulo)
-- [x] **T059** [P] Implementar comando `validate` (validar manifests)
-- [x] **T060** [P] Implementar comando `remove` (remover módulo)
-- [x] **T061** [P] Implementar comando `sync` (sincronizar registry)
-- [x] **T062** Adicionar comandos npm scripts para CLI
-- [x] **T063** Testar todos os comandos do CLI
+**Independent Test**: `npm run modules:validate` passes for all orders-* modules with complete manifests
 
-### Phase 3.3: Scripts de Descoberta para IA
-- [x] **T064** Criar classe ModuleDiscovery em `scripts/modules/discover.js`
-- [x] **T065** [P] Implementar `findByCategory()` para busca por categoria
-- [x] **T066** [P] Implementar `findByKeywords()` para busca por keywords
-- [x] **T067** [P] Implementar `findReusableComponents()` para componentes
-- [x] **T068** [P] Implementar `findReusableHooks()` para hooks
-- [x] **T069** [P] Implementar `findServices()` para services
-- [x] **T070** [P] Implementar `getUsageExamples()` para exemplos
-- [x] **T071** Implementar `buildSearchIndex()` para criar cache
-- [x] **T072** Adicionar comandos de descoberta ao `package.json`
-- [x] **T073** Testar sistema de descoberta
+### Implementation for User Story 2
 
-**Checkpoint Fase 3**: ✅ CLI funcional, gerador criando módulos válidos, discovery retornando resultados
+- [ ] T015 [US2] Analyze src/features/orders/ for migration in `src/features/orders/`
+- [ ] T016 [P] [US2] Complete orders-ui components in `modules/ui/orders-ui/src/components/OrderList.tsx`
+- [ ] T017 [P] [US2] Complete orders-ui hooks in `modules/ui/orders-ui/src/hooks/useOrders.ts`
+- [ ] T018 [P] [US2] Complete orders-ui store in `modules/ui/orders-ui/src/stores/orders.store.ts`
+- [ ] T019 [US2] Complete orders-logic service with SOLID patterns in `modules/logic/orders-logic/src/services/orders.service.ts`
+- [ ] T020 [P] [US2] Complete orders-logic validations in `modules/logic/orders-logic/src/validations/orders.validation.ts`
+- [ ] T021 [US2] Complete orders-data schemas in `modules/data/orders-data/schemas/orders.sql`
+- [ ] T022 [US2] Update all orders module.json with complete AI metadata
+- [ ] T023 [US2] Sync registry after orders completion with `npm run modules:sync`
+
+**Checkpoint**: Orders modules stable, registry synced
 
 ---
 
-## Fase 4: Otimização IA (2-3 dias) ✅ COMPLETA
+## Phase 4: User Story 3 - Payments Module Finalization (Priority: P3)
 
-### Phase 4.1: Prompts Especializados
-- [x] **T074** [P] Criar prompt UI Agent em `.modules/prompts/ui-agent.md`
-- [x] **T075** [P] Criar prompt Backend Agent em `.modules/prompts/backend-agent.md`
-- [x] **T076** [P] Criar prompt Database Agent em `.modules/prompts/database-agent.md`
-- [x] **T077** [P] Criar prompt Integration Agent em `.modules/prompts/integration-agent.md`
-- [x] **T078** Documentar workflows obrigatórios em cada prompt
+**Goal**: Transform payments-* modules from experimental to stable status
 
-### Phase 4.2: Sistema de Sugestões Inteligentes
-- [x] **T079** Criar classe SmartSuggestions em `scripts/modules/suggestions.js`
-- [x] **T080** [P] Implementar `suggest()` para sugestões baseadas em contexto
-- [x] **T081** [P] Implementar `suggestFromTask()` para NLP de tarefas
-- [x] **T082** [P] Implementar `analyzeCode()` para análise de padrões
-- [x] **T083** Implementar `extractKeywords()` e `detectCategory()`
-- [x] **T084** Implementar ranking de sugestões por relevância
-- [x] **T085** Adicionar comando `modules:suggest` ao `package.json`
-- [x] **T086** Testar sistema de sugestões com vários cenários
+**Independent Test**: `npm run modules:validate` passes for all payments-* modules with complete manifests
 
-### Phase 4.3: Métricas e Analytics
-- [x] **T087** Criar classe ModuleMetrics em `scripts/modules/metrics.js`
-- [x] **T088** [P] Implementar `getOverview()` para visão geral
-- [x] **T089** [P] Implementar `getByCategory()` para métricas por categoria
-- [x] **T090** [P] Implementar `getReusabilityMetrics()` para score de reutilização
-- [x] **T091** [P] Implementar `getQualityMetrics()` para score de qualidade
-- [x] **T092** Implementar `printReport()` para relatório formatado
-- [x] **T093** Adicionar comando `modules:metrics` ao `package.json`
-- [x] **T094** Validar métricas com módulos existentes
+### Implementation for User Story 3
 
-### Phase 4.4: Cache e Performance
-- [x] **T095** Criar estrutura de cache em `.modules/cache/search-index.json`
-- [x] **T096** Implementar build automático de índice na descoberta
-- [x] **T097** Otimizar queries de busca com cache
-- [x] **T098** Testar performance (<10s para discovery) - **69ms alcançado!**
+- [ ] T024 [US3] Analyze src/features/payments/ for migration in `src/features/payments/`
+- [ ] T025 [P] [US3] Complete payments-ui components in `modules/ui/payments-ui/src/components/PaymentList.tsx`
+- [ ] T026 [P] [US3] Complete payments-ui hooks in `modules/ui/payments-ui/src/hooks/usePayments.ts`
+- [ ] T027 [P] [US3] Complete payments-ui store in `modules/ui/payments-ui/src/stores/payments.store.ts`
+- [ ] T028 [US3] Complete payments-logic service with SOLID patterns in `modules/logic/payments-logic/src/services/payments.service.ts`
+- [ ] T029 [P] [US3] Complete payments-logic validations in `modules/logic/payments-logic/src/validations/payments.validation.ts`
+- [ ] T030 [US3] Complete payments-data schemas in `modules/data/payments-data/schemas/payments.sql`
+- [ ] T031 [US3] Update all payments module.json with complete AI metadata
+- [ ] T032 [US3] Sync registry after payments completion with `npm run modules:sync`
 
-**Checkpoint Fase 4**: ✅ Prompts criados, sugestões funcionando, métricas disponíveis, performance excelente
+**Checkpoint**: Payments modules stable, registry synced
 
 ---
 
-## Fase 5: Documentação e Testes (2 dias) ✅ COMPLETA
+## Phase 5: User Story 4 - Next.js App Integration (Priority: P1)
 
-### Phase 5.1: Configuração de Testes
-- [x] **T099** Criar `jest.config.modules.js` para testes de módulos
-- [x] **T100** Criar template de teste em `.modules/templates/test-template.ts`
-- [x] **T101** [P] Adicionar comandos de teste ao `package.json`
+**Goal**: Update Next.js app to import from @/modules/ instead of src/features/
 
-### Phase 5.2: Testes para Módulos Existentes
-- [x] **T102** [P] Criar testes para user-profile-ui em `modules/ui/user-profile-ui/tests/` - **94 testes, 97% coverage**
-- [x] **T103** [P] Criar testes para user-logic em `modules/logic/user-logic/tests/` - **80 testes, 100% coverage**
-- [x] **T104** [P] Criar testes para user-data (documentação) - **Schema-only module**
-- [x] **T105** Executar testes e garantir coverage > 70% - **186 testes, 98.24% coverage ✨**
+**Independent Test**: `npm run dev` runs without errors, SSR works correctly
 
-### Phase 5.3: Storybook para UI Modules
-- [ ] **T106** Instalar Storybook: `npx storybook@latest init --type react` - **PULADO (npm error)**
-- [ ] **T107** Criar template de story em `.modules/templates/story-template.tsx` - **PULADO (opcional)**
-- [ ] **T108** [P] Criar stories para componentes user-profile-ui - **PULADO (opcional)**
-- [ ] **T109** Adicionar comandos storybook ao `package.json` - **PULADO (opcional)**
-- [ ] **T110** Testar Storybook (npm run storybook) - **PULADO (opcional)**
+### Implementation for User Story 4
 
-### Phase 5.4: Documentação Completa
-- [x] **T111** Criar template README em `.modules/templates/README-template.md` - **639 linhas**
-- [x] **T112** [P] Completar README de user-profile-ui com API reference - **803 linhas**
-- [x] **T113** [P] Completar README de user-logic com exemplos - **1.020 linhas**
-- [x] **T114** [P] Completar README de user-data com schema docs - **1.039 linhas**
-- [x] **T115** Criar guia de contribuição para novos módulos - **651 linhas (CONTRIBUTING.md)**
+- [ ] T033 [US4] Audit all imports from src/features/ across the app with `grep -r "from.*features/" src/`
+- [ ] T034 [P] [US4] Update user-related imports to @/modules/ui/user-profile-ui in `src/app/`
+- [ ] T035 [P] [US4] Update product-related imports to @/modules/ui/products-ui in `src/app/`
+- [ ] T036 [P] [US4] Update order-related imports to @/modules/ui/orders-ui in `src/app/`
+- [ ] T037 [P] [US4] Update payment-related imports to @/modules/ui/payments-ui in `src/app/`
+- [ ] T038 [US4] Test SSR rendering with `npm run build && npm run start`
+- [ ] T039 [US4] Test client-side hydration in development mode
+- [ ] T040 [US4] Verify no breaking changes with manual smoke test
 
-### Phase 5.5: Quality Checks
-- [x] **T116** Criar script de quality check em `scripts/modules/quality-check.js` - **650 linhas**
-- [x] **T117** Implementar validações: structure, manifests, docs, tests, exports - **5 checks**
-- [x] **T118** Adicionar comando `quality:check` ao `package.json` - **2 comandos**
-- [x] **T119** Executar quality check e corrigir issues - **Issues corrigidos**
-- [x] **T120** Garantir todos os checks passando - **Average: 92/100 ✨**
-
-**Checkpoint Fase 5**: ✅ Coverage 98.24% (target: >70%), Quality 92/100 (target: >70%), 186 testes passando
+**Checkpoint**: App running with modular imports, no breaking changes
 
 ---
 
-## Fase 6: Finalização e Validação (1 dia) ✅ COMPLETA
+## Phase 6: User Story 5 - CI/CD & Quality Gates (Priority: P2)
 
-### Phase 6.1: Validação Completa do Sistema
-- [x] **T121** Executar todos os testes: `npm run test:modules:coverage` - **186 passed, 98.24%**
-- [x] **T122** Executar quality check: `npm run quality:check` - **Average: 92/100**
-- [x] **T123** Executar validação de módulos: `npm run modules:validate` - **3 modules valid**
-- [x] **T124** Verificar métricas: `npm run modules:metrics` - **Health: 100%**
-- [ ] **T125** Validar Storybook com todos os componentes - **PULADO (Storybook não instalado)**
+**Goal**: Setup automated quality validation on every PR
 
-### Phase 6.2: Documentação Final
-- [x] **T126** Revisar e atualizar `docs/modular-architecture/README.md` - **v2.0.0, métricas finais**
-- [x] **T127** Criar changelog em `docs/modular-architecture/CHANGELOG.md` - **325 linhas, v1.0.0-v2.0.0**
-- [x] **T128** Documentar comandos úteis em cheatsheet - **COMMANDS.md, 731 linhas**
+**Independent Test**: GitHub Actions workflow runs and passes on push
 
-### Phase 6.3: Entrega
-- [x] **T129** Documentar próximos passos (migrar outras features) - **NEXT-STEPS.md criado**
-- [x] **T130** Preparar apresentação/demo do sistema - **FASE-5-COMPLETE.md criado**
-- [x] **T131** Relatório final completo - **Métricas validadas, sistema production-ready**
+### Implementation for User Story 5
 
-**Checkpoint Final**: ✅ **Sistema completo, documentado, testado e pronto para produção**
+- [ ] T041 [US5] Create GitHub Actions workflow in `.github/workflows/quality.yml`
+- [ ] T042 [P] [US5] Add type-check step to workflow
+- [ ] T043 [P] [US5] Add lint step to workflow
+- [ ] T044 [P] [US5] Add test step to workflow
+- [ ] T045 [P] [US5] Add modules:validate step to workflow
+- [ ] T046 [US5] Add build verification step to workflow
+- [ ] T047 [US5] Configure branch protection rules for quality gates
+- [ ] T048 [US5] Test workflow with a test PR
+
+**Checkpoint**: CI/CD pipeline operational, PRs blocked on quality failure
 
 ---
 
-## 🎉 RESULTADO FINAL
+## Phase 7: Polish & Production Deployment
 
-**Status**: ✅ **FASE 5 COMPLETA - SISTEMA PRODUCTION-READY**
+**Purpose**: Final validation and production deployment
 
-### Métricas Finais
-- **Módulos**: 3 (user-profile-ui, user-logic, user-data)
-- **Testes**: 186 (100% pass rate)
-- **Coverage**: 98.24% (target: >70%) ✨
-- **Quality**: 92/100 (target: >70%) ✨
-- **Documentação**: 9.067 linhas
-- **Tasks Completas**: 120/131 (92%)
+- [ ] T049 Run final quality check with `npm run quality:check` (expect score >85)
+- [ ] T050 [P] Run final test coverage with `npm run test:modules:coverage` (expect >90%)
+- [ ] T051 [P] Run modules metrics with `npm run modules:metrics`
+- [ ] T052 Production build verification with `npm run build`
+- [ ] T053 Update all module status from experimental to stable
+- [ ] T054 Final registry sync with `npm run modules:sync`
+- [ ] T055 Update documentation with Phase 6 completion in `docs/modular-architecture/`
+- [ ] T056 Deploy to production environment
+- [ ] T057 Post-deployment smoke test and monitoring
 
-### Sistema Entregue
-- ✅ CLI completo e funcional
-- ✅ Gerador de módulos automatizado
-- ✅ Sistema de descoberta para IA
-- ✅ Quality checks automatizados
-- ✅ Templates reutilizáveis
-- ✅ Documentação completa
-
-### Próximos Passos (Opcional)
-Migrar outras features: products, orders, payments (estimativa: 2-3 dias)
-
-**Versão**: v2.0.0
-**Data**: 2025-01-13
+**Checkpoint**: Production deployed, all modules stable, documentation complete
 
 ---
 
-## Dependencies
+## Dependencies & Execution Order
 
-### Bloqueios Críticos
-- **T001-T003** (estrutura) → bloqueiam tudo ✅ COMPLETO
-- **T004-T006** (schema) → bloqueiam T026, T031, T035 (manifests) ✅ COMPLETO
-- **T007-T008** (registry) → bloqueiam T040-T041 (registro) ✅ COMPLETO
-- **T017-T019** (análise) → bloqueiam T020-T035 (migração) ✅ COMPLETO
-- **T020-T041** (módulos users) → bloqueiam T045-T054 (gerador) ✅ COMPLETO
-- **T045-T054** (gerador) → bloqueiam T121 (validação final) ✅ COMPLETO
-- **T055-T063** (CLI) → bloqueiam operações de módulos ✅ COMPLETO
-- **T099-T101** (config testes) → bloqueiam T102-T105
-- **T106** (Storybook) → bloqueia T108-T110
+### Phase Dependencies
 
-### Dependências de Fase
-- **Fase 1 completa** → antes de Fase 2 ✅ COMPLETO
-- **Fase 2 completa** → antes de Fase 3 ✅ COMPLETO
-- **Fase 3 completa** → antes de Fase 4 ✅ COMPLETO
-- **Fase 4 completa** → antes de Fase 5 ✅ COMPLETO
-- **Fase 5 completa** → antes de Fase 6
+- **Phase 1 (Validation)**: No dependencies - must pass before proceeding
+- **Phases 2-4 (Products, Orders, Payments)**: Depend on Phase 1 - CAN run in parallel
+- **Phase 5 (App Integration)**: Depends on Phases 2-4 completion
+- **Phase 6 (CI/CD)**: Can run in parallel with Phase 5
+- **Phase 7 (Polish)**: Depends on Phases 5-6 completion
+
+### User Story Independence
+
+- **US1 (Products)**: Independent - can start after Phase 1
+- **US2 (Orders)**: Independent - can start after Phase 1, parallel with US1
+- **US3 (Payments)**: Independent - can start after Phase 1, parallel with US1/US2
+- **US4 (App Integration)**: Depends on US1, US2, US3 completion
+- **US5 (CI/CD)**: Independent of US1-US3, can run after Phase 1
+
+### Within Each User Story
+
+- Analysis task first
+- UI, Logic, Data tasks can run in parallel [P]
+- module.json updates after implementation
+- Registry sync after all module updates
 
 ---
 
 ## Parallel Execution Examples
 
-### Fase 1 - Setup Paralelo ✅
+### Parallel: Products Module (Phase 2)
+
 ```bash
-# T001-T003: Diretórios independentes
-Task: "Criar diretórios modules/{ui,logic,data,integration}/"
-Task: "Criar diretório .modules/{cache,templates,prompts}/"
-Task: "Criar diretório scripts/modules/"
+# After T004 (analysis) completes, launch in parallel:
+Task: "T005 [P] [US1] Complete products-ui components"
+Task: "T006 [P] [US1] Complete products-ui hooks"
+Task: "T007 [P] [US1] Complete products-ui store"
 ```
 
-### Fase 2 - Migração UI em Paralelo ✅
+### Parallel: All Modules (Phases 2-4)
+
 ```bash
-# T021-T023: Arquivos diferentes
-Task: "Mover UserList.tsx para modules/ui/user-profile-ui/components/"
-Task: "Mover useUser.ts, useUsers.ts para modules/ui/user-profile-ui/hooks/"
-Task: "Mover user.store.ts para modules/ui/user-profile-ui/stores/"
+# After Phase 1 validation, launch all three domains in parallel:
+Task: "T004 [US1] Analyze products" → leads to Products module work
+Task: "T015 [US2] Analyze orders" → leads to Orders module work
+Task: "T024 [US3] Analyze payments" → leads to Payments module work
 ```
 
-### Fase 3 - Templates em Paralelo ✅
-```bash
-# T047-T050: Funções independentes
-Task: "Implementar generateUITemplate() em generate-module.js"
-Task: "Implementar generateLogicTemplate() em generate-module.js"
-Task: "Implementar generateDataTemplate() em generate-module.js"
-Task: "Implementar generateIntegrationTemplate() em generate-module.js"
-```
+### Parallel: App Import Updates (Phase 5)
 
-### Fase 4 - Prompts em Paralelo ✅
 ```bash
-# T074-T077: Arquivos diferentes
-Task: "Criar .modules/prompts/ui-agent.md"
-Task: "Criar .modules/prompts/backend-agent.md"
-Task: "Criar .modules/prompts/database-agent.md"
-Task: "Criar .modules/prompts/integration-agent.md"
+# After audit (T033), update all imports in parallel:
+Task: "T034 [P] [US4] Update user imports"
+Task: "T035 [P] [US4] Update product imports"
+Task: "T036 [P] [US4] Update order imports"
+Task: "T037 [P] [US4] Update payment imports"
 ```
 
 ---
 
-## Validation Checklist
+## Implementation Strategy
 
-### ✅ Fase 1: Fundação
-- [x] Diretórios criados: `modules/`, `.modules/`, `scripts/modules/`
-- [x] Schema TypeScript compila sem erros
-- [x] `registry.json` e `installed.json` são JSON válidos
-- [x] `npm run modules:validate` passa
+### MVP First (Products Only)
 
-### ✅ Fase 2: Migração
-- [x] 3 módulos criados (user-profile-ui, user-logic, user-data)
-- [x] Cada módulo tem `module.json` válido
-- [x] `npm run type-check` sem erros
-- [x] `npm test` passa
-- [x] App funciona: `npm run dev`
+1. Complete Phase 1: Validation
+2. Complete Phase 2: Products Module (US1)
+3. **STOP and VALIDATE**: Test products module independently
+4. Proceed to App Integration for products only
 
-### ✅ Fase 3: Automação
-- [x] Gerador cria módulos válidos
-- [x] Todos comandos CLI funcionam
-- [x] Discovery retorna resultados corretos
-- [x] Search index criado
+### Incremental Delivery
 
-### ✅ Fase 4: Otimização IA
-- [x] 4 prompts especializados criados
-- [x] Sugestões retornam resultados
-- [x] Métricas geram relatório
-- [x] Performance < 10s (69ms alcançado!)
+1. Phase 1 → Validation passed
+2. Phase 2 (Products) → Products stable → Integrate in app
+3. Phase 3 (Orders) → Orders stable → Integrate in app
+4. Phase 4 (Payments) → Payments stable → Integrate in app
+5. Each domain adds value independently
 
-### 🚧 Fase 5: Docs e Testes
-- [ ] Coverage > 70%
-- [ ] Storybook roda sem erros
-- [ ] Todos módulos têm README
-- [ ] Quality checks passam
+### Parallel Team Strategy
 
-### ⏳ Fase 6: Finalização
-- [ ] Todas validações OK
-- [ ] Documentação completa
-- [ ] Sistema production-ready
+With multiple developers:
+1. All complete Phase 1 together
+2. Once validation passes:
+   - Developer A: Products (US1)
+   - Developer B: Orders (US2)
+   - Developer C: Payments (US3)
+   - Developer D: CI/CD (US5)
+3. All reconvene for Phase 5 (App Integration) and Phase 7 (Polish)
 
 ---
 
-## Métricas de Sucesso
+## Metrics Summary
 
-| Métrica | Atual | Objetivo | Status |
-|---------|-------|----------|--------|
-| Discovery | 69ms | < 10s | ✅ **145x mais rápido!** |
-| Reutilização | 73% | > 80% | ⚠️ **Quase lá!** |
-| Setup feature | 15-30 min | 15-30 min | ✅ **Meta alcançada!** |
-| Context tokens | < 5k | < 5k | ✅ **Registry 500 linhas!** |
-| Coverage | 0% | > 70% | 🚧 **Fase 5** |
-| Quality Score | 50/100 | > 70/100 | ⚠️ **Precisa testes** |
+| Metric | Current | Target | Status |
+|--------|---------|--------|--------|
+| Modules Total | 12 | 12 | ✅ |
+| Stable Modules | 3 (users) | 12 | 🚧 Phase 6 |
+| Test Coverage | 98.24% | >70% | ✅ |
+| Quality Score | 92/100 | >70 | ✅ |
+| Discovery Time | 69ms | <100ms | ✅ |
 
 ---
 
-## Comandos Principais
+## Comandos Úteis
 
 ```bash
-# Geração
-npm run generate:module <name> --category <ui|logic|data|integration>
-
-# Gerenciamento
-npm run modules:list
-npm run modules:search <keyword>
-npm run modules:info <id>
-npm run modules:sync
+# Validação
 npm run modules:validate
-
-# Descoberta e Sugestões
-npm run modules:suggest "<task>"
-npm run modules:index
-
-# Métricas e Performance
-npm run modules:metrics
-npm run cache:status
-npm run cache:validate
-npm run cache:rebuild
-npm run cache:report
-
-# Qualidade (Fase 5)
 npm run quality:check
 npm run test:modules:coverage
+npm run modules:metrics
 
-# Visualização (Fase 5)
-npm run storybook
+# Desenvolvimento
+npm run modules:sync
+npm run modules:search "<keyword>"
+npm run modules:suggest "<task>"
+
+# Build
+npm run build
+npm run dev
+npm run type-check
+npm run lint
 ```
 
 ---
 
-## Recursos
+## Notes
 
-- **Docs**: `docs/modular-architecture/`
-- **Quick Reference**: `docs/modular-architecture/QUICK-REFERENCE.md`
-- **Templates**: `.modules/templates/`
-- **Prompts**: `.modules/prompts/`
-- **Scripts**: `scripts/modules/`
-- **Cache**: `.modules/cache/`
+- [P] tasks = different files, no dependencies
+- [Story] label maps task to specific user story for traceability
+- Each user story should be independently completable and testable
+- Commit after each task or logical group
+- Stop at any checkpoint to validate story independently
+- All experimental modules must become stable before Phase 7
 
----
-
-## Progresso Atual
-
-**Status**: ✅ 75% Completo (98/131 tasks)
-**Next Step**: Begin T099 (Fase 5 - Configuração de Testes)
-**Fases Concluídas**: 4/6 (Fundação, Migração, Automação, Otimização IA)
-**Tempo Estimado Restante**: 3-4 dias (Testes + Finalização)
-
----
-
-## Conquistas da Fase 4 🎉
-
-- **Performance incrível**: 69ms de discovery (145x mais rápido que o objetivo!)
-- **NLP inteligente**: Sistema de sugestões detecta categorias e recomenda módulos
-- **Métricas completas**: Reusabilidade 73%, Qualidade 50% (aguardando testes)
-- **4 Agentes especializados**: Prompts com workflows obrigatórios
-- **Cache otimizado**: Sistema auto-invalida e rebuild inteligente
+**Total Tasks**: 57 (T001-T057)
+**Tasks per User Story**: US1=11, US2=9, US3=9, US4=8, US5=8, Validation=3, Polish=9
+**Parallel Opportunities**: 35 tasks marked [P]
+**Suggested MVP**: Complete US1 (Products) + US4 (partial integration)

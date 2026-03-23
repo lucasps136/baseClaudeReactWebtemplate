@@ -1,18 +1,54 @@
-// PaymentsLogic Logic Module
+/**
+ * Payments Logic Module
+ * Bebarter Modular Architecture
+ *
+ * Business logic layer for payment management.
+ * Provides SOLID-compliant services, validations, and types.
+ */
 
 // Services
-export { PaymentsLogicService } from "./src/services/payments-logic.service";
+export {
+  PaymentsService,
+  PaymentNotFoundError,
+  InvalidPaymentStatusError,
+  PaymentValidationError,
+  RefundNotAllowedError,
+} from "./src/services/payments.service";
 
-// Repositories
-export type { IPaymentsLogicRepository } from "./src/repositories/payments-logic.repository.interface";
+// Repository Interface
+export type { IPaymentsRepository } from "./src/repositories/payments.repository.interface";
 
 // Validations
-export { PaymentsLogicValidation } from "./src/validations/payments-logic.validation";
-export type { IPaymentsLogicValidation } from "./src/validations/payments-logic.validation";
+export {
+  PaymentsValidation,
+  createPaymentSchema,
+  updatePaymentSchema,
+  refundSchema,
+  paymentFiltersSchema,
+  validateCreatePayment,
+  validateUpdatePayment,
+  validateRefund,
+  validateFilters,
+  safeValidateCreatePayment,
+  safeValidateUpdatePayment,
+  safeValidateRefund,
+  safeValidateFilters,
+} from "./src/validations/payments.validation";
+export type { IPaymentsValidation } from "./src/validations/payments.validation";
 
 // Types
 export type {
-  PaymentsLogicItem,
-  CreatePaymentsLogicInput,
-  UpdatePaymentsLogicInput,
+  Payment,
+  PaymentStatus,
+  PaymentMethod,
+  PaymentGateway,
+  Currency,
+  CreatePaymentDTO,
+  UpdatePaymentDTO,
+  RefundDTO,
+  PaymentFilters,
+  PaginatedResult,
+  PaymentStats,
 } from "./src/types";
+
+export { PAYMENT_STATUS_TRANSITIONS } from "./src/types";

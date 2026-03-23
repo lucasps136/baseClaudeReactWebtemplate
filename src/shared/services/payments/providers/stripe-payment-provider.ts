@@ -63,7 +63,7 @@ export class StripePaymentProvider implements IPaymentProvider {
       this.mapStripeError,
     );
   }
-  async getProduct(productId: string): Promise<IProduct> {
+  async getProduct(productId: string): Promise<IProduct | null> {
     return this.productOps.getProduct(
       productId,
       this.mapStripeProduct,
@@ -77,7 +77,7 @@ export class StripePaymentProvider implements IPaymentProvider {
       this.mapStripeError,
     );
   }
-  async getPrice(priceId: string): Promise<IPrice> {
+  async getPrice(priceId: string): Promise<IPrice | null> {
     return this.productOps.getPrice(
       priceId,
       this.mapStripePrice,
@@ -87,17 +87,15 @@ export class StripePaymentProvider implements IPaymentProvider {
 
   // Customer operations - delegate to CustomerOperations
   async createCustomer(
-    email: string,
-    metadata?: Record<string, string>,
+    data: Omit<ICustomer, "id" | "stripeCustomerId">,
   ): Promise<ICustomer> {
     return this.customerOps.createCustomer(
-      email,
-      metadata,
+      data,
       this.mapStripeCustomer,
       this.mapStripeError,
-    );
+    ) as Promise<ICustomer>;
   }
-  async getCustomer(customerId: string): Promise<ICustomer> {
+  async getCustomer(customerId: string): Promise<ICustomer | null> {
     return this.customerOps.getCustomer(
       customerId,
       this.mapStripeCustomer,
@@ -116,20 +114,26 @@ export class StripePaymentProvider implements IPaymentProvider {
     );
   }
   async deleteCustomer(customerId: string): Promise<void> {
-    return this.customerOps.deleteCustomer(customerId, this.mapStripeError);
+    try {
+      await this.stripe.customers.del(customerId);
+    } catch (error) {
+      throw this.mapStripeError(error);
+    }
   }
 
   // Subscription operations - delegate to SubscriptionOperations
   async createSubscription(
-    options: ICreateSubscriptionOptions,
+    customerId: string,
+    priceId: string,
+    options?: ICreateSubscriptionOptions,
   ): Promise<ISubscription> {
-    return this.subscriptionOps.createSubscription(
-      options,
-      this.mapStripeSubscription,
-      this.mapStripeError,
-    );
+    return this.subscriptionOps.createSubscription(customerId, priceId, {
+      options: options || {},
+      mapSubscription: this.mapStripeSubscription,
+      mapError: this.mapStripeError,
+    });
   }
-  async getSubscription(subscriptionId: string): Promise<ISubscription> {
+  async getSubscription(subscriptionId: string): Promise<ISubscription | null> {
     return this.subscriptionOps.getSubscription(
       subscriptionId,
       this.mapStripeSubscription,
@@ -176,7 +180,9 @@ export class StripePaymentProvider implements IPaymentProvider {
       this.mapStripeError,
     );
   }
-  async getPaymentIntent(paymentIntentId: string): Promise<IPaymentIntent> {
+  async getPaymentIntent(
+    paymentIntentId: string,
+  ): Promise<IPaymentIntent | null> {
     return this.paymentOps.getPaymentIntent(
       paymentIntentId,
       this.mapStripePaymentIntent,
@@ -191,11 +197,12 @@ export class StripePaymentProvider implements IPaymentProvider {
     );
   }
   async cancelPaymentIntent(paymentIntentId: string): Promise<IPaymentIntent> {
-    return this.paymentOps.cancelPaymentIntent(
-      paymentIntentId,
-      this.mapStripePaymentIntent,
-      this.mapStripeError,
-    );
+    try {
+      const intent = await this.stripe.paymentIntents.cancel(paymentIntentId);
+      return this.mapStripePaymentIntent(intent);
+    } catch (error) {
+      throw this.mapStripeError(error);
+    }
   }
 
   // Checkout operations - delegate to CheckoutOperations
@@ -208,7 +215,9 @@ export class StripePaymentProvider implements IPaymentProvider {
       this.mapStripeError,
     );
   }
-  async getCheckoutSession(sessionId: string): Promise<ICheckoutSession> {
+  async getCheckoutSession(
+    sessionId: string,
+  ): Promise<ICheckoutSession | null> {
     return this.checkoutOps.getCheckoutSession(
       sessionId,
       this.mapStripeCheckoutSession,
@@ -216,18 +225,44 @@ export class StripePaymentProvider implements IPaymentProvider {
     );
   }
 
-  // Webhook operations - delegate to WebhookOperations
-  async handleWebhook(
-    payload: string,
-    signature: string,
-  ): Promise<IWebhookEvent> {
-    return this.webhookOps.handleWebhook(
-      payload,
-      signature,
-      this.mapStripeWebhookEvent,
-      this.mapStripeError,
-    );
+  // Webhook operations
+  verifyWebhookSignature(payload: string, signature: string): boolean {
+    if (!this.webhookSecret) return false;
+    try {
+      this.stripe.webhooks.constructEvent(
+        payload,
+        signature,
+        this.webhookSecret,
+      );
+      return true;
+    } catch {
+      return false;
+    }
   }
+
+  async processWebhookEvent(
+    event: Record<string, unknown>,
+  ): Promise<IWebhookEvent> {
+    return this.mapStripeWebhookEvent(event as unknown as Stripe.Event);
+  }
+
+  async createCustomerPortalSession(
+    customerId: string,
+    returnUrl: string,
+  ): Promise<{ url: string }> {
+    try {
+      const session = await this.stripe.billingPortal.sessions.create({
+        customer: customerId,
+        return_url: returnUrl,
+      });
+      return { url: session.url };
+    } catch (error) {
+      throw this.mapStripeError(error);
+    }
+  }
+
+  async initialize(): Promise<void> {}
+  async cleanup(): Promise<void> {}
 
   // Mapper functions (kept in main class as they're specific to Stripe->Internal mapping)
   private mapStripeProduct = (product: Stripe.Product): IProduct => ({
@@ -235,14 +270,11 @@ export class StripePaymentProvider implements IPaymentProvider {
     name: product.name,
     description: product.description || undefined,
     active: product.active,
-    images: product.images,
-    defaultPriceId:
-      typeof product.default_price === "string"
-        ? product.default_price
-        : product.default_price?.id,
+    image:
+      product.images && product.images.length > 0
+        ? product.images[0]
+        : undefined,
     metadata: product.metadata,
-    created: product.created,
-    updated: product.updated || product.created,
   });
 
   private mapStripePrice = (price: Stripe.Price): IPrice => ({
@@ -252,44 +284,40 @@ export class StripePaymentProvider implements IPaymentProvider {
     active: price.active,
     currency: price.currency,
     unitAmount: price.unit_amount || 0,
-    recurring: price.recurring
-      ? {
-          interval: price.recurring.interval,
-          intervalCount: price.recurring.interval_count,
-        }
-      : undefined,
+    interval: price.recurring?.interval as IPrice["interval"],
+    intervalCount: price.recurring?.interval_count,
     metadata: price.metadata,
-    created: price.created,
   });
 
   private mapStripeCustomer = (customer: Stripe.Customer): ICustomer => ({
     id: customer.id,
+    stripeCustomerId: customer.id,
     email: customer.email || "",
     name: customer.name || undefined,
-    metadata: customer.metadata,
-    created: customer.created,
+    phone: customer.phone || undefined,
   });
 
   private mapStripeSubscription = (
     subscription: Stripe.Subscription,
   ): ISubscription => ({
     id: subscription.id,
+    userId:
+      typeof subscription.customer === "string"
+        ? subscription.customer
+        : subscription.customer.id,
     customerId:
       typeof subscription.customer === "string"
         ? subscription.customer
         : subscription.customer.id,
     status: subscription.status as ISubscription["status"],
-    currentPeriodStart: subscription.current_period_start,
-    currentPeriodEnd: subscription.current_period_end,
+    priceId: subscription.items.data[0]?.price.id || "",
+    currentPeriodStart: new Date(subscription.current_period_start * 1000),
+    currentPeriodEnd: new Date(subscription.current_period_end * 1000),
     cancelAtPeriodEnd: subscription.cancel_at_period_end,
-    canceledAt: subscription.canceled_at || undefined,
-    items: subscription.items.data.map((item) => ({
-      id: item.id,
-      priceId: typeof item.price === "string" ? item.price : item.price.id,
-      quantity: item.quantity || 1,
-    })),
+    canceledAt: subscription.canceled_at
+      ? new Date(subscription.canceled_at * 1000)
+      : undefined,
     metadata: subscription.metadata,
-    created: subscription.created,
   });
 
   private mapStripePaymentIntent = (
@@ -303,9 +331,8 @@ export class StripePaymentProvider implements IPaymentProvider {
       typeof paymentIntent.customer === "string"
         ? paymentIntent.customer
         : paymentIntent.customer?.id,
-    clientSecret: paymentIntent.client_secret || undefined,
+    clientSecret: paymentIntent.client_secret || "",
     metadata: paymentIntent.metadata,
-    created: paymentIntent.created,
   });
 
   private mapStripeCheckoutSession = (
@@ -318,34 +345,34 @@ export class StripePaymentProvider implements IPaymentProvider {
         : session.customer?.id,
     mode: session.mode as ICheckoutSession["mode"],
     status: session.status as ICheckoutSession["status"],
-    url: session.url || undefined,
-    successUrl: session.success_url || undefined,
-    cancelUrl: session.cancel_url || undefined,
-    metadata: session.metadata || {},
-    created: session.created,
+    url: session.url || "",
   });
 
   private mapStripeWebhookEvent = (event: Stripe.Event): IWebhookEvent => ({
     id: event.id,
     type: event.type,
     data: event.data.object,
-    created: event.created,
+    created: new Date(event.created * 1000),
+    processed: false,
   });
 
   private mapStripeError = (error: unknown): IPaymentError => {
     if (error instanceof Stripe.errors.StripeError) {
       return {
+        name: "StripeError",
         code: error.code || "unknown",
         message: error.message,
-        type: error.type,
-        statusCode: error.statusCode,
+        type: (error.type as IPaymentError["type"]) || "api_error",
+        details: { statusCode: error.statusCode },
       };
     }
     return {
+      name: "UnknownPaymentError",
       code: "unknown",
       message:
         error instanceof Error ? error.message : "An unknown error occurred",
       type: "api_error",
+      details: error,
     };
   };
 }

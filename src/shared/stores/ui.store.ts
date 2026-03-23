@@ -38,6 +38,10 @@ interface IUIActions {
 
 export type UIStore = IUIState & IUIActions;
 
+type ITheme = IUIState["theme"];
+type IModalType = string;
+type INotificationInput = Omit<INotification, "id" | "timestamp">;
+
 // SRP: Create notification with ID and timestamp
 const createNotification = (
   notification: Omit<INotification, "id" | "timestamp">,
@@ -74,14 +78,11 @@ const createInitialState = (): IUIState => ({
 });
 
 // Actions factory
-const createUIActions = (
-  set: Parameters<Parameters<typeof create<UIStore>>[0]>[0],
-  get: Parameters<Parameters<typeof create<UIStore>>[0]>[1],
-): IUIActions => ({
+const createUIActions = (set: any, get: any): IUIActions => ({
   setTheme: (theme: ITheme): void => set({ theme }, false, "ui/setTheme"),
   toggleSidebar: (): void =>
     set(
-      (state) => ({ sidebarOpen: !state.sidebarOpen }),
+      (state: UIStore) => ({ sidebarOpen: !state.sidebarOpen }),
       false,
       "ui/toggleSidebar",
     ),
@@ -92,7 +93,9 @@ const createUIActions = (
   addNotification: (notification: INotificationInput): void => {
     const newNotification = createNotification(notification);
     set(
-      (state) => ({ notifications: [...state.notifications, newNotification] }),
+      (state: UIStore) => ({
+        notifications: [...state.notifications, newNotification],
+      }),
       false,
       "ui/addNotification",
     );
@@ -103,8 +106,10 @@ const createUIActions = (
   },
   removeNotification: (id: string): void =>
     set(
-      (state) => ({
-        notifications: state.notifications.filter((n) => n.id !== id),
+      (state: UIStore) => ({
+        notifications: state.notifications.filter(
+          (n: INotification) => n.id !== id,
+        ),
       }),
       false,
       "ui/removeNotification",

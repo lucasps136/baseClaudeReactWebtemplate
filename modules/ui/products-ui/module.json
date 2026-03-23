@@ -1,32 +1,104 @@
 {
   "id": "products-ui",
-  "name": "Products Ui",
+  "name": "Products UI",
   "version": "1.0.0",
   "category": "ui",
-  "description": "ProductsUi module - Auto-generated",
+  "description": "UI components, hooks and stores for product management. Includes product list display with grid layout, product detail view, product card component, and state management for product operations with pagination and filtering.",
   "exports": {
     "components": [
       {
-        "name": "ProductsUiList",
-        "path": "./components/ProductsUiList"
+        "name": "ProductList",
+        "path": "./src/components/ProductsUiList",
+        "props": {
+          "onProductView": "(product: Product) => void (optional)",
+          "onProductEdit": "(product: Product) => void (optional)",
+          "currentUserId": "string (optional)",
+          "className": "string (optional)"
+        },
+        "description": "Displays a grid of products with loading states, error handling, and pagination. Includes product cards with view/edit/delete actions.",
+        "example": "<ProductList onProductView={handleView} currentUserId={userId} />"
+      },
+      {
+        "name": "ProductCard",
+        "path": "./src/components/ProductCard",
+        "props": {
+          "product": "Product (required)",
+          "onView": "(product: Product) => void (optional)",
+          "onEdit": "(product: Product) => void (optional)",
+          "onDelete": "(product: Product) => void (optional)",
+          "isOwner": "boolean (optional)",
+          "className": "string (optional)"
+        },
+        "description": "Displays a single product as a card with image, name, price, status badge, and action buttons",
+        "example": "<ProductCard product={product} onView={handleView} isOwner={true} />"
+      },
+      {
+        "name": "ProductDetail",
+        "path": "./src/components/ProductDetail",
+        "props": {
+          "productId": "string (required)",
+          "onEdit": "(product: Product) => void (optional)",
+          "onDelete": "(product: Product) => void (optional)",
+          "onClose": "() => void (optional)",
+          "isOwner": "boolean (optional)",
+          "className": "string (optional)"
+        },
+        "description": "Full product detail view with image, description, metadata, and edit/delete actions for owners",
+        "example": "<ProductDetail productId={id} onEdit={handleEdit} isOwner={true} />"
       }
     ],
     "hooks": [
       {
-        "name": "useProductsUi",
-        "path": "./hooks/useProductsUi"
+        "name": "useProduct",
+        "path": "./src/hooks/useProduct",
+        "description": "Hook for managing single product state and operations (fetch, update, delete)",
+        "example": "const { selectedProduct, fetchProduct, updateProduct, deleteProduct, isLoadingProduct } = useProduct()"
+      },
+      {
+        "name": "useProducts",
+        "path": "./src/hooks/useProductsUi",
+        "description": "Hook for managing product list state and CRUD operations with filtering, searching, and pagination",
+        "example": "const { products, fetchProducts, searchProducts, createProduct, updateProduct, deleteProduct, loadMore } = useProducts()"
       }
     ],
     "stores": [
       {
-        "name": "useProductsUiStore",
-        "path": "./stores/products-ui.store"
+        "name": "useProductStore",
+        "path": "./src/stores/products-ui.store",
+        "description": "Zustand store for product state management with separate single product and list states",
+        "example": "const { products, selectedProduct, setProducts, setSelectedProduct } = useProductStore()"
       }
     ],
     "types": [
       {
-        "name": "ProductsUiItem",
-        "path": "./types"
+        "name": "Product",
+        "path": "./src/types",
+        "description": "Product interface with id, name, description, price, currency, image, active status, ownerId, and metadata"
+      },
+      {
+        "name": "CreateProductInput",
+        "path": "./src/types",
+        "description": "Input type for creating a new product"
+      },
+      {
+        "name": "UpdateProductInput",
+        "path": "./src/types",
+        "description": "Input type for updating an existing product"
+      },
+      {
+        "name": "ProductListFilter",
+        "path": "./src/types",
+        "description": "Filter options for product list (search, active, sortBy, sortOrder, limit, offset)"
+      },
+      {
+        "name": "PaginationState",
+        "path": "./src/types",
+        "description": "Pagination state with hasMore, total, currentPage, pageSize"
+      },
+      {
+        "name": "ProductListResponse",
+        "path": "./src/types",
+        "description": "Response type for product list API calls"
       }
     ]
   },
@@ -35,20 +107,77 @@
     "packages": ["react", "zustand"]
   },
   "ai": {
-    "summary": "ProductsUi module for ui layer",
-    "keywords": ["products-ui", "ui"],
-    "use_cases": ["Manage products-ui"],
+    "summary": "Complete UI module for product management with components, hooks, stores and types. Includes ProductList grid component, ProductCard and ProductDetail components, useProduct/useProducts hooks for state management, and Zustand store for global product state with pagination and filtering support.",
+    "keywords": [
+      "product",
+      "catalog",
+      "list",
+      "grid",
+      "card",
+      "detail",
+      "crud",
+      "zustand",
+      "hooks",
+      "ui",
+      "component",
+      "pagination",
+      "filtering",
+      "search"
+    ],
+    "use_cases": [
+      "Display product catalog in grid layout",
+      "Show product cards with images and prices",
+      "View detailed product information",
+      "Fetch single product details",
+      "Create, update, delete products",
+      "Filter and search product lists",
+      "Paginate through product lists",
+      "Manage product state globally",
+      "Handle product loading and error states",
+      "Support owner-specific actions (edit/delete)"
+    ],
     "reusable": {
-      "components": ["ProductsUiList"],
-      "hooks": ["useProductsUi"]
+      "components": ["ProductList", "ProductCard", "ProductDetail"],
+      "hooks": ["useProduct", "useProducts"],
+      "types": [
+        "Product",
+        "ProductListFilter",
+        "PaginationState",
+        "CreateProductInput",
+        "UpdateProductInput"
+      ]
     },
-    "examples": ["import { ProductsUi } from '@/modules/ui/products-ui'"]
+    "examples": [
+      "import { ProductList, ProductCard, ProductDetail } from '@/modules/ui/products-ui'",
+      "import { useProducts, useProduct } from '@/modules/ui/products-ui'",
+      "import type { Product, ProductListFilter } from '@/modules/ui/products-ui'",
+      "const { products, fetchProducts } = useProducts()",
+      "const { selectedProduct, fetchProduct } = useProduct()",
+      "<ProductList onProductView={handleView} currentUserId={userId} />",
+      "<ProductCard product={product} onView={handleView} isOwner={true} />",
+      "<ProductDetail productId={id} onEdit={handleEdit} onClose={handleClose} />"
+    ]
   },
   "status": "experimental",
   "createdAt": "2025-11-21T15:11:32.668Z",
-  "updatedAt": "2025-11-21T15:11:32.668Z",
-  "author": "Auto-generated",
+  "updatedAt": "2025-12-08T00:00:00.000Z",
+  "author": "Bebarter Team",
   "license": "MIT",
-  "tags": ["ui", "products-ui"],
-  "relatedFiles": []
+  "keywords": ["product", "catalog", "list", "ui", "zustand", "hooks"],
+  "tags": [
+    "product-management",
+    "catalog",
+    "ui",
+    "react",
+    "zustand",
+    "pagination",
+    "filtering"
+  ],
+  "relatedFiles": [
+    {
+      "path": "src/features/products",
+      "type": "REFERENCE",
+      "description": "Original product feature code (may be replaced by this module)"
+    }
+  ]
 }

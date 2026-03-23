@@ -1,18 +1,53 @@
-// OrdersLogic Logic Module
+/**
+ * Orders Logic Module
+ * Bebarter Modular Architecture
+ *
+ * Business logic layer for order management.
+ * Provides SOLID-compliant services, validations, and types.
+ */
 
 // Services
-export { OrdersLogicService } from "./src/services/orders-logic.service";
+export {
+  OrdersService,
+  OrderNotFoundError,
+  InvalidStatusTransitionError,
+  OrderValidationError,
+} from "./src/services/orders.service";
 
-// Repositories
-export type { IOrdersLogicRepository } from "./src/repositories/orders-logic.repository.interface";
+// Repository Interface
+export type { IOrdersRepository } from "./src/repositories/orders.repository.interface";
 
 // Validations
-export { OrdersLogicValidation } from "./src/validations/orders-logic.validation";
-export type { IOrdersLogicValidation } from "./src/validations/orders-logic.validation";
+export {
+  OrdersValidation,
+  createOrderSchema,
+  updateOrderSchema,
+  updateOrderStatusSchema,
+  orderFiltersSchema,
+  shippingAddressSchema,
+  validateCreateOrder,
+  validateUpdateOrder,
+  validateUpdateStatus,
+  validateFilters,
+  safeValidateCreateOrder,
+  safeValidateUpdateOrder,
+  safeValidateFilters,
+} from "./src/validations/orders.validation";
+export type { IOrdersValidation } from "./src/validations/orders.validation";
 
 // Types
 export type {
-  OrdersLogicItem,
-  CreateOrdersLogicInput,
-  UpdateOrdersLogicInput,
+  Order,
+  OrderStatus,
+  PaymentStatus,
+  Currency,
+  ShippingAddress,
+  CreateOrderDTO,
+  UpdateOrderDTO,
+  UpdateOrderStatusDTO,
+  OrderFilters,
+  PaginatedResult,
+  OrderStats,
 } from "./src/types";
+
+export { ORDER_STATUS_TRANSITIONS } from "./src/types";

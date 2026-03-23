@@ -204,7 +204,8 @@ export interface IPaymentProviderConfig {
 }
 
 // Error types
-export interface IPaymentError {
+export interface IPaymentError extends Error {
+  name: string;
   code: string;
   message: string;
   type:

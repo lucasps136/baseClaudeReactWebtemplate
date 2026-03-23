@@ -1,119 +1,192 @@
 import { useCallback } from "react";
-import { useProductsUiStore } from "../stores/products-ui.store";
-import type { CreateProductsUiInput, UpdateProductsUiInput } from "../types";
+import { useProductStore } from "../stores/products-ui.store";
+import type {
+  ProductListFilter,
+  CreateProductInput,
+  UpdateProductInput,
+} from "../types";
 
-export const useProductsUi = () => {
+// Custom hook following Single Responsibility
+// Only handles product list operations
+export const useProducts = () => {
   const {
-    items,
-    isLoading,
-    error,
-    setItems,
-    addItem,
-    updateItem,
-    removeItem,
-    setLoading,
-    setError,
-  } = useProductsUiStore();
+    products,
+    isLoadingProducts,
+    productsError,
+    filter,
+    pagination,
+    setProducts,
+    addProduct,
+    updateProduct,
+    removeProduct,
+    setProductsLoading,
+    setProductsError,
+    setFilter,
+    setPagination,
+  } = useProductStore();
 
-  const fetchItems = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      // TODO: Implement service call
-      // const service = getProductsUiService()
-      // const result = await service.getItems()
-
-      const result: any[] = []; // Mock
-
-      setItems(result);
-    } catch (error) {
-      setError(
-        error instanceof Error ? error.message : "Failed to fetch items",
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, [setItems, setLoading, setError]);
-
-  const createItem = useCallback(
-    async (input: CreateProductsUiInput) => {
+  const fetchProducts = useCallback(
+    async (newFilter?: Partial<ProductListFilter>) => {
       try {
-        setLoading(true);
-        setError(null);
+        setProductsLoading(true);
+        setProductsError(null);
 
-        // TODO: Implement service call
-        const newItem = {
+        if (newFilter) {
+          setFilter(newFilter);
+        }
+
+        // TODO: Replace with actual service call when product-logic module is integrated
+        // import { productService } from '@/modules/logic/product-logic'
+        // const result = await productService.getProducts({ ...filter, ...newFilter })
+
+        // Mock implementation for now
+        const result = {
+          products: [],
+          total: 0,
+          hasMore: false,
+        };
+
+        setProducts(result.products);
+        setPagination({
+          total: result.total,
+          hasMore: result.hasMore,
+        });
+      } catch (error) {
+        setProductsError(
+          error instanceof Error ? error.message : "Failed to fetch products",
+        );
+      } finally {
+        setProductsLoading(false);
+      }
+    },
+    [
+      filter,
+      setProducts,
+      setProductsLoading,
+      setProductsError,
+      setFilter,
+      setPagination,
+    ],
+  );
+
+  const searchProducts = useCallback(
+    async (search: string) => {
+      await fetchProducts({ search, offset: 0 });
+    },
+    [fetchProducts],
+  );
+
+  const createProduct = useCallback(
+    async (input: CreateProductInput) => {
+      try {
+        setProductsLoading(true);
+        setProductsError(null);
+
+        // TODO: Replace with actual service call when product-logic module is integrated
+        // import { productService } from '@/modules/logic/product-logic'
+        // const newProduct = await productService.createProduct(input)
+
+        // Mock implementation
+        const newProduct = {
           id: crypto.randomUUID(),
+          active: input.active ?? true,
           ...input,
           createdAt: new Date(),
           updatedAt: new Date(),
         };
 
-        addItem(newItem);
-        return newItem;
+        addProduct(newProduct);
+        return newProduct;
       } catch (error) {
         const errorMessage =
-          error instanceof Error ? error.message : "Failed to create item";
-        setError(errorMessage);
+          error instanceof Error ? error.message : "Failed to create product";
+        setProductsError(errorMessage);
         throw new Error(errorMessage);
       } finally {
-        setLoading(false);
+        setProductsLoading(false);
       }
     },
-    [addItem, setLoading, setError],
+    [addProduct, setProductsLoading, setProductsError],
   );
 
-  const updateItemById = useCallback(
-    async (id: string, input: UpdateProductsUiInput) => {
+  const updateProductById = useCallback(
+    async (id: string, input: UpdateProductInput) => {
       try {
-        setLoading(true);
-        setError(null);
+        setProductsLoading(true);
+        setProductsError(null);
 
-        // TODO: Implement service call
+        // TODO: Replace with actual service call when product-logic module is integrated
+        // import { productService } from '@/modules/logic/product-logic'
+        // const updatedProduct = await productService.updateProduct(id, input)
+
+        // Mock implementation
         const updates = { ...input, updatedAt: new Date() };
 
-        updateItem(id, updates);
+        updateProduct(id, updates);
         return updates;
       } catch (error) {
         const errorMessage =
-          error instanceof Error ? error.message : "Failed to update item";
-        setError(errorMessage);
+          error instanceof Error ? error.message : "Failed to update product";
+        setProductsError(errorMessage);
         throw new Error(errorMessage);
       } finally {
-        setLoading(false);
+        setProductsLoading(false);
       }
     },
-    [updateItem, setLoading, setError],
+    [updateProduct, setProductsLoading, setProductsError],
   );
 
-  const deleteItem = useCallback(
+  const deleteProduct = useCallback(
     async (id: string) => {
       try {
-        setLoading(true);
-        setError(null);
+        setProductsLoading(true);
+        setProductsError(null);
 
-        // TODO: Implement service call
-        removeItem(id);
+        // TODO: Replace with actual service call when product-logic module is integrated
+        // import { productService } from '@/modules/logic/product-logic'
+        // await productService.deleteProduct(id)
+
+        removeProduct(id);
       } catch (error) {
         const errorMessage =
-          error instanceof Error ? error.message : "Failed to delete item";
-        setError(errorMessage);
+          error instanceof Error ? error.message : "Failed to delete product";
+        setProductsError(errorMessage);
         throw new Error(errorMessage);
       } finally {
-        setLoading(false);
+        setProductsLoading(false);
       }
     },
-    [removeItem, setLoading, setError],
+    [removeProduct, setProductsLoading, setProductsError],
   );
 
+  const loadMore = useCallback(async () => {
+    if (!pagination.hasMore || isLoadingProducts) return;
+
+    const nextOffset = products.length;
+    await fetchProducts({ ...filter, offset: nextOffset });
+  }, [
+    pagination.hasMore,
+    isLoadingProducts,
+    products.length,
+    filter,
+    fetchProducts,
+  ]);
+
   return {
-    items,
-    isLoading,
-    error,
-    fetchItems,
-    createItem,
-    updateItem: updateItemById,
-    deleteItem,
+    // State
+    products,
+    isLoadingProducts,
+    productsError,
+    filter,
+    pagination,
+
+    // Actions
+    fetchProducts,
+    searchProducts,
+    createProduct,
+    updateProduct: updateProductById,
+    deleteProduct,
+    loadMore,
+    setFilter,
   };
 };

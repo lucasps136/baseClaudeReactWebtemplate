@@ -1,54 +1,137 @@
 {
   "id": "payments-ui",
-  "name": "Payments Ui",
+  "name": "Payments UI",
   "version": "1.0.0",
   "category": "ui",
-  "description": "PaymentsUi module - Auto-generated",
+  "description": "UI components, hooks, and state management for payment operations. Includes payment listing, detail views, refund handling, and filtering by status/method.",
   "exports": {
     "components": [
       {
-        "name": "PaymentsUiList",
-        "path": "./components/PaymentsUiList"
+        "name": "PaymentCard",
+        "path": "./src/components/PaymentCard",
+        "description": "Card component for displaying payment summary"
+      },
+      {
+        "name": "PaymentList",
+        "path": "./src/components/PaymentList",
+        "description": "List component with loading, error, empty states and filters"
+      },
+      {
+        "name": "PaymentDetail",
+        "path": "./src/components/PaymentDetail",
+        "description": "Detailed view for single payment with refund/retry actions"
+      },
+      {
+        "name": "PaymentStatusBadge",
+        "path": "./src/components/PaymentStatusBadge",
+        "description": "Status and method badge components"
       }
     ],
     "hooks": [
       {
-        "name": "usePaymentsUi",
-        "path": "./hooks/usePaymentsUi"
+        "name": "usePayment",
+        "path": "./src/hooks/usePayment",
+        "description": "Hook for single payment operations (fetch, refund, retry)"
+      },
+      {
+        "name": "usePayments",
+        "path": "./src/hooks/usePayments",
+        "description": "Hook for payment list operations (fetch, filter, pagination)"
       }
     ],
     "stores": [
       {
-        "name": "usePaymentsUiStore",
-        "path": "./stores/payments-ui.store"
+        "name": "usePaymentStore",
+        "path": "./src/stores/payments.store",
+        "description": "Zustand store for payment state management"
       }
     ],
     "types": [
       {
-        "name": "PaymentsUiItem",
-        "path": "./types"
+        "name": "Payment",
+        "path": "./src/types",
+        "description": "Payment entity type"
+      },
+      {
+        "name": "PaymentStatus",
+        "path": "./src/types",
+        "description": "Payment status enum type"
+      },
+      {
+        "name": "PaymentMethod",
+        "path": "./src/types",
+        "description": "Payment method enum type"
+      },
+      {
+        "name": "PaymentListFilter",
+        "path": "./src/types",
+        "description": "Filter options for payment listing"
       }
     ]
   },
   "dependencies": {
-    "modules": [],
+    "modules": ["payments-logic", "payments-data"],
     "packages": ["react", "zustand"]
   },
   "ai": {
-    "summary": "PaymentsUi module for ui layer",
-    "keywords": ["payments-ui", "ui"],
-    "use_cases": ["Manage payments-ui"],
+    "summary": "Complete UI module for payment management with components, hooks, and Zustand store. Follows Single Responsibility Principle with separate hooks for single and list operations. Supports multiple payment methods (PIX, credit card, boleto) and gateways.",
+    "keywords": [
+      "payments",
+      "ui",
+      "components",
+      "hooks",
+      "zustand",
+      "refund",
+      "pix",
+      "gateway"
+    ],
+    "use_cases": [
+      "Display payment list with filtering by status and method",
+      "Show payment details with refund and retry actions",
+      "Manage payment state across components",
+      "Handle payment status transitions",
+      "Process refunds with partial amount support"
+    ],
     "reusable": {
-      "components": ["PaymentsUiList"],
-      "hooks": ["usePaymentsUi"]
+      "components": [
+        "PaymentCard",
+        "PaymentList",
+        "PaymentDetail",
+        "PaymentStatusBadge",
+        "PaymentMethodBadge"
+      ],
+      "hooks": ["usePayment", "usePayments"]
     },
-    "examples": ["import { PaymentsUi } from '@/modules/ui/payments-ui'"]
+    "examples": [
+      "import { PaymentList, usePayments } from '@/modules/ui/payments-ui'",
+      "const { payments, fetchPayments, filterByStatus } = usePayments({ status: 'pending' })",
+      "<PaymentCard payment={payment} onView={handleView} onRefund={handleRefund} />",
+      "<PaymentStatusBadge status={payment.status} />",
+      "<PaymentMethodBadge method={payment.paymentMethod} />"
+    ]
   },
-  "status": "experimental",
+  "status": "stable",
   "createdAt": "2025-11-21T15:06:40.978Z",
-  "updatedAt": "2025-11-21T15:06:40.978Z",
-  "author": "Auto-generated",
+  "updatedAt": "2025-12-09T00:00:00.000Z",
+  "author": "Bebarter Team",
   "license": "MIT",
-  "tags": ["ui", "payments-ui"],
-  "relatedFiles": []
+  "keywords": [
+    "payments",
+    "ui",
+    "components",
+    "hooks",
+    "zustand",
+    "refund",
+    "pix",
+    "gateway"
+  ],
+  "tags": [
+    "ui",
+    "payments",
+    "react",
+    "zustand",
+    "components",
+    "hooks",
+    "refund"
+  ]
 }

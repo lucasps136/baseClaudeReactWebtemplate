@@ -1,18 +1,43 @@
-// PaymentsUi UI Module
+/**
+ * Payments UI Module
+ * Bebarter Modular Architecture
+ *
+ * Public API for payment-related UI components, hooks, and stores.
+ */
 
 // Components
-export { PaymentsUiList } from "./src/components/PaymentsUiList";
+export { PaymentCard } from "./src/components/PaymentCard";
+export { PaymentList } from "./src/components/PaymentList";
+export { PaymentDetail } from "./src/components/PaymentDetail";
+export {
+  PaymentStatusBadge,
+  PaymentMethodBadge,
+} from "./src/components/PaymentStatusBadge";
 
 // Hooks
-export { usePaymentsUi } from "./src/hooks/usePaymentsUi";
+export { usePayment } from "./src/hooks/usePayment";
+export { usePayments } from "./src/hooks/usePayments";
 
 // Store
-export { usePaymentsUiStore } from "./src/stores/payments-ui.store";
-export type { PaymentsUiStore } from "./src/stores/payments-ui.store";
+export { usePaymentStore } from "./src/stores/payments.store";
 
 // Types
 export type {
-  PaymentsUiItem,
-  CreatePaymentsUiInput,
-  UpdatePaymentsUiInput,
+  Payment,
+  PaymentStatus,
+  PaymentMethod,
+  PaymentGateway,
+  Currency,
+  CreatePaymentInput,
+  UpdatePaymentInput,
+  RefundInput,
+  PaymentListFilter,
+  PaginationState,
+  PaymentListResponse,
+} from "./src/types";
+
+export {
+  PAYMENT_STATUS_INFO,
+  PAYMENT_METHOD_INFO,
+  GATEWAY_INFO,
 } from "./src/types";

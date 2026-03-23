@@ -3,41 +3,194 @@
   "name": "Products Logic",
   "version": "1.0.0",
   "category": "logic",
-  "description": "ProductsLogic module - Auto-generated",
+  "description": "Business logic layer for product management following SOLID principles. Includes ProductsService with dependency injection, repository interfaces, and Zod validation for marketplace products with full CRUD operations, filtering, search, and pagination.",
   "exports": {
     "services": [
       {
-        "name": "ProductsLogicService",
-        "path": "./services/products-logic.service"
+        "name": "ProductsService",
+        "path": "./src/services/products.service",
+        "description": "Main service for product business logic with CRUD operations, filtering, search, and pagination",
+        "example": "const productsService = new ProductsService(repository, validation)"
       }
     ],
     "types": [
       {
-        "name": "IProductsLogicRepository",
-        "path": "./repositories"
+        "name": "IProductsRepository",
+        "path": "./src/repositories/products.repository.interface",
+        "description": "Repository interface for product data access following DIP"
+      },
+      {
+        "name": "IProductsValidation",
+        "path": "./src/validations/products.validation",
+        "description": "Validation interface for product operations with Zod schemas"
+      },
+      {
+        "name": "Product",
+        "path": "./src/types",
+        "description": "Product domain entity with all fields"
+      },
+      {
+        "name": "CreateProductDTO",
+        "path": "./src/types",
+        "description": "Input type for creating products"
+      },
+      {
+        "name": "UpdateProductDTO",
+        "path": "./src/types",
+        "description": "Input type for updating products (partial)"
+      },
+      {
+        "name": "ProductFilters",
+        "path": "./src/types",
+        "description": "Filter options for product listing with pagination"
+      },
+      {
+        "name": "PaginatedResult",
+        "path": "./src/types",
+        "description": "Generic paginated result wrapper"
+      },
+      {
+        "name": "ProductStatus",
+        "path": "./src/types",
+        "description": "Product status type: draft | active | sold | archived"
+      },
+      {
+        "name": "Currency",
+        "path": "./src/types",
+        "description": "Currency type: BRL | USD | EUR | GBP"
+      }
+    ],
+    "validations": [
+      {
+        "name": "ProductsValidation",
+        "path": "./src/validations/products.validation",
+        "description": "Default Zod-based validation implementation"
+      },
+      {
+        "name": "createProductSchema",
+        "path": "./src/validations/products.validation",
+        "description": "Zod schema for product creation validation"
+      },
+      {
+        "name": "updateProductSchema",
+        "path": "./src/validations/products.validation",
+        "description": "Zod schema for product update validation"
+      },
+      {
+        "name": "productFiltersSchema",
+        "path": "./src/validations/products.validation",
+        "description": "Zod schema for filter validation"
+      },
+      {
+        "name": "validateProduct",
+        "path": "./src/validations/products.validation",
+        "description": "Helper function to validate product creation"
+      },
+      {
+        "name": "validateFilters",
+        "path": "./src/validations/products.validation",
+        "description": "Helper function to validate product filters"
       }
     ]
   },
   "dependencies": {
     "modules": [],
-    "packages": []
+    "packages": ["zod"]
   },
   "ai": {
-    "summary": "ProductsLogic module for logic layer",
-    "keywords": ["products-logic", "logic"],
-    "use_cases": ["Manage products-logic"],
+    "summary": "Business logic module for product management implementing SOLID principles. Provides ProductsService with dependency injection, interface segregation, and single responsibility. Includes repository and validation interfaces for extensibility. Supports full CRUD operations, filtering by category/seller/status, price range filtering, full-text search, and pagination. Uses Zod for robust validation aligned with database constraints.",
+    "keywords": [
+      "product",
+      "products",
+      "service",
+      "business-logic",
+      "solid",
+      "dependency-injection",
+      "repository",
+      "validation",
+      "crud",
+      "zod",
+      "marketplace",
+      "e-commerce",
+      "search",
+      "filter",
+      "pagination"
+    ],
+    "use_cases": [
+      "Get product by ID",
+      "List products with filters (category, seller, status, price range)",
+      "Search products by text (full-text search)",
+      "Create new product with validation",
+      "Update product details",
+      "Delete product",
+      "Get products by seller",
+      "Get products by category",
+      "Get products by status",
+      "Paginate product listings",
+      "Implement custom product repository (Supabase, Prisma, REST API)",
+      "Add custom validation rules",
+      "Filter products by price range",
+      "Sort products by name, price, or date"
+    ],
     "reusable": {
-      "services": ["ProductsLogicService"]
+      "services": ["ProductsService"],
+      "types": [
+        "IProductsRepository",
+        "IProductsValidation",
+        "Product",
+        "CreateProductDTO",
+        "UpdateProductDTO",
+        "ProductFilters",
+        "PaginatedResult"
+      ],
+      "validations": [
+        "createProductSchema",
+        "updateProductSchema",
+        "productFiltersSchema"
+      ]
     },
     "examples": [
-      "import { ProductsLogic } from '@/modules/logic/products-logic'"
+      "import { ProductsService, IProductsRepository } from '@/modules/logic/products-logic'",
+      "const productsService = new ProductsService(myRepository, myValidation)",
+      "const product = await productsService.getProduct('123')",
+      "const products = await productsService.listProducts({ status: 'active', limit: 20 })",
+      "const results = await productsService.searchProducts('laptop')",
+      "const sellerProducts = await productsService.getProductsBySeller('seller-id')",
+      "const newProduct = await productsService.createProduct({ name: 'Product', price: 99.99, sellerId: 'user-id' })"
     ]
   },
   "status": "experimental",
   "createdAt": "2025-11-21T15:11:32.745Z",
-  "updatedAt": "2025-11-21T15:11:32.745Z",
-  "author": "Auto-generated",
+  "updatedAt": "2025-12-08T18:00:00.000Z",
+  "author": "Bebarter Team",
   "license": "MIT",
-  "tags": ["logic", "products-logic"],
-  "relatedFiles": []
+  "keywords": [
+    "products",
+    "business-logic",
+    "solid",
+    "validation",
+    "zod",
+    "marketplace"
+  ],
+  "tags": [
+    "business-logic",
+    "service",
+    "solid",
+    "dependency-injection",
+    "products",
+    "marketplace",
+    "e-commerce"
+  ],
+  "relatedFiles": [
+    {
+      "path": "modules/data/products-data",
+      "type": "DEPENDS_ON",
+      "description": "Product data access layer with database schema"
+    },
+    {
+      "path": "modules/ui/products-ui",
+      "type": "USED_BY",
+      "description": "Product UI components that consume this logic"
+    }
+  ]
 }

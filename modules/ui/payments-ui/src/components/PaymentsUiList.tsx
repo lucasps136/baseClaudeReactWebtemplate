@@ -34,7 +34,7 @@ export const PaymentsUiList = ({ className }: PaymentsUiListProps) => {
             className="p-4 border rounded-lg flex justify-between items-center"
           >
             <div>
-              <h3 className="font-semibold">{item.name}</h3>
+              <h3 className="font-semibold">{item.id}</h3>
             </div>
             <button
               onClick={() => deleteItem(item.id)}
