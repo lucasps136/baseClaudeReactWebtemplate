@@ -1,0 +1,480 @@
+npm warn Unknown cli config "--colors". This will stop working in the next major version of npm.
+
+> nextjs-solid-boilerplate@1.0.0 test
+> jest
+
+FAIL modules/logic/products-logic/tests/services/ProductsService.test.ts
+  ÔùÅ ProductsService ÔÇ║ listProducts ÔÇ║ should list products with custom filters
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    - Expected
+    + Received
+
+      Object {
+        "categoryId": "electronics",
+        "limit": 10,
+        "maxPrice": 200,
+        "minPrice": 50,
+    +   "offset": 0,
+    +   "sortBy": "createdAt",
+    +   "sortOrder": "desc",
+        "status": "active",
+      },
+
+    Number of calls: 1
+
+      140 |
+      141 |       expect(mockValidation.validateFilters).toHaveBeenCalledWith(filters);
+    > 142 |       expect(mockRepository.findMany).toHaveBeenCalledWith(filters);
+          |                                       ^
+      143 |       expect(result).toEqual(mockProductList);
+      144 |     });
+      145 |
+
+      at Object.toHaveBeenCalledWith (modules/logic/products-logic/tests/services/ProductsService.test.ts:142:39)
+
+  ÔùÅ ProductsService ÔÇ║ searchProducts ÔÇ║ should search products by text
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "laptop", undefined
+    Received: "laptop"
+
+    Number of calls: 1
+
+      252 |       const result = await productsService.searchProducts("laptop");
+      253 |
+    > 254 |       expect(mockRepository.search).toHaveBeenCalledWith("laptop", undefined);
+          |                                     ^
+      255 |       expect(result).toEqual(mockProductList);
+      256 |     });
+      257 |
+
+      at Object.toHaveBeenCalledWith (modules/logic/products-logic/tests/services/ProductsService.test.ts:254:37)
+
+FAIL modules/logic/orders-logic/tests/services/OrdersService.test.ts
+  ÔùÅ OrdersService ÔÇ║ getOrder ÔÇ║ should throw error when id is empty
+
+    expect(received).rejects.toThrow()
+
+    Received promise resolved instead of rejected
+    Resolved to value: undefined
+
+      126 |
+      127 |     it("should throw error when id is empty", async () => {
+    > 128 |       await expect(ordersService.getOrder("")).rejects.toThrow(
+          |             ^
+      129 |         "Order ID is required",
+      130 |       );
+      131 |       expect(mockRepository.findById).not.toHaveBeenCalled();
+
+      at expect (node_modules/.pnpm/expect@29.7.0/node_modules/expect/build/index.js:113:15)
+      at Object.expect (modules/logic/orders-logic/tests/services/OrdersService.test.ts:128:13)
+
+  ÔùÅ OrdersService ÔÇ║ createOrder ÔÇ║ should create order successfully
+
+    TypeError: Cannot read properties of undefined (reading 'mockReturnValue')
+
+      225 |
+      226 |     it("should create order successfully", async () => {
+    > 227 |       mockValidation.validateCreateOrder.mockReturnValue(validInput);
+          |                                          ^
+      228 |       mockRepository.create.mockResolvedValue(mockOrder);
+      229 |
+      230 |       const result = await ordersService.createOrder(validInput);
+
+      at Object.mockReturnValue (modules/logic/orders-logic/tests/services/OrdersService.test.ts:227:42)
+
+  ÔùÅ OrdersService ÔÇ║ createOrder ÔÇ║ should validate input before creating
+
+    TypeError: Cannot read properties of undefined (reading 'mockImplementation')
+
+      240 |       const callOrder: string[] = [];
+      241 |
+    > 242 |       mockValidation.validateCreateOrder.mockImplementation((data) => {
+          |                                          ^
+      243 |         callOrder.push("validate");
+      244 |         return data as CreateOrderDTO;
+      245 |       });
+
+      at Object.mockImplementation (modules/logic/orders-logic/tests/services/OrdersService.test.ts:242:42)
+
+  ÔùÅ OrdersService ÔÇ║ createOrder ÔÇ║ should throw error when validation fails
+
+    TypeError: Cannot read properties of undefined (reading 'mockImplementation')
+
+      255 |
+      256 |     it("should throw error when validation fails", async () => {
+    > 257 |       mockValidation.validateCreateOrder.mockImplementation(() => {
+          |                                          ^
+      258 |         throw new Error("Validation failed: buyerId is required");
+      259 |       });
+      260 |
+
+      at Object.mockImplementation (modules/logic/orders-logic/tests/services/OrdersService.test.ts:257:42)
+
+  ÔùÅ OrdersService ÔÇ║ updateOrder ÔÇ║ should update order successfully
+
+    TypeError: Cannot read properties of undefined (reading 'mockReturnValue')
+
+      278 |     it("should update order successfully", async () => {
+      279 |       mockRepository.exists.mockResolvedValue(true);
+    > 280 |       mockValidation.validateUpdateOrder.mockReturnValue(validUpdate);
+          |                                          ^
+      281 |       const updatedOrder = { ...mockOrder, ...validUpdate };
+      282 |       mockRepository.update.mockResolvedValue(updatedOrder);
+      283 |
+
+      at Object.mockReturnValue (modules/logic/orders-logic/tests/services/OrdersService.test.ts:280:42)
+
+  ÔùÅ OrdersService ÔÇ║ getOrdersByBuyer ÔÇ║ should get buyer orders successfully
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: ObjectContaining {"buyerId": "buyer-123"}
+    Received: undefined
+
+    Number of calls: 1
+
+      429 |       const result = await ordersService.getOrdersByBuyer("buyer-123");
+      430 |
+    > 431 |       expect(mockRepository.findMany).toHaveBeenCalledWith(
+          |                                       ^
+      432 |         expect.objectContaining({ buyerId: "buyer-123" }),
+      433 |       );
+      434 |       expect(result).toEqual(mockOrderList);
+
+      at Object.toHaveBeenCalledWith (modules/logic/orders-logic/tests/services/OrdersService.test.ts:431:39)
+
+  ÔùÅ OrdersService ÔÇ║ getOrdersByBuyer ÔÇ║ should throw error when buyerId is empty
+
+    expect(received).rejects.toThrow()
+
+    Received promise resolved instead of rejected
+    Resolved to value: undefined
+
+      436 |
+      437 |     it("should throw error when buyerId is empty", async () => {
+    > 438 |       await expect(ordersService.getOrdersByBuyer("")).rejects.toThrow(
+          |             ^
+      439 |         "Buyer ID is required",
+      440 |       );
+      441 |     });
+
+      at expect (node_modules/.pnpm/expect@29.7.0/node_modules/expect/build/index.js:113:15)
+      at Object.expect (modules/logic/orders-logic/tests/services/OrdersService.test.ts:438:13)
+
+  ÔùÅ OrdersService ÔÇ║ getOrdersBySeller ÔÇ║ should get seller orders successfully
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: ObjectContaining {"sellerId": "seller-456"}
+    Received: undefined
+
+    Number of calls: 1
+
+      452 |       const result = await ordersService.getOrdersBySeller("seller-456");
+      453 |
+    > 454 |       expect(mockRepository.findMany).toHaveBeenCalledWith(
+          |                                       ^
+      455 |         expect.objectContaining({ sellerId: "seller-456" }),
+      456 |       );
+      457 |       expect(result).toEqual(mockOrderList);
+
+      at Object.toHaveBeenCalledWith (modules/logic/orders-logic/tests/services/OrdersService.test.ts:454:39)
+
+  ÔùÅ OrdersService ÔÇ║ getOrdersBySeller ÔÇ║ should filter seller orders by status
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: ObjectContaining {"sellerId": "seller-456", "status": "pending"}
+    Received: undefined
+
+    Number of calls: 1
+
+      464 |       await ordersService.getOrdersBySeller("seller-456", filters);
+      465 |
+    > 466 |       expect(mockRepository.findMany).toHaveBeenCalledWith(
+          |                                       ^
+      467 |         expect.objectContaining({ sellerId: "seller-456", ...filters }),
+      468 |       );
+      469 |     });
+
+      at Object.toHaveBeenCalledWith (modules/logic/orders-logic/tests/services/OrdersService.test.ts:466:39)
+
+  ÔùÅ OrdersService ÔÇ║ Integration Scenarios ÔÇ║ should handle complete order flow
+
+    TypeError: Cannot read properties of undefined (reading 'mockReturnValue')
+
+      510 |
+      511 |       // Create
+    > 512 |       mockValidation.validateCreateOrder.mockReturnValue(createInput);
+          |                                          ^
+      513 |       mockRepository.create.mockResolvedValue(mockOrder);
+      514 |       const created = await ordersService.createOrder(createInput);
+      515 |       expect(created.status).toBe("pending");
+
+      at Object.mockReturnValue (modules/logic/orders-logic/tests/services/OrdersService.test.ts:512:42)
+
+PASS modules/data/payments-data/tests/queries/payments.queries.test.ts
+FAIL modules/logic/payments-logic/tests/services/PaymentsService.test.ts
+  ÔùÅ PaymentsService ÔÇ║ getPayment ÔÇ║ should throw error when id is empty
+
+    expect(received).rejects.toThrow()
+
+    Received promise resolved instead of rejected
+    Resolved to value: undefined
+
+      117 |
+      118 |     it("should throw error when id is empty", async () => {
+    > 119 |       await expect(paymentsService.getPayment("")).rejects.toThrow(
+          |             ^
+      120 |         "Payment ID is required",
+      121 |       );
+      122 |     });
+
+      at expect (node_modules/.pnpm/expect@29.7.0/node_modules/expect/build/index.js:113:15)
+      at Object.expect (modules/logic/payments-logic/tests/services/PaymentsService.test.ts:119:13)
+
+  ÔùÅ PaymentsService ÔÇ║ processPayment ÔÇ║ should not process already completed payment
+
+    expect(received).rejects.toThrow(expected)
+
+    Expected substring: "Cannot process payment with status: completed"
+    Received message:   "Invalid status transition from 'completed' to 'processing'"
+
+          177 |
+          178 |     if (payment.status !== "pending") {
+        > 179 |       throw new InvalidPaymentStatusError(payment.status, "processing");
+              |             ^
+          180 |     }
+          181 |
+          182 |     return this.repository.updateStatus(id, "processing");
+
+      at PaymentsService.processPayment (modules/logic/payments-logic/src/services/payments.service.ts:179:13)
+      at Object.<anonymous> (modules/logic/payments-logic/tests/services/PaymentsService.test.ts:287:7)
+      at Object.toThrow (node_modules/.pnpm/expect@29.7.0/node_modules/expect/build/index.js:218:22)
+      at Object.toThrow (modules/logic/payments-logic/tests/services/PaymentsService.test.ts:289:17)
+
+  ÔùÅ PaymentsService ÔÇ║ failPayment ÔÇ║ should not fail already completed payment
+
+    expect(received).rejects.toThrow(expected)
+
+    Expected substring: "Cannot fail payment with status: completed"
+    Received message:   "Invalid status transition from 'completed' to 'failed'"
+
+          217 |
+          218 |     if (!["pending", "processing"].includes(payment.status)) {
+        > 219 |       throw new InvalidPaymentStatusError(payment.status, "failed");
+              |             ^
+          220 |     }
+          221 |
+          222 |     return this.repository.markAsFailed(id, reason);
+
+      at PaymentsService.failPayment (modules/logic/payments-logic/src/services/payments.service.ts:219:13)
+      at Object.<anonymous> (modules/logic/payments-logic/tests/services/PaymentsService.test.ts:352:7)
+      at Object.toThrow (node_modules/.pnpm/expect@29.7.0/node_modules/expect/build/index.js:218:22)
+      at Object.toThrow (modules/logic/payments-logic/tests/services/PaymentsService.test.ts:354:17)
+
+  ÔùÅ PaymentsService ÔÇ║ refundPayment ÔÇ║ should not refund pending payment
+
+    expect(received).rejects.toThrow(expected)
+
+    Expected substring: "Cannot refund payment with status: pending"
+    Received message:   "Refund not allowed for payment payment-123: Payment status is 'pending', must be 'completed'"
+
+          238 |
+          239 |     if (payment.status !== "completed") {
+        > 240 |       throw new RefundNotAllowedError(
+              |             ^
+          241 |         id,
+          242 |         `Payment status is '${payment.status}', must be 'completed'`,
+          243 |       );
+
+      at PaymentsService.refundPayment (modules/logic/payments-logic/src/services/payments.service.ts:240:13)
+      at Object.<anonymous> (modules/logic/payments-logic/tests/services/PaymentsService.test.ts:415:7)
+      at Object.toThrow (node_modules/.pnpm/expect@29.7.0/node_modules/expect/build/index.js:218:22)
+      at Object.toThrow (modules/logic/payments-logic/tests/services/PaymentsService.test.ts:417:17)
+
+  ÔùÅ PaymentsService ÔÇ║ getPaymentsByPayer ÔÇ║ should get payer payments
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: ObjectContaining {"payerId": "buyer-123"}
+    Received: undefined
+
+    Number of calls: 1
+
+      452 |       const result = await paymentsService.getPaymentsByPayer("buyer-123");
+      453 |
+    > 454 |       expect(mockRepository.findMany).toHaveBeenCalledWith(
+          |                                       ^
+      455 |         expect.objectContaining({ payerId: "buyer-123" }),
+      456 |       );
+      457 |       expect(result).toEqual(mockPaymentList);
+
+      at Object.toHaveBeenCalledWith (modules/logic/payments-logic/tests/services/PaymentsService.test.ts:454:39)
+
+  ÔùÅ PaymentsService ÔÇ║ getPaymentsByPayee ÔÇ║ should get payee payments
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: ObjectContaining {"payeeId": "seller-456"}
+    Received: undefined
+
+    Number of calls: 1
+
+      465 |       const result = await paymentsService.getPaymentsByPayee("seller-456");
+      466 |
+    > 467 |       expect(mockRepository.findMany).toHaveBeenCalledWith(
+          |                                       ^
+      468 |         expect.objectContaining({ payeeId: "seller-456" }),
+      469 |       );
+      470 |       expect(result).toEqual(mockPaymentList);
+
+      at Object.toHaveBeenCalledWith (modules/logic/payments-logic/tests/services/PaymentsService.test.ts:467:39)
+
+  ÔùÅ PaymentsService ÔÇ║ getPaymentsByPayee ÔÇ║ should filter payee payments by status
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: ObjectContaining {"payeeId": "seller-456", "status": "completed"}
+    Received: undefined
+
+    Number of calls: 1
+
+      477 |       await paymentsService.getPaymentsByPayee("seller-456", filters);
+      478 |
+    > 479 |       expect(mockRepository.findMany).toHaveBeenCalledWith(
+          |                                       ^
+      480 |         expect.objectContaining({ payeeId: "seller-456", ...filters }),
+      481 |       );
+      482 |     });
+
+      at Object.toHaveBeenCalledWith (modules/logic/payments-logic/tests/services/PaymentsService.test.ts:479:39)
+
+PASS modules/ui/products-ui/tests/stores/products-ui.store.test.ts
+PASS modules/ui/orders-ui/tests/stores/orders.store.test.ts
+FAIL modules/data/products-data/tests/queries/products.queries.test.ts
+  ÔùÅ Products Data Queries ÔÇ║ countProducts ÔÇ║ should count products with filters
+
+    TypeError: query.eq is not a function
+
+      214 |
+      215 |   if (status) {
+    > 216 |     query = query.eq("status", status);
+          |                   ^
+      217 |   }
+      218 |
+      219 |   if (min_price !== undefined) {
+
+      at eq (modules/data/products-data/queries/products.queries.ts:216:19)
+      at Object.<anonymous> (modules/data/products-data/tests/queries/products.queries.test.ts:271:41)
+
+  ÔùÅ Products Data Queries ÔÇ║ getLowStockProducts ÔÇ║ should filter by seller if provided
+
+    TypeError: query.eq is not a function
+
+      468 |
+      469 |   if (sellerId) {
+    > 470 |     query = query.eq("seller_id", sellerId);
+          |                   ^
+      471 |   }
+      472 |
+      473 |   const { data, error } = await query;
+
+      at eq (modules/data/products-data/queries/products.queries.ts:470:19)
+      at Object.<anonymous> (modules/data/products-data/tests/queries/products.queries.test.ts:590:32)
+
+PASS modules/ui/payments-ui/tests/stores/payments.store.test.ts
+PASS modules/logic/user-logic/tests/services/UserService.test.ts
+PASS modules/logic/user-logic/tests/validations/UserValidation.test.ts
+PASS modules/data/user-data/tests/schemas/users.schema.test.ts
+PASS modules/data/orders-data/tests/queries/orders.queries.test.ts
+FAIL modules/ui/user-profile-ui/tests/hooks/useUsers.test.ts
+  ÔùÅ useUsers ÔÇ║ createUser ÔÇ║ should generate unique IDs for new users
+
+    Create failed
+
+       95 |           error instanceof Error ? error.message : "Failed to create user";
+       96 |         setUsersError(errorMessage);
+    >  97 |         throw new Error(errorMessage);
+          |               ^
+       98 |       } finally {
+       99 |         setUsersLoading(false);
+      100 |       }
+
+      at Object.createUser (modules/ui/user-profile-ui/src/hooks/useUsers.ts:97:15)
+      at createUser (modules/ui/user-profile-ui/tests/hooks/useUsers.test.ts:255:38)
+      at node_modules/.pnpm/@testing-library+react@15.0.7_@types+react@18.3.25_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@testing-library/react/dist/act-compat.js:48:24
+      at act (node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:2512:16)
+      at node_modules/.pnpm/@testing-library+react@15.0.7_@types+react@18.3.25_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at Object.<anonymous> (modules/ui/user-profile-ui/tests/hooks/useUsers.test.ts:254:16)
+
+  ÔùÅ useUsers ÔÇ║ updateUser ÔÇ║ should set loading to false after update
+
+    Update failed
+
+      122 |           error instanceof Error ? error.message : "Failed to update user";
+      123 |         setUsersError(errorMessage);
+    > 124 |         throw new Error(errorMessage);
+          |               ^
+      125 |       } finally {
+      126 |         setUsersLoading(false);
+      127 |       }
+
+      at Object.updateUser (modules/ui/user-profile-ui/src/hooks/useUsers.ts:124:15)
+      at updateUser (modules/ui/user-profile-ui/tests/hooks/useUsers.test.ts:333:30)
+      at node_modules/.pnpm/@testing-library+react@15.0.7_@types+react@18.3.25_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@testing-library/react/dist/act-compat.js:48:24
+      at act (node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:2512:16)
+      at node_modules/.pnpm/@testing-library+react@15.0.7_@types+react@18.3.25_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at Object.<anonymous> (modules/ui/user-profile-ui/tests/hooks/useUsers.test.ts:332:16)
+
+  ÔùÅ useUsers ÔÇ║ deleteUser ÔÇ║ should set loading to false after deletion
+
+    Delete failed
+
+      145 |           error instanceof Error ? error.message : "Failed to delete user";
+      146 |         setUsersError(errorMessage);
+    > 147 |         throw new Error(errorMessage);
+          |               ^
+      148 |       } finally {
+      149 |         setUsersLoading(false);
+      150 |       }
+
+      at Object.deleteUser (modules/ui/user-profile-ui/src/hooks/useUsers.ts:147:15)
+      at deleteUser (modules/ui/user-profile-ui/tests/hooks/useUsers.test.ts:385:30)
+      at node_modules/.pnpm/@testing-library+react@15.0.7_@types+react@18.3.25_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@testing-library/react/dist/act-compat.js:48:24
+      at act (node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:2512:16)
+      at node_modules/.pnpm/@testing-library+react@15.0.7_@types+react@18.3.25_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at Object.<anonymous> (modules/ui/user-profile-ui/tests/hooks/useUsers.test.ts:384:16)
+
+  ÔùÅ useUsers ÔÇ║ Integration ÔÇ║ should perform complete CRUD cycle
+
+    Create failed
+
+       95 |           error instanceof Error ? error.message : "Failed to create user";
+       96 |         setUsersError(errorMessage);
+    >  97 |         throw new Error(errorMessage);
+          |               ^
+       98 |       } finally {
+       99 |         setUsersLoading(false);
+      100 |       }
+
+      at Object.createUser (modules/ui/user-profile-ui/src/hooks/useUsers.ts:97:15)
+      at createUser (modules/ui/user-profile-ui/tests/hooks/useUsers.test.ts:542:30)
+      at node_modules/.pnpm/@testing-library+react@15.0.7_@types+react@18.3.25_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@testing-library/react/dist/act-compat.js:48:24
+      at act (node_modules/.pnpm/react@18.3.1/node_modules/react/cjs/react.development.js:2512:16)
+      at node_modules/.pnpm/@testing-library+react@15.0.7_@types+react@18.3.25_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at Object.<anonymous> (modules/ui/user-profile-ui/tests/hooks/useUsers.test.ts:541:16)
+
+PASS modules/ui/user-profile-ui/tests/components/UserList.test.tsx
+PASS modules/ui/user-profile-ui/tests/stores/user.store.test.ts
+PASS modules/ui/user-profile-ui/tests/hooks/useUser.test.ts
+
+Test Suites: 5 failed, 11 passed, 16 total
+Tests:       25 failed, 398 passed, 423 total
+Snapshots:   0 total
+Time:        5.838 s
+Ran all test suites.
