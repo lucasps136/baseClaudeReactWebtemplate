@@ -13,6 +13,16 @@ import type {
   IDatabaseError,
 } from "@/shared/types/database";
 
+// Minimal type for Supabase query builder chain methods used internally
+type SupabaseQueryBuilder = {
+  eq(column: string, value: unknown): SupabaseQueryBuilder;
+  in(column: string, values: unknown[]): SupabaseQueryBuilder;
+  is(column: string, value: null): SupabaseQueryBuilder;
+  order(column: string, options: { ascending: boolean }): SupabaseQueryBuilder;
+  limit(count: number): SupabaseQueryBuilder;
+  range(from: number, to: number): SupabaseQueryBuilder;
+};
+
 // Options for selectBy method
 interface ISelectByOptions {
   field: string;
@@ -59,55 +69,60 @@ export class CrudOperations {
   }
 
   // SRP: Apply where conditions to query
-  private applyWhereConditions(
-    query: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+  private applyWhereConditions<Q extends SupabaseQueryBuilder>(
+    query: Q,
     where: IQueryOptions["where"],
-  ): any {
-    // eslint-disable-line @typescript-eslint/no-explicit-any
+  ): Q {
     if (!where) return query;
 
+    let result = query;
     Object.entries(where).forEach(([key, value]) => {
       if (Array.isArray(value)) {
-        query = query.in(key, value);
+        result = (result as SupabaseQueryBuilder).in(key, value) as Q;
       } else if (value === null) {
-        query = query.is(key, null);
+        result = (result as SupabaseQueryBuilder).is(key, null) as Q;
       } else {
-        query = query.eq(key, value);
+        result = (result as SupabaseQueryBuilder).eq(key, value) as Q;
       }
     });
 
-    return query;
+    return result;
   }
 
   // SRP: Apply ordering to query
-  private applyOrdering(
-    query: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+  private applyOrdering<Q extends SupabaseQueryBuilder>(
+    query: Q,
     orderBy: IQueryOptions["orderBy"],
-  ): any {
-    // eslint-disable-line @typescript-eslint/no-explicit-any
+  ): Q {
     if (!orderBy) return query;
 
+    let result = query;
     orderBy.forEach(({ column, ascending = true }) => {
-      query = query.order(column, { ascending });
+      result = (result as SupabaseQueryBuilder).order(column, {
+        ascending,
+      }) as Q;
     });
 
-    return query;
+    return result;
   }
 
   // SRP: Apply pagination to query
-  private applyPagination(
-    query: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+  private applyPagination<Q extends SupabaseQueryBuilder>(
+    query: Q,
     limit: number | undefined,
     offset: number | undefined,
-  ): any {
-    // eslint-disable-line @typescript-eslint/no-explicit-any
+  ): Q {
+    let result = query;
     if (limit) {
-      query = query.limit(limit);
+      result = (result as SupabaseQueryBuilder).limit(limit) as Q;
     }
     if (offset) {
-      query = query.range(offset, offset + (limit || 1000) - 1);
+      result = (result as SupabaseQueryBuilder).range(
+        offset,
+        offset + (limit || 1000) - 1,
+      ) as Q;
     }
-    return query;
+    return result;
   }
 
   async select<T extends IDatabaseRecord>(

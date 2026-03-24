@@ -18,7 +18,7 @@ Adaptar os geradores CLI existentes (`generate-feature.js` e `generate-module.js
 **Testing**: Jest (já configurado) — testes unitários para funções de geração e injeção
 **Target Platform**: CLI local (developer workstation), compatível com CI (modo não-interativo via `isTTY`)
 **Project Type**: Web application (Next.js 14 App Router)
-**Performance Goals**: Geração completa em < 3 segundos (inclui escrita de arquivos e injeção)
+**Performance Goals**: Execução do script de geração em < 3 segundos (escrita de arquivos + injeção em routes.ts). O tempo total até rota navegável (inclui `npm run build`) deve ser < 60 segundos conforme SC-001.
 **Constraints**: Sem novas dependências npm; compatibilidade com Node.js CommonJS (`require`); `routes.ts` usa `as const` — injeção via manipulação de string
 **Scale/Scope**: 3 arquivos de script modificados/criados, 1 arquivo de config modificado (`package.json`)
 

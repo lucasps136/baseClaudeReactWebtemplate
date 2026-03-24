@@ -14,6 +14,25 @@ import type {
   IRBACError,
 } from "@/shared/types/rbac";
 
+// Supabase row types for query results
+type SupabasePermissionRow = {
+  id: string;
+  name: string;
+  description?: string;
+  resource: string;
+  action: string;
+  created_at: string;
+};
+
+type SupabaseRoleRow = {
+  id: string;
+  name: string;
+  description?: string;
+  is_system: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
 export class SupabaseRBACProvider implements IRBACProvider {
   private supabase: SupabaseClient;
 
@@ -239,9 +258,9 @@ export class SupabaseRBACProvider implements IRBACProvider {
       if (error) throw error;
 
       return data.flatMap((item: { permissions: unknown | unknown[] }) => {
-        const perms: any[] = Array.isArray(item.permissions)
-          ? item.permissions
-          : [item.permissions];
+        const perms: SupabasePermissionRow[] = Array.isArray(item.permissions)
+          ? (item.permissions as SupabasePermissionRow[])
+          : [item.permissions as SupabasePermissionRow];
         return perms.map((p) => this.mapSupabasePermission(p));
       });
     } catch (error) {
@@ -314,9 +333,9 @@ export class SupabaseRBACProvider implements IRBACProvider {
       if (error) throw error;
 
       return data.flatMap((item: { roles: unknown | unknown[] }) => {
-        const roles: any[] = Array.isArray(item.roles)
-          ? item.roles
-          : [item.roles];
+        const roles: SupabaseRoleRow[] = Array.isArray(item.roles)
+          ? (item.roles as SupabaseRoleRow[])
+          : [item.roles as SupabaseRoleRow];
         return roles.map((r) => this.mapSupabaseRole(r));
       });
     } catch (error) {

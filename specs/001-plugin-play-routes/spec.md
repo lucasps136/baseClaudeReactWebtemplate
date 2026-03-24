@@ -113,12 +113,12 @@ Um desenvolvedor precisa remover uma feature obsoleta. Atualmente não há coman
 
 - **FR-008**: O gerador DEVE detectar conflito quando já existir uma pasta em `src/app/` com o mesmo nome e DEVE pedir confirmação antes de sobrescrever.
 - **FR-009**: O gerador DEVE normalizar o nome fornecido pelo desenvolvedor para `kebab-case` em paths e `PascalCase` em nomes de componentes e imports.
-- **FR-010**: Caso `src/config/routes.ts` não possa ser atualizado automaticamente (formato inesperado), o gerador DEVE exibir uma mensagem clara com o trecho exato que precisa ser adicionado manualmente.
+- **FR-010**: Caso `src/config/routes.ts` não possa ser atualizado automaticamente — definido como: o padrão regex esperado (`routes.protected: {`, `routeGroups.protected: [`, ou `routes.public: {`) não for encontrado no arquivo — o gerador DEVE exibir uma mensagem clara com o trecho exato que precisa ser adicionado manualmente, **sem modificar o arquivo**. Se apenas um dos dois alvos de rotas protegidas estiver ausente, ambos são reportados no fallback (nenhuma modificação parcial).
 
 **Remoção de Feature (placeholder — implementação futura)**
 
 - **FR-011**: O sistema DEVE registrar o comando `npm run remove:feature` no `package.json`, apontando para um arquivo `scripts/remove-feature.js` que exibe uma mensagem explicando que a funcionalidade está planejada mas não implementada.
-- **FR-012**: O arquivo `scripts/remove-feature.js` DEVE conter comentários `// TODO` descrevendo as três ações planejadas: remover pasta de feature em `src/features/`, remover rota em `src/app/` e remover entrada em `src/config/routes.ts`.
+- **FR-012**: O arquivo `scripts/remove-feature.js` DEVE conter comentários `// TODO` descrevendo as **quatro** ações planejadas: (1) remover pasta de feature em `src/features/`, (2) remover rota em `src/app/`, (3) remover entrada no objeto em `src/config/routes.ts`, (4) remover entrada no array `routeGroups.protected` em `src/config/routes.ts`.
 
 ### Key Entities
 

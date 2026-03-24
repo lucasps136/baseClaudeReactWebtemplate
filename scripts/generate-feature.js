@@ -2,9 +2,14 @@
 
 const fs = require("fs");
 const path = require("path");
+const {
+  askQuestion,
+  generateAppRoute,
+  injectRouteConfig,
+} = require("./utils/route-cli-utils");
 
 // Script para gerar uma nova feature seguindo o padrão Vertical Slice
-function generateFeature(featureName) {
+async function generateFeature(featureName) {
   if (!featureName) {
     console.error("❌ Por favor, forneça um nome para a feature:");
     console.log("npm run generate:feature <nome-da-feature>");
@@ -47,12 +52,81 @@ function generateFeature(featureName) {
   console.log("");
   console.log("✅ Feature criada com sucesso!");
   console.log(`📂 Localização: ${featurePath}`);
+
+  // T010-T013: Route creation flow (Plugin-and-Play)
+  let routeCreated = false;
+
+  // T016: Only prompt when stdin is interactive (skip in CI)
+  if (process.stdin.isTTY) {
+    const createRoute = await askQuestion(
+      `\n🌐 Deseja criar uma rota para esta feature? (s/n): `,
+    );
+
+    if (createRoute) {
+      // T011: Ask about auth protection
+      const isProtected = await askQuestion(
+        `🔒 A rota deve ser protegida por autenticação? (s/n): `,
+      );
+
+      const appRoutePath = kebabCase;
+      const importPath = `@/features/${kebabCase}`;
+      const componentName = `${pascalCase}List`;
+      const pageName = `${pascalCase}Page`;
+
+      // T012: Generate the App Router page
+      const result = generateAppRoute(
+        appRoutePath,
+        importPath,
+        componentName,
+        pageName,
+      );
+
+      // T015: Handle conflict
+      if (result.conflict) {
+        const overwrite = await askQuestion(
+          `⚠️  src/app/${kebabCase}/page.tsx já existe. Sobrescrever? (s/n): `,
+        );
+        if (overwrite) {
+          fs.unlinkSync(path.join("src", "app", kebabCase, "page.tsx"));
+          generateAppRoute(appRoutePath, importPath, componentName, pageName);
+          injectRouteConfig(kebabCase, `/${kebabCase}`, isProtected);
+          routeCreated = true;
+          console.log(`✅ Rota /${kebabCase} recriada!`);
+        } else {
+          console.log("ℹ️  Rota não criada (conflito mantido).");
+        }
+      } else {
+        // T013: Inject route config
+        injectRouteConfig(kebabCase, `/${kebabCase}`, isProtected);
+        routeCreated = true;
+        console.log(`✅ Rota /${kebabCase} criada!`);
+        console.log(`📄 src/app/${kebabCase}/page.tsx`);
+      }
+    } else {
+      // T017: Informative message when user says "n"
+      console.log(
+        "ℹ️  Rota não criada. Para criar depois, adicione manualmente:",
+      );
+      console.log(`   src/app/${kebabCase}/page.tsx`);
+    }
+  } else {
+    // T017: CI mode message
+    console.log(
+      "ℹ️  Modo não-interativo detectado. Rota não criada automaticamente.",
+    );
+    console.log(`   Para criar manualmente: src/app/${kebabCase}/page.tsx`);
+  }
+
+  // T014: Updated "Próximos passos" message
   console.log("");
   console.log("📝 Próximos passos:");
   console.log(`1. Implementar as interfaces em ${kebabCase}.service.ts`);
   console.log(`2. Adicionar validações específicas`);
   console.log(`3. Customizar componentes conforme necessário`);
   console.log(`4. Adicionar testes`);
+  if (!routeCreated) {
+    console.log(`5. Criar rota manualmente em src/app/${kebabCase}/page.tsx`);
+  }
 }
 
 function generateTypes(featurePath, kebabCase, pascalCase) {
@@ -480,7 +554,9 @@ export { use${pascalCase}s } from './use${pascalCase}s'`;
 }
 
 function generateComponent(featurePath, kebabCase, pascalCase) {
-  const content = `import { useEffect } from 'react'
+  const content = `'use client'
+
+import { useEffect } from 'react'
 import { use${pascalCase}s } from '../hooks'
 
 export const ${pascalCase}List = () => {
@@ -577,4 +653,4 @@ export { ${pascalCase}List } from './components'`;
 
 // Executar o script
 const featureName = process.argv[2];
-generateFeature(featureName);
+generateFeature(featureName).catch(console.error);

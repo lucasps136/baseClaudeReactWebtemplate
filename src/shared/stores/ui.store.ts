@@ -78,7 +78,17 @@ const createInitialState = (): IUIState => ({
 });
 
 // Actions factory
-const createUIActions = (set: any, get: any): IUIActions => ({
+const createUIActions = (
+  set: (
+    partial:
+      | UIStore
+      | Partial<UIStore>
+      | ((state: UIStore) => UIStore | Partial<UIStore>),
+    replace?: boolean,
+    action?: string,
+  ) => void,
+  get: () => UIStore,
+): IUIActions => ({
   setTheme: (theme: ITheme): void => set({ theme }, false, "ui/setTheme"),
   toggleSidebar: (): void =>
     set(

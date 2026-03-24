@@ -2,6 +2,11 @@
 
 const fs = require("fs");
 const path = require("path");
+const {
+  askQuestion,
+  generateAppRoute,
+  injectRouteConfig,
+} = require("../utils/route-cli-utils");
 
 /**
  * Module Generator
@@ -261,7 +266,9 @@ export const use${pascalName} = () => {
   );
 
   // Component
-  const componentContent = `import { useEffect } from 'react'
+  const componentContent = `'use client'
+
+import { useEffect } from 'react'
 import { use${pascalName} } from '../hooks/use${pascalName}'
 
 interface ${pascalName}ListProps {
@@ -998,7 +1005,7 @@ function registerModule(moduleName, category, modulePath) {
 // MAIN FUNCTION
 // =====================================================
 
-function generateModule(moduleName, category) {
+async function generateModule(moduleName, category) {
   console.log(`\n🚀 Generating ${category} module: ${moduleName}\n`);
 
   // Validate category
@@ -1043,12 +1050,100 @@ function generateModule(moduleName, category) {
 
   console.log(`\n✅ Module ${moduleName} created successfully!`);
   console.log(`📁 Location: ${modulePath}`);
+
+  // T020-T025: Route creation for UI modules (Plugin-and-Play)
+  let routeCreated = false;
+  if (category === "ui" && process.stdin.isTTY) {
+    const createRoute = await askQuestion(
+      `\n🌐 Deseja criar uma rota para este módulo UI? (s/n): `,
+    );
+
+    if (createRoute) {
+      // T021: Auth protection prompt
+      const isProtected = await askQuestion(
+        `🔒 A rota deve ser protegida por autenticação? (s/n): `,
+      );
+
+      const pascalName = toPascalCase(moduleName);
+      const appRoutePath = `modules/${moduleName}`;
+      const importPath = `@/modules/ui/${moduleName}`;
+      const componentName = `${pascalName}List`;
+      const pageName = `${pascalName}Page`;
+
+      // T022: Generate the App Router page
+      const result = generateAppRoute(
+        appRoutePath,
+        importPath,
+        componentName,
+        pageName,
+      );
+
+      // T025: Handle conflict
+      if (result.conflict) {
+        const overwrite = await askQuestion(
+          `⚠️  src/app/modules/${moduleName}/page.tsx já existe. Sobrescrever? (s/n): `,
+        );
+        if (overwrite) {
+          fs.unlinkSync(
+            path.join("src", "app", "modules", moduleName, "page.tsx"),
+          );
+          generateAppRoute(appRoutePath, importPath, componentName, pageName);
+          // T023 (overwrite path): update module.json with route field (FR-007)
+          const manifestPath = path.join(modulePath, "module.json");
+          const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+          manifest.route = `/modules/${moduleName}`;
+          fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
+          injectRouteConfig(
+            toCamelCase(moduleName),
+            `/modules/${moduleName}`,
+            isProtected,
+          );
+          routeCreated = true;
+          console.log(`✅ Rota /modules/${moduleName} recriada!`);
+        } else {
+          console.log("ℹ️  Rota não criada (conflito mantido).");
+        }
+      } else {
+        // T023: Update module.json with route field
+        const manifestPath = path.join(modulePath, "module.json");
+        const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+        manifest.route = `/modules/${moduleName}`;
+        fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
+        console.log(`📝 module.json atualizado com campo 'route'`);
+
+        // T024: Inject route config
+        injectRouteConfig(
+          toCamelCase(moduleName),
+          `/modules/${moduleName}`,
+          isProtected,
+        );
+        routeCreated = true;
+        console.log(`✅ Rota /modules/${moduleName} criada!`);
+        console.log(`📄 src/app/modules/${moduleName}/page.tsx`);
+      }
+    } else {
+      console.log(
+        "ℹ️  Rota não criada. Para criar depois, adicione manualmente.",
+      );
+    }
+  } else if (category === "ui" && !process.stdin.isTTY) {
+    console.log(
+      "ℹ️  Modo não-interativo detectado. Rota não criada automaticamente.",
+    );
+  }
+
   console.log(`\n📖 Next steps:`);
   console.log(`   1. Implement the TODOs in the generated files`);
   console.log(`   2. Update module.json with proper metadata`);
   console.log(`   3. Add documentation in docs/README.md`);
   console.log(`   4. Create tests`);
-  console.log(`   5. Run: npm run modules:sync\n`);
+  console.log(`   5. Run: npm run modules:sync`);
+  if (category === "ui" && !routeCreated) {
+    console.log(
+      `   6. Criar rota manualmente em src/app/modules/${moduleName}/page.tsx`,
+    );
+  }
+  console.log("");
 }
 
 // =====================================================
@@ -1082,4 +1177,4 @@ if (categoryIndex === -1 || !args[categoryIndex + 1]) {
 
 const category = args[categoryIndex + 1];
 
-generateModule(moduleName, category);
+generateModule(moduleName, category).catch(console.error);

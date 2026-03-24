@@ -25,6 +25,10 @@ rl.question("Pergunta (s/n): ", (answer) => {
 // Modo não-interativo (CI): detectar process.stdin.isTTY === false → default 'n'
 ```
 
+**Comportamento para respostas inesperadas**: A expressão `answer.trim().toLowerCase() === 's'` define que qualquer valor diferente de `'s'` (incluindo `'S'`, `'n'`, `'N'`, `'y'`, `'sim'`, Enter vazio) resolve para `false` — equivalente a responder "não". Não há reperguntas; a semântica é binária: só `'s'` confirma.
+
+**Modo CI — definição precisa**: `process.stdin.isTTY` é `undefined` quando stdin é redirecionado (pipe, `echo "" |`, CI/CD). A verificação `!process.stdin.isTTY` cobre `false` e `undefined`. Ambientes Docker e SSH com stdin redirecionado também são tratados como modo CI.
+
 ---
 
 ## 2. Injeção em `src/config/routes.ts`
@@ -64,7 +68,17 @@ content = content.replace(publicBlockRegex, `$1\n${injection}`);
 // Nota: routes.public não tem array no routeGroups — nenhum append adicional
 ```
 
-**Fallback**: Se qualquer regex não encontrar o padrão esperado → imprimir o trecho manual e continuar (FR-010).
+**Posição de injeção**: As entradas são inseridas **imediatamente após a chave/colchete de abertura** do bloco — ou seja, no topo da lista existente. Isso garante que novas rotas apareçam primeiro na ordem de leitura, facilitando revisão visual.
+
+**Fallback — definição objetiva (FR-010)**: O fallback é acionado quando **o padrão regex específico não é encontrado no conteúdo do arquivo**. Os três padrões monitorados são:
+
+- `routes.protected: {` — regex `/(  protected: \{)\n/`
+- `routeGroups.protected: [` — regex `/(  protected: \[)([\s\S]*?)(\])/s`
+- `routes.public: {` — regex `/(  public: \{)\n/`
+
+Se `isProtected=true` e qualquer um dos dois primeiros padrões falhar, a função retorna `false` e exibe o trecho manual para AMBAS as inserções (objeto + array). Se `isProtected=false` e o terceiro padrão falhar, exibe o trecho manual para `routes.public`. O arquivo **não é modificado** quando o fallback é acionado.
+
+**Comportamento para ausência parcial** (apenas um dos dois alvos protected encontrado): A função verifica ambos os padrões **antes de fazer qualquer substituição** (via `.test()` pré-validação). Se apenas um for encontrado, aciona fallback completo — nenhuma modificação parcial é aplicada.
 
 ---
 
