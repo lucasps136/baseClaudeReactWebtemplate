@@ -217,7 +217,6 @@ export function ExtendedThemeProvider({
       defaultTheme={finalConfig.defaultTheme}
       enableSystem={finalConfig.enableSystem}
       storageKey={finalConfig.storageKey}
-      themes={availableThemes.map((t) => t.id)}
     >
       <ExtendedThemeProviderInner
         themeManager={themeManager}

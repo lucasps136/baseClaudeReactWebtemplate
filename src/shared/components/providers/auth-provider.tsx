@@ -169,9 +169,14 @@ const createAuthContextValue = (
 };
 
 // Provider Component
+const DEFAULT_AUTH_CONFIG: IAuthProviderConfig = {
+  type: "supabase",
+  options: {},
+};
+
 export const AuthProvider = ({
   children,
-  config = { type: "supabase", options: {} },
+  config = DEFAULT_AUTH_CONFIG,
 }: IAuthProviderProps): JSX.Element => {
   const [provider, setProvider] = useState<IAuthProvider | null>(null);
   const [authState, setAuthState] = useState<IAuthState>({

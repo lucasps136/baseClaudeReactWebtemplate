@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -50,16 +49,6 @@ const HeroSection = (): JSX.Element => (
       Modern Next.js starter template with SOLID architecture principles,
       TypeScript, Tailwind CSS, and shadcn/ui components.
     </p>
-  </div>
-);
-
-// SRP: CTA buttons component
-const CTASection = (): JSX.Element => (
-  <div className="flex flex-col sm:flex-row gap-4">
-    <Button size="lg">Get Started</Button>
-    <Button variant="outline" size="lg">
-      View Documentation
-    </Button>
   </div>
 );
 
@@ -120,7 +109,6 @@ export default function HomePage(): JSX.Element {
           ))}
         </div>
 
-        <CTASection />
         <StatusBadges />
       </div>
     </main>

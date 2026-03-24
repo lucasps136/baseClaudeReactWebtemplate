@@ -77,14 +77,13 @@ const createInitialState = (): IUIState => ({
   },
 });
 
-// Actions factory
 const createUIActions = (
   set: (
     partial:
       | UIStore
       | Partial<UIStore>
       | ((state: UIStore) => UIStore | Partial<UIStore>),
-    replace?: boolean,
+    replace?: false,
     action?: string,
   ) => void,
   get: () => UIStore,
@@ -126,7 +125,10 @@ const createUIActions = (
     ),
   clearNotifications: (): void =>
     set({ notifications: [] }, false, "ui/clearNotifications"),
-  openModal: (type: IModalType, data: unknown = null): void =>
+  openModal: (
+    type: IModalType,
+    data: Record<string, unknown> | null = null,
+  ): void =>
     set({ modal: { isOpen: true, type, data } }, false, "ui/openModal"),
   closeModal: (): void =>
     set(

@@ -223,9 +223,14 @@ const useInitializeDatabase = (
   }, [config, setProvider, setIsConnected, setIsLoading, setError]);
 };
 
+const DEFAULT_DATABASE_CONFIG: IDatabaseProviderConfig = {
+  type: "supabase",
+  options: {},
+};
+
 export const DatabaseProvider = ({
   children,
-  config = { type: "supabase", options: {} },
+  config = DEFAULT_DATABASE_CONFIG,
 }: IDatabaseProviderProps): JSX.Element => {
   const [provider, setProvider] = useState<IDatabaseProvider | null>(null);
   const [isConnected, setIsConnected] = useState(false);

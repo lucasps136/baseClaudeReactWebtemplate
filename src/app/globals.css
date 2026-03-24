@@ -4,61 +4,149 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Base */
+    --background: 0 0% 98%;
+    --foreground: 210 4% 18%; /* on-background */
+
+    /* Surfaces */
+    --surface: 0 0% 98%;
+    --surface-container-lowest: 0 0% 100%;
+    --surface-container-low: 210 10% 96%;
+    --surface-container: 210 10% 94%;
+    --surface-container-high: 210 12% 92%;
+    --surface-container-highest: 210 12% 90%;
+    --inverse-surface: 210 14% 5%;
+
+    /* Text / On Elements */
+    --on-background: 210 4% 18%;
+    --on-surface: 210 4% 18%;
+    --on-surface-rgb: 45, 47, 49;
+    --on-surface-variant: 210 4% 35%;
+    --inverse-on-surface: 0 0% 98%;
+
+    /* Primary */
+    --primary: 346 59% 41%;
+    --primary-foreground: 0 0% 100%;
+    --primary-container: 350 100% 73%;
+    --on-primary-container: 346 59% 15%;
+
+    /* Secondary */
+    --secondary: 33 100% 27%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-container: 27 100% 80%;
+    --on-secondary-container: 33 100% 10%;
+
+    /* Other standard properties */
+    --outline: 210 4% 50%;
+    --outline-variant: 210 10% 85%;
+
+    /* Shadcn defaults mapped to our semantic values where needed */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 210 4% 18%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --popover-foreground: 210 4% 18%;
+    --muted: 210 10% 96%;
+    --muted-foreground: 210 4% 35%;
+    --accent: 210 12% 92%;
+    --accent-foreground: 210 4% 18%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
+    --border: 210 10% 85%; /* outline-variant */
+    --input: 210 10% 96%; /* surface-container-low */
+    --ring: 346 59% 41%; /* primary */
+
+    --radius: 1.5rem; /* Equivalent to md roundness */
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --background: 210 14% 5%;
+    --foreground: 0 0% 98%;
+
+    --surface: 210 14% 5%;
+    --surface-container-lowest: 210 14% 2%;
+    --surface-container-low: 210 14% 8%;
+    --surface-container: 210 14% 10%;
+    --surface-container-high: 210 14% 12%;
+    --surface-container-highest: 210 14% 15%;
+    --inverse-surface: 0 0% 98%;
+
+    --on-background: 0 0% 98%;
+    --on-surface: 0 0% 98%;
+    --on-surface-rgb: 245, 245, 245; /* Approximate for dark mode */
+    --on-surface-variant: 210 10% 80%;
+    --inverse-on-surface: 210 14% 5%;
+
+    --primary: 350 100% 73%;
+    --primary-foreground: 346 59% 15%;
+    --primary-container: 346 59% 41%;
+    --on-primary-container: 0 0% 98%;
+
+    --secondary: 27 100% 80%;
+    --secondary-foreground: 33 100% 10%;
+    --secondary-container: 33 100% 27%;
+    --on-secondary-container: 0 0% 98%;
+
+    --outline: 210 4% 50%;
+    --outline-variant: 210 14% 20%;
+
+    --card: 210 14% 8%;
+    --card-foreground: 0 0% 98%;
+    --popover: 210 14% 8%;
+    --popover-foreground: 0 0% 98%;
+    --muted: 210 14% 12%;
+    --muted-foreground: 210 10% 80%;
+    --accent: 210 14% 12%;
+    --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 210 14% 20%;
+    --input: 210 14% 12%;
+    --ring: 350 100% 73%;
   }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-body;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading text-on-surface tracking-tight;
   }
 }
 
 @layer utilities {
+  /* Typography classes from style guide */
+  .display-lg {
+    @apply font-heading text-[3.5rem] leading-tight tracking-[-0.02em] font-bold text-on-surface;
+  }
+  .headline-md {
+    @apply font-heading text-[1.75rem] leading-snug font-semibold text-on-surface;
+  }
+  .body-lg {
+    @apply font-body text-[1rem] leading-[1.6] text-on-surface-variant;
+  }
+
+  /* Glassmorphism */
+  .glass-panel {
+    @apply bg-surface/80 backdrop-blur-[20px];
+  }
+
+  /* Ghost border */
+  .ghost-border {
+    @apply ring-1 ring-inset ring-outline-variant/15;
+  }
+
+  /* Ghost border active */
+  .ghost-border-active {
+    @apply ring-1 ring-inset ring-primary/20 backdrop-blur-sm;
+  }
+
   /* Hide scrollbar for Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
     display: none;

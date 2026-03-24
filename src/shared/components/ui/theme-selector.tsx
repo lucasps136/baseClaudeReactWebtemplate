@@ -82,12 +82,7 @@ export function ThemeColorSelector(): JSX.Element {
 
 // Componente combinado (Composite Pattern)
 export function ThemeSelector(): JSX.Element {
-  return (
-    <div className="flex items-center gap-2">
-      <ThemeColorSelector />
-      <ThemeToggle />
-    </div>
-  );
+  return <ThemeToggle />;
 }
 
 // Componente para preview de cores do tema (Single Responsibility)
