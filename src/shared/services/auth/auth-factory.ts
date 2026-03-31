@@ -56,13 +56,13 @@ export const registerDefaultProviders = async (): Promise<void> => {
     return new SupabaseAuthProvider();
   });
 
-  // Clerk Provider (futuro)
-  AuthProviderFactory.registerProvider("clerk", async () => {
-    const { ClerkAuthProvider } = await import(
-      "./providers/clerk-auth-provider"
-    );
-    return new ClerkAuthProvider();
-  });
+  // NOTE: Clerk Provider not yet installed - uncomment when @clerk/nextjs is installed
+  // AuthProviderFactory.registerProvider("clerk", async () => {
+  //   const { ClerkAuthProvider } = await import(
+  //     "./providers/clerk-auth-provider"
+  //   );
+  //   return new ClerkAuthProvider();
+  // });
 
   // NOTE: Provider not yet implemented - uncomment when ready
   // Auth0 Provider (futuro)

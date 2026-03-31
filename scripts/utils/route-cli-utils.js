@@ -139,9 +139,35 @@ function askQuestion(question) {
   });
 }
 
+/**
+ * SECURITY FIX: Validate feature/module names to prevent Path Traversal and Code Injection.
+ * Rejects any input containing dots, slashes, quotes, parentheses, etc.
+ *
+ * @param {string} name - The name provided via CLI
+ * @param {string} type - 'feature' or 'module' for logging context
+ */
+function requireValidName(name, type = "feature") {
+  if (!name || typeof name !== "string") {
+    process.exit(1);
+  }
+  // Allow only letters, numbers, hyphens, and spaces
+  const isValid = /^[a-zA-Z0-9\s-]+$/.test(name);
+  if (!isValid) {
+    console.error(`\n❌ SECURITY ERROR: Invalid ${type} name '${name}'`);
+    console.error(
+      `   Names must only contain letters, numbers, spaces, and hyphens.`,
+    );
+    console.error(
+      `   Special characters (., /, \\, ', ", ;, etc.) are blocked to prevent Path Traversal and Code Injection.\n`,
+    );
+    process.exit(1);
+  }
+}
+
 // T007b: Export all functions
 module.exports = {
   generateAppRoute,
   injectRouteConfig,
   askQuestion,
+  requireValidName,
 };

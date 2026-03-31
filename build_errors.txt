@@ -1,0 +1,41 @@
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+Failed to compile.
+
+./src/app/(auth)/forgot-password/page.tsx
+13:16  Warning: Function 'ForgotPasswordPage' has too many lines (82). Maximum allowed is 50.  max-lines-per-function
+
+./src/app/(auth)/layout.tsx
+14:7  Warning: Custom fonts not added in `pages/_document.js` will only load for a single page. This is discouraged. See: https://nextjs.org/docs/messages/no-page-custom-font  @next/next/no-page-custom-font
+
+./src/app/(auth)/login/page.tsx
+14:16  Warning: Function 'LoginPage' has too many lines (73). Maximum allowed is 50.  max-lines-per-function
+
+./src/app/(auth)/register/page.tsx
+4:10  Error: 'routes' is defined but never used.  @typescript-eslint/no-unused-vars
+14:16  Warning: Function 'RegisterPage' has too many lines (69). Maximum allowed is 50.  max-lines-per-function
+
+./src/features/auth/components/forgot-password-form.tsx
+25:8  Warning: Function 'ForgotPasswordForm' has too many lines (130). Maximum allowed is 50.  max-lines-per-function
+
+./src/features/auth/components/login-form.tsx
+26:8  Warning: Function 'LoginForm' has too many lines (138). Maximum allowed is 50.  max-lines-per-function
+
+./src/features/auth/components/register-form.tsx
+26:8  Warning: Function 'RegisterForm' has too many lines (189). Maximum allowed is 50.  max-lines-per-function
+
+./src/shared/components/ui/form.tsx
+36:42  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+44:25  Warning: Missing return type on function.  @typescript-eslint/explicit-function-return-type
+
+./src/shared/stores/ui.store.ts
+80:25  Warning: Arrow function has too many lines (60). Maximum allowed is 50.  max-lines-per-function
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+

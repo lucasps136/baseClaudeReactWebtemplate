@@ -6,6 +6,7 @@ const {
   askQuestion,
   generateAppRoute,
   injectRouteConfig,
+  requireValidName,
 } = require("../utils/route-cli-utils");
 
 /**
@@ -1006,6 +1007,7 @@ function registerModule(moduleName, category, modulePath) {
 // =====================================================
 
 async function generateModule(moduleName, category) {
+  requireValidName(moduleName, "module");
   console.log(`\n🚀 Generating ${category} module: ${moduleName}\n`);
 
   // Validate category

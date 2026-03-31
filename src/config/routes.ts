@@ -18,12 +18,12 @@ export const routes = {
 
   // Authentication routes
   auth: {
-    login: "/auth/login",
-    register: "/auth/register",
-    forgotPassword: "/auth/forgot-password",
-    resetPassword: "/auth/reset-password",
-    verifyEmail: "/auth/verify-email",
-    callback: "/auth/callback", // OAuth callback
+    login: "/login",
+    register: "/register",
+    forgotPassword: "/forgot-password",
+    resetPassword: "/reset-password",
+    verifyEmail: "/verify-email",
+    callback: "/callback", // OAuth callback
   },
 
   // Protected routes (authentication required)

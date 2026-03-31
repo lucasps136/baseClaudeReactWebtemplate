@@ -6,6 +6,7 @@ const {
   askQuestion,
   generateAppRoute,
   injectRouteConfig,
+  requireValidName,
 } = require("./utils/route-cli-utils");
 
 // Script para gerar uma nova feature seguindo o padrão Vertical Slice
@@ -15,6 +16,8 @@ async function generateFeature(featureName) {
     console.log("npm run generate:feature <nome-da-feature>");
     process.exit(1);
   }
+
+  requireValidName(featureName, "feature");
 
   const kebabCase = featureName.toLowerCase().replace(/\s+/g, "-");
   const pascalCase = kebabCase

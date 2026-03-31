@@ -31,12 +31,15 @@
  * IMPORTANTE: Executar `npm run build` após remoção para verificar ausência de referências quebradas.
  */
 
+const { requireValidName } = require("./utils/route-cli-utils");
 const featureName = process.argv[2];
 
 if (!featureName) {
   console.error("❌ Forneça o nome da feature: npm run remove:feature <nome>");
   process.exit(1);
 }
+
+requireValidName(featureName, "feature");
 
 console.log(`\n⚠️  remove:feature ainda não está implementado.`);
 console.log(`\nPara remover a feature '${featureName}' manualmente:`);
