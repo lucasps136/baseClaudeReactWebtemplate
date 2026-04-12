@@ -49,7 +49,7 @@ export class AuthOperations {
     mapUser: (user: SupabaseUser) => IUser,
     mapSession: (session: SupabaseSession) => IAuthSession,
     mapError: (error: SupabaseAuthError) => IAuthError,
-  ): Promise<{ user: IUser; session: IAuthSession }> {
+  ): Promise<{ user: IUser; session: IAuthSession | null }> {
     const { data, error } = await this.client.auth.signUp({
       email: credentials.email,
       password: credentials.password,
@@ -65,13 +65,17 @@ export class AuthOperations {
       throw mapError(error);
     }
 
-    if (!data.session || !data.user) {
-      throw new Error("Registration failed - no session created");
+    if (!data.user) {
+      throw {
+        code: "registration_failed",
+        message: "Registration failed",
+      } satisfies IAuthError;
     }
 
+    // session is null when email confirmation is required
     return {
       user: mapUser(data.user),
-      session: mapSession(data.session),
+      session: data.session ? mapSession(data.session) : null,
     };
   }
 

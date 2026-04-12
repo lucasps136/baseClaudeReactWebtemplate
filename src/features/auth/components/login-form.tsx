@@ -25,6 +25,7 @@ import {
   useAuthActions,
   useAuthState,
 } from "@/shared/components/providers/auth-provider";
+import type { IAuthError } from "@/shared/types/auth";
 
 export function LoginForm(): JSX.Element {
   const router = useRouter();
@@ -41,14 +42,12 @@ export function LoginForm(): JSX.Element {
     setServerError(null);
     try {
       await login(values);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      router.push(redirects.afterLogin as any);
+      router.push(redirects.afterLogin);
     } catch (err) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : "Erro ao fazer login. Tente novamente.";
-      setServerError(message);
+      const authError = err as IAuthError;
+      setServerError(
+        authError.message ?? "Erro ao fazer login. Tente novamente.",
+      );
     }
   }
 

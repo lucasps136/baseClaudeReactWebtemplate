@@ -51,6 +51,12 @@ export interface IAuthProvider {
 
   // Autenticação
   login(credentials: ILoginCredentials): Promise<IAuthSession>;
+  /**
+   * Registers a new user.
+   * @throws {IAuthError} with code "email_confirmation_required" when the provider
+   * requires email verification before session creation (e.g. Supabase with email confirmation enabled).
+   * @throws {IAuthError} with code "registration_failed" on other failures.
+   */
   register(credentials: IRegisterCredentials): Promise<IAuthSession>;
   logout(): Promise<void>;
 

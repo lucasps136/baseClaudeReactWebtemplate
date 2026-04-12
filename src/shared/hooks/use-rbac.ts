@@ -6,7 +6,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import { useAuth } from "@/shared/hooks/use-auth";
+import { useAuthState } from "@/shared/components/providers/auth-provider";
 import { getRBACProvider } from "@/shared/services/rbac/rbac-factory";
 import type {
   IRBACError,
@@ -45,7 +45,7 @@ const fetchRBACDataFromProvider = async (
 };
 
 export function useRBAC(organizationId?: string): IUseRBACReturn {
-  const { user } = useAuth();
+  const { user } = useAuthState();
   const [userRoles, setUserRoles] = useState<IRole[]>([]);
   const [userPermissions, setUserPermissions] = useState<IPermission[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,9 +66,7 @@ export function useRBAC(organizationId?: string): IUseRBACReturn {
       setUserRoles(roles);
       setUserPermissions(permissions);
     } catch (err) {
-      const error = err as IRBACError;
-      setError(error);
-      console.error("Failed to fetch RBAC data:", error);
+      setError(err as IRBACError);
     } finally {
       setLoading(false);
     }

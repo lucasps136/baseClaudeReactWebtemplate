@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import {
+  isAdminRoute,
+  isAuthRoute,
+  isProtectedRoute,
+  redirects,
+} from "@/config/routes";
+
 /**
  * Adds security headers to response
  * SRP: Responsible only for setting security headers
@@ -27,85 +34,59 @@ const shouldSkipMiddleware = (pathname: string): boolean => {
 };
 
 /**
- * Middleware for handling routing, authentication, and redirects
- * This runs before every request and is essential for:
- * - Route protection
- * - Authentication checks
- * - Redirects and rewrites
- * - Request/response modifications
- *
- * TEMPLATE NOTE: Uncomment and modify the authentication logic based on your auth provider
+ * Reads the Supabase session token from cookies.
+ * NOTE: requires @supabase/ssr and createServerClient to set cookies automatically.
+ * With the current @supabase/supabase-js client-only setup, the session is stored
+ * in localStorage and is not accessible here. Install @supabase/ssr and replace
+ * this function with a createServerClient call for full server-side protection.
+ */
+const getSessionToken = (request: NextRequest): string | undefined => {
+  // Supabase SSR sets this cookie when using @supabase/ssr
+  return request.cookies.get("sb-access-token")?.value;
+};
+
+/**
+ * Middleware for route protection and security headers
  */
 export function middleware(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
-  // Skip middleware for static files and API routes that don't need auth
+
   if (shouldSkipMiddleware(pathname)) {
     return NextResponse.next();
   }
-  // Security headers for all requests
+
   const response = NextResponse.next();
   addSecurityHeaders(response);
-  // EXAMPLE: Route protection using centralized configuration
-  // Uncomment and modify based on your authentication strategy
-  /*
-  // Import route helpers first:
-  // import { isProtectedRoute, isAuthRoute, isAdminRoute, redirects } from "@/config/routes";
 
-  // Check if route requires authentication
+  const sessionToken = getSessionToken(request);
+
   if (isProtectedRoute(pathname)) {
-    // EXAMPLE: Check for authentication token/session
-    const token = request.cookies.get('auth-token')?.value;
-    const session = request.cookies.get('next-auth.session-token')?.value;
-
-    if (!token && !session) {
-      // Redirect to login page
+    if (!sessionToken) {
       return NextResponse.redirect(
-        new URL(redirects.unauthorized, request.url)
+        new URL(redirects.unauthorized, request.url),
       );
     }
 
-    // EXAMPLE: Admin route protection
     if (isAdminRoute(pathname)) {
-      const userRole = request.cookies.get('user-role')?.value;
-
-      if (userRole !== 'admin') {
+      const userRole = request.cookies.get("user-role")?.value;
+      if (userRole !== "admin") {
         return NextResponse.redirect(
-          new URL(redirects.adminRequired, request.url)
+          new URL(redirects.adminRequired, request.url),
         );
       }
     }
   }
 
-  // Redirect authenticated users away from auth pages
-  if (isAuthRoute(pathname)) {
-    const token = request.cookies.get('auth-token')?.value;
-    const session = request.cookies.get('next-auth.session-token')?.value;
-
-    if (token || session) {
-      return NextResponse.redirect(
-        new URL(redirects.afterLogin, request.url)
-      );
-    }
+  if (isAuthRoute(pathname) && sessionToken) {
+    return NextResponse.redirect(new URL(redirects.afterLogin, request.url));
   }
-  */
 
   return response;
 }
 
 /**
  * Configure which paths the middleware should run on
- * Use negative lookaheads to exclude specific paths
  */
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder files
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\..*).*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\..*).*)"],
 };

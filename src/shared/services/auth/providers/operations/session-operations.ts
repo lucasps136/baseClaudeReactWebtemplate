@@ -33,8 +33,7 @@ export class SessionOperations {
       }
 
       return user ? mapUser(user) : null;
-    } catch (error) {
-      console.error("Error getting current user:", error);
+    } catch {
       return null;
     }
   }
@@ -54,8 +53,7 @@ export class SessionOperations {
       }
 
       return session ? mapSession(session) : null;
-    } catch (error) {
-      console.error("Error getting current session:", error);
+    } catch {
       return null;
     }
   }
@@ -80,8 +78,7 @@ export class SessionOperations {
         session: mapSession(data.session),
         user: data.user ? mapUser(data.user) : null,
       };
-    } catch (error) {
-      console.error("Error refreshing session:", error);
+    } catch {
       return { user: null, session: null };
     }
   }

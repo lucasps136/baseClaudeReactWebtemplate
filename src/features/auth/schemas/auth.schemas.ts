@@ -14,8 +14,8 @@ export const registerSchema = z
       .regex(/[A-Z]/, "Senha deve conter pelo menos uma letra maiúscula")
       .regex(/[0-9]/, "Senha deve conter pelo menos um número"),
     confirmPassword: z.string(),
-    terms: z.literal(true, {
-      errorMap: () => ({ message: "Você precisa aceitar os termos de uso" }),
+    terms: z.boolean().refine((v) => v === true, {
+      message: "Você precisa aceitar os termos de uso",
     }),
   })
   .refine((data) => data.password === data.confirmPassword, {

@@ -122,7 +122,6 @@ const initializeAuthProvider = async (
       }
     };
   } catch (error) {
-    console.error("Failed to initialize auth provider:", error);
     if (mounted) {
       onError(error);
     }
@@ -207,7 +206,7 @@ export const AuthProvider = ({
       },
     );
     return (): void => {
-      cleanup.then((cleanupFn) => cleanupFn?.()).catch(console.error);
+      cleanup.then((cleanupFn) => cleanupFn?.()).catch(() => {});
     };
   }, [config]);
   // Cleanup na desmontagem

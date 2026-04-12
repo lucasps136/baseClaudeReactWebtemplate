@@ -25,12 +25,15 @@ import {
   useAuthActions,
   useAuthState,
 } from "@/shared/components/providers/auth-provider";
+import type { IAuthError } from "@/shared/types/auth";
 
 export function RegisterForm(): JSX.Element {
   const router = useRouter();
   const { register } = useAuthActions();
   const { isLoading } = useAuthState();
   const [serverError, setServerError] = useState<string | null>(null);
+  const [emailConfirmationRequired, setEmailConfirmationRequired] =
+    useState(false);
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -38,7 +41,7 @@ export function RegisterForm(): JSX.Element {
       email: "",
       password: "",
       confirmPassword: "",
-      terms: undefined as unknown as true,
+      terms: false,
     },
   });
 
@@ -46,15 +49,52 @@ export function RegisterForm(): JSX.Element {
     setServerError(null);
     try {
       await register({ email: values.email, password: values.password });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      router.push(redirects.afterRegister as any);
+      router.push(redirects.afterRegister);
     } catch (err) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : "Erro ao criar conta. Tente novamente.";
-      setServerError(message);
+      const authError = err as IAuthError;
+      if (authError.code === "email_confirmation_required") {
+        setEmailConfirmationRequired(true);
+        return;
+      }
+      setServerError(
+        authError.message ?? "Error creating account. Please try again.",
+      );
     }
+  }
+
+  if (emailConfirmationRequired) {
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col items-center text-center gap-4">
+          <div className="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center">
+            <span className="material-symbols-outlined text-on-secondary-container text-3xl">
+              mark_email_read
+            </span>
+          </div>
+          <div>
+            <h3 className="font-heading font-bold text-on-surface text-xl mb-2">
+              Check your email!
+            </h3>
+            <p className="text-on-surface-variant text-sm leading-relaxed">
+              We sent a confirmation link to{" "}
+              <span className="font-semibold text-on-surface">
+                {form.getValues("email")}
+              </span>
+              . Click it to activate your account.
+            </p>
+          </div>
+        </div>
+        <Link
+          href={routes.auth.login}
+          className="flex items-center justify-center gap-2 text-sm font-bold text-on-surface-variant hover:text-primary transition-colors"
+        >
+          <span className="material-symbols-outlined text-lg">
+            keyboard_backspace
+          </span>
+          Back to Login
+        </Link>
+      </div>
+    );
   }
 
   return (
@@ -144,16 +184,13 @@ export function RegisterForm(): JSX.Element {
                     type="checkbox"
                     className="mt-1 w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary/20 cursor-pointer"
                     checked={field.value === true}
-                    onChange={(e) =>
-                      field.onChange(e.target.checked || undefined)
-                    }
+                    onChange={(e) => field.onChange(e.target.checked)}
                   />
                 </FormControl>
                 <span className="text-sm text-on-surface-variant leading-relaxed">
                   I wag my tail for the{" "}
                   <Link
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    href={(routes.legal?.terms ?? "#") as any}
+                    href={routes.legal.terms}
                     className="text-primary font-semibold underline decoration-2 underline-offset-4"
                   >
                     Terms of Service

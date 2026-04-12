@@ -94,6 +94,15 @@ export class SupabaseAuthProvider implements IAuthProvider {
         this.mapSupabaseError,
       );
 
+      if (!session) {
+        // Email confirmation required — user created but not authenticated yet
+        this.stateManager.setState({ isLoading: false, error: null });
+        throw {
+          code: "email_confirmation_required",
+          message: "Please check your email to confirm your account",
+        } satisfies IAuthError;
+      }
+
       this.stateManager.setState({
         user,
         session,
@@ -105,11 +114,13 @@ export class SupabaseAuthProvider implements IAuthProvider {
       return session;
     } catch (error) {
       const authError = error as IAuthError;
-      this.stateManager.setState({
-        isLoading: false,
-        error: authError,
-        isAuthenticated: false,
-      });
+      if (authError.code !== "email_confirmation_required") {
+        this.stateManager.setState({
+          isLoading: false,
+          error: authError,
+          isAuthenticated: false,
+        });
+      }
       throw authError;
     }
   }
