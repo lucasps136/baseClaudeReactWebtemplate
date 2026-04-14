@@ -1,3 +1,5 @@
+import "server-only";
+
 // Service setup and initialization
 // This file configures all services following Dependency Inversion
 
