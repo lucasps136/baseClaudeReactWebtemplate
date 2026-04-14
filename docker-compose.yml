@@ -1,0 +1,192 @@
+# ============================================================
+# BEBARTER — Docker Compose
+#
+# Usage:
+#   Local (Supabase + Next.js): npm run docker:up  (SUPABASE=local in .env)
+#   Remote (Next.js only):       npm run docker:up  (SUPABASE=remote in .env)
+#
+# Service names match the official Supabase self-hosted setup so that
+# the Kong gateway config (volumes/api/kong.yml) works without changes.
+# ============================================================
+
+services:
+  # ----------------------------------------------------------
+  # App — Next.js (always starts)
+  # ----------------------------------------------------------
+  app:
+    build: .
+    volumes:
+      - .:/app                  # source code mounted for hot reload
+      - /app/node_modules       # preserve container node_modules
+      - /app/.next              # preserve Next.js build cache
+    ports:
+      - "3010:3000"
+    env_file: .env
+    environment:
+      WATCHPACK_POLLING: "true"         # required for hot reload on Windows/WSL
+      SUPABASE_INTERNAL_URL: "http://kong:8000"  # server-side container URL
+    networks:
+      - bebarter-network
+    restart: unless-stopped
+
+  # ----------------------------------------------------------
+  # Supabase — PostgreSQL  (profile: local)
+  # ----------------------------------------------------------
+  db:
+    image: postgres:15-alpine
+    profiles: ["local"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: postgres
+    volumes:
+      - supabase_db_data:/var/lib/postgresql/data
+      # Init scripts run in alphabetical order, only on first start (empty PGDATA).
+      - ./volumes/db/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ./database/setup.sql:/docker-entrypoint-initdb.d/02-bebarter.sql:ro
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    networks:
+      - bebarter-network
+    restart: unless-stopped
+
+  # ----------------------------------------------------------
+  # Supabase — Kong API Gateway  (profile: local)
+  # ----------------------------------------------------------
+  kong:
+    image: kong:2.8.1
+    profiles: ["local"]
+    depends_on:
+      db:
+        condition: service_healthy
+    entrypoint: bash -c 'eval "echo \"$$(cat ~/temp.yml)\"" > ~/kong.yml && /docker-entrypoint.sh kong docker-start'
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /home/kong/kong.yml
+      KONG_DNS_ORDER: LAST,A,CNAME
+      KONG_PLUGINS: request-transformer,cors,key-auth,acl,basic-auth,request-termination
+      KONG_NGINX_PROXY_PROXY_BUFFER_SIZE: 160k
+      KONG_NGINX_PROXY_PROXY_BUFFERS: 64 160k
+      SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+      DASHBOARD_USERNAME: ${DASHBOARD_USERNAME:-supabase}
+      DASHBOARD_PASSWORD: ${DASHBOARD_PASSWORD:-supabase}
+    volumes:
+      - ./volumes/api/kong.yml:/home/kong/temp.yml:ro
+    ports:
+      - "54321:8000"
+      - "54322:8443"
+    networks:
+      - bebarter-network
+    restart: unless-stopped
+
+  # ----------------------------------------------------------
+  # Supabase — GoTrue Auth  (profile: local)
+  # ----------------------------------------------------------
+  auth:
+    image: supabase/gotrue:v2.186.0
+    profiles: ["local"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: http://localhost:54321
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:${POSTGRES_PASSWORD}@db:5432/postgres
+      GOTRUE_SITE_URL: http://localhost:3003
+      GOTRUE_URI_ALLOW_LIST: ""
+      GOTRUE_DISABLE_SIGNUP: "false"
+      GOTRUE_JWT_ADMIN_ROLES: service_role
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_JWT_DEFAULT_EXP: 3600
+      GOTRUE_JWT_SECRET: ${JWT_SECRET}
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
+      GOTRUE_MAILER_AUTOCONFIRM: "true"
+      GOTRUE_SMTP_ADMIN_EMAIL: admin@example.com
+      GOTRUE_SMTP_HOST: ""
+      GOTRUE_SMTP_PORT: 2500
+    networks:
+      - bebarter-network
+    restart: unless-stopped
+
+  # ----------------------------------------------------------
+  # Supabase — PostgREST  (profile: local)
+  # ----------------------------------------------------------
+  rest:
+    image: postgrest/postgrest:v14.8
+    profiles: ["local"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD}@db:5432/postgres
+      PGRST_DB_SCHEMAS: public,graphql_public
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+      PGRST_DB_USE_LEGACY_GUCS: "false"
+      PGRST_APP_SETTINGS_JWT_SECRET: ${JWT_SECRET}
+      PGRST_APP_SETTINGS_JWT_EXP: ${JWT_EXP:-3600}
+    command: postgrest
+    networks:
+      - bebarter-network
+    restart: unless-stopped
+
+  # ----------------------------------------------------------
+  # Supabase — pg-meta (used by Studio)  (profile: local)
+  # ----------------------------------------------------------
+  meta:
+    image: supabase/postgres-meta:v0.96.3
+    profiles: ["local"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PG_META_PORT: 8080
+      PG_META_DB_HOST: db
+      PG_META_DB_PORT: 5432
+      PG_META_DB_NAME: postgres
+      PG_META_DB_USER: supabase_admin
+      PG_META_DB_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - bebarter-network
+    restart: unless-stopped
+
+  # ----------------------------------------------------------
+  # Supabase — Studio UI  (profile: local)
+  # ----------------------------------------------------------
+  studio:
+    image: supabase/studio:2026.04.08-sha-205cbe7
+    profiles: ["local"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      STUDIO_PG_META_URL: http://meta:8080
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DEFAULT_ORGANIZATION_NAME: bebarter
+      DEFAULT_PROJECT_NAME: bebarter-local
+      SUPABASE_URL: http://kong:8000
+      SUPABASE_PUBLIC_URL: http://localhost:54321
+      SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+    ports:
+      - "54323:3000"
+    networks:
+      - bebarter-network
+    restart: unless-stopped
+
+networks:
+  bebarter-network:
+    driver: bridge
+
+volumes:
+  supabase_db_data:
+    # Named volume — data survives `docker compose down`
+    # Use `npm run docker:reset` (docker compose down -v) to wipe and re-seed

@@ -9,7 +9,7 @@ import {
   type AuthError as SupabaseAuthError,
 } from "@supabase/supabase-js";
 
-import { getEnv } from "@/config/env";
+import { envClient } from "@/config/env.client";
 import type {
   IAuthProvider,
   IUser,
@@ -34,10 +34,19 @@ export class SupabaseAuthProvider implements IAuthProvider {
   private stateManager: StateManager;
 
   constructor() {
-    const env = getEnv();
+    // When running server-side inside Docker (SUPABASE=local), use the internal
+    // container URL so requests stay on the Docker network instead of going via
+    // localhost:54321 (which is only accessible from the host machine).
+    const supabaseUrl =
+      typeof window === "undefined" &&
+      process.env.SUPABASE === "local" &&
+      process.env.SUPABASE_INTERNAL_URL
+        ? process.env.SUPABASE_INTERNAL_URL
+        : envClient.NEXT_PUBLIC_SUPABASE_URL;
+
     this.client = createClient(
-      env.NEXT_PUBLIC_SUPABASE_URL,
-      env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      supabaseUrl,
+      envClient.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     );
 
     // Initialize composed operations

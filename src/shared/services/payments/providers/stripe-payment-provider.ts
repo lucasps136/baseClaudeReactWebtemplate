@@ -1,9 +1,11 @@
 // Stripe Payment Provider - SOLID implementation using composition
 // Delegates to specialized operation classes following SRP
 
+import "server-only";
+
 import Stripe from "stripe";
 
-import { getEnv } from "@/config/env";
+import { envServer } from "@/config/env.server";
 import type {
   IPaymentProvider,
   IProduct,
@@ -40,12 +42,16 @@ export class StripePaymentProvider implements IPaymentProvider {
   private webhookOps: WebhookOperations;
 
   constructor() {
-    const env = getEnv();
-    this.stripe = new Stripe(env.STRIPE_SECRET_KEY, {
+    if (!envServer.STRIPE_SECRET_KEY) {
+      throw new Error(
+        "STRIPE_SECRET_KEY is required to use StripePaymentProvider",
+      );
+    }
+    this.stripe = new Stripe(envServer.STRIPE_SECRET_KEY, {
       apiVersion: "2024-06-20",
       typescript: true,
     });
-    this.webhookSecret = env.STRIPE_WEBHOOK_SECRET;
+    this.webhookSecret = envServer.STRIPE_WEBHOOK_SECRET;
 
     // Initialize operation classes
     this.productOps = new ProductOperations(this.stripe);

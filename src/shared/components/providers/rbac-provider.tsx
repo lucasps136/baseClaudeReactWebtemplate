@@ -13,11 +13,9 @@ import {
   type ReactNode,
 } from "react";
 
-import { getEnv } from "@/config/env";
 import {
   RBACManager,
   registerDefaultRBACProviders,
-  createRBACConfig,
 } from "@/shared/services/rbac/rbac-factory";
 import type {
   IRBACProvider,
@@ -37,24 +35,23 @@ const RBACContext = createContext<IRBACContextValue | null>(null);
 
 interface IRBACProviderProps {
   children: ReactNode;
-  // Optional custom configuration
+  // Explicit configuration. When omitted, the provider is a no-op —
+  // service role keys must never be injected here (client component).
   config?: {
     provider?: "supabase" | "database";
     options?: Record<string, unknown>;
   };
 }
 
-// SRP: Create RBAC configuration from props or environment
+// SRP: Create RBAC configuration from explicit props only
 const createRBACConfiguration = (
-  config?: IRBACProviderProps["config"],
-): IRBACProviderConfig => {
-  if (config) {
-    return {
-      type: config.provider || "supabase",
-      options: config.options || {},
-    };
-  }
-  return createDefaultConfig();
+  config: IRBACProviderProps["config"],
+): IRBACProviderConfig | null => {
+  if (!config) return null;
+  return {
+    type: config.provider || "supabase",
+    options: config.options || {},
+  };
 };
 
 // SRP: Convert error to RBAC error format
@@ -80,15 +77,20 @@ const performRBACInitialization = async (
  * Initializes and provides RBAC functionality to the application.
  * Follows Dependency Inversion Principle by using factory pattern.
  *
+ * IMPORTANT: Without an explicit `config` prop this provider is a no-op
+ * (isInitialized=false, provider=null). Apps that need real RBAC must
+ * obtain configuration via a Server Action / Route Handler and pass it
+ * down — service role keys cannot live in client components.
+ *
  * @example
- * // Basic usage (uses environment variables)
+ * // No-op (default) — safe on the client
  * <RBACProvider>
  *   <App />
  * </RBACProvider>
  *
  * @example
- * // Custom configuration
- * <RBACProvider config={{ provider: 'supabase', options: { url: '...', serviceKey: '...' } }}>
+ * // Explicit configuration from a server-side source
+ * <RBACProvider config={{ provider: 'supabase', options: serverProvidedOptions }}>
  *   <App />
  * </RBACProvider>
  */
@@ -100,13 +102,20 @@ export function RBACProvider({
   const [provider, setProvider] = useState<IRBACProvider | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [error, setError] = useState<IRBACError | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const initializeRBAC = useCallback(async (): Promise<void> => {
+    const rbacConfig = createRBACConfiguration(config);
+    if (!rbacConfig) {
+      setProvider(null);
+      setIsInitialized(false);
+      setError(null);
+      setLoading(false);
+      return;
+    }
     try {
       setLoading(true);
       setError(null);
-      const rbacConfig = createRBACConfiguration(config);
       const rbacProvider = await performRBACInitialization(rbacConfig);
       setProvider(rbacProvider);
       setIsInitialized(true);
@@ -118,6 +127,7 @@ export function RBACProvider({
       setLoading(false);
     }
   }, [config]);
+
   const reinitialize = useCallback(async (): Promise<void> => {
     await initializeRBAC();
   }, [initializeRBAC]);
@@ -151,17 +161,6 @@ export function useRBACContext(): IRBACContextValue {
   }
 
   return context;
-}
-
-// Helper function to create default configuration
-function createDefaultConfig(): IRBACProviderConfig {
-  const env = getEnv();
-
-  // Default to Supabase (env variables are now required)
-  return createRBACConfig.supabase(
-    env.NEXT_PUBLIC_SUPABASE_URL,
-    env.SUPABASE_SERVICE_ROLE_KEY,
-  );
 }
 
 // Error boundary for RBAC

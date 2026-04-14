@@ -3,7 +3,7 @@
 
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-import { getEnv } from "@/config/env";
+import { envClient } from "@/config/env.client";
 import type {
   IDatabaseProvider,
   IDatabaseRecord,
@@ -25,7 +25,6 @@ import { UtilityOperations } from "./utility-operations";
 
 export class SupabaseDatabaseProvider implements IDatabaseProvider {
   private client: SupabaseClient;
-  private adminClient?: SupabaseClient;
 
   // Composed operations
   private crud: CrudOperations;
@@ -34,24 +33,10 @@ export class SupabaseDatabaseProvider implements IDatabaseProvider {
   private utilities: UtilityOperations;
 
   constructor() {
-    const env = getEnv();
-
     // Client principal (com auth context)
     this.client = createClient(
-      env.NEXT_PUBLIC_SUPABASE_URL,
-      env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    );
-
-    // Admin client (para operações privilegiadas)
-    this.adminClient = createClient(
-      env.NEXT_PUBLIC_SUPABASE_URL,
-      env.SUPABASE_SERVICE_ROLE_KEY,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false,
-        },
-      },
+      envClient.NEXT_PUBLIC_SUPABASE_URL,
+      envClient.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     );
 
     // Initialize composed operations

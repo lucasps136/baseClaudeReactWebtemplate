@@ -1,7 +1,7 @@
 // Service setup and initialization
 // This file configures all services following Dependency Inversion
 
-import { getEnv } from "@/config/env";
+import { envServer } from "@/config/env.server";
 
 import { createApiService } from "./api";
 import { createStorageService } from "./storage";
@@ -18,13 +18,11 @@ import type { ISupabaseService, IValidationService } from "./index";
 
 // Setup services with proper dependency injection
 export const setupServices = (): void => {
-  const env = getEnv();
-
   // Supabase configuration from environment
   const supabaseConfig: ISupabaseConfig = {
-    url: env.NEXT_PUBLIC_SUPABASE_URL,
-    anonKey: env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    serviceRoleKey: env.SUPABASE_SERVICE_ROLE_KEY,
+    url: envServer.NEXT_PUBLIC_SUPABASE_URL,
+    anonKey: envServer.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    serviceRoleKey: envServer.SUPABASE_SERVICE_ROLE_KEY,
   };
 
   // Register services as singletons

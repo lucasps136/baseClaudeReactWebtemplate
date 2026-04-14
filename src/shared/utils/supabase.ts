@@ -1,23 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
 
-import { getEnv } from "@/config/env";
+import { envClient } from "@/config/env.client";
 
-const env = getEnv();
-
-// Create Supabase client
+// Anon client — safe on client and server
 export const supabase = createClient(
-  env.NEXT_PUBLIC_SUPABASE_URL,
-  env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-);
-
-// Create admin client (server-side only)
-export const supabaseAdmin = createClient(
-  env.NEXT_PUBLIC_SUPABASE_URL,
-  env.SUPABASE_SERVICE_ROLE_KEY,
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-    },
-  },
+  envClient.NEXT_PUBLIC_SUPABASE_URL,
+  envClient.NEXT_PUBLIC_SUPABASE_ANON_KEY,
 );

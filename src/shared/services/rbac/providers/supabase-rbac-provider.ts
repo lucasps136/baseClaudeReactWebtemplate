@@ -2,9 +2,11 @@
 // Repository: https://github.com/nextjs/saas-starter
 // Enhanced with SOLID principles
 
+import "server-only";
+
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-import { getEnv } from "@/config/env";
+import { envServer } from "@/config/env.server";
 import type {
   IRBACProvider,
   IRole,
@@ -37,12 +39,10 @@ export class SupabaseRBACProvider implements IRBACProvider {
   private supabase: SupabaseClient;
 
   constructor() {
-    const env = getEnv();
-
     // Using service role key for admin operations
     this.supabase = createClient(
-      env.NEXT_PUBLIC_SUPABASE_URL,
-      env.SUPABASE_SERVICE_ROLE_KEY,
+      envServer.NEXT_PUBLIC_SUPABASE_URL,
+      envServer.SUPABASE_SERVICE_ROLE_KEY,
       {
         auth: { persistSession: false },
       },
