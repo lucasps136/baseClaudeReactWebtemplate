@@ -5,7 +5,7 @@ import type { IStorageProvider, IStorageUsage } from "../storage.types";
 import { StorageError, StorageQuotaError } from "../storage.types";
 
 export class LocalStorageProvider implements IStorageProvider {
-  private readonly storageKey = "bebarter-storage";
+  private readonly storageKey = "boilerplate-storage";
 
   async setItem(key: string, value: string): Promise<void> {
     try {

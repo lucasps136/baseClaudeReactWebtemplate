@@ -6,9 +6,9 @@ import { AuthNavbar } from "@/features/auth/components/auth-navbar";
 import { RegisterForm } from "@/features/auth/components/register-form";
 
 export const metadata: Metadata = {
-  title: "Create Account | Bebarter",
+  title: "Create Account | Boilerplate",
   description:
-    "Join the Bebarter community — start your win-win journey connecting with local pet owners for bartering services and companionship.",
+    "Join the Boilerplate community — start your win-win journey connecting with local pet owners for bartering services and companionship.",
 };
 
 export default function RegisterPage(): JSX.Element {

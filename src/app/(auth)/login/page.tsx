@@ -6,9 +6,9 @@ import { AuthNavbar } from "@/features/auth/components/auth-navbar";
 import { LoginForm } from "@/features/auth/components/login-form";
 
 export const metadata: Metadata = {
-  title: "Login | Bebarter",
+  title: "Login | Boilerplate",
   description:
-    "Sign in to Bebarter — connect with local pet owners for bartering services and companionship.",
+    "Sign in to Boilerplate — connect with local pet owners for bartering services and companionship.",
 };
 
 export default function LoginPage(): JSX.Element {

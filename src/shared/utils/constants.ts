@@ -4,7 +4,7 @@ export const APP_NAME = "Next.js SOLID Boilerplate";
 // Routes
 export const ROUTES = {
   HOME: "/",
-  DASHBOARD: "/dashboard",
+  HOME_PROTECTED: "/home",
   AUTH: {
     LOGIN: "/auth/login",
     REGISTER: "/auth/register",

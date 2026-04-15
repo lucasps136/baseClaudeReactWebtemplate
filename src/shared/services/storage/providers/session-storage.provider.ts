@@ -5,7 +5,7 @@ import type { IStorageProvider, IStorageUsage } from "../storage.types";
 import { StorageError, StorageQuotaError } from "../storage.types";
 
 export class SessionStorageProvider implements IStorageProvider {
-  private readonly storageKey = "bebarter-session";
+  private readonly storageKey = "boilerplate-session";
 
   async setItem(key: string, value: string): Promise<void> {
     try {

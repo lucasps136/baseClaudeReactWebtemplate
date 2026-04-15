@@ -11,7 +11,7 @@ export class CrossTabSyncService {
   private channel: BroadcastChannel | null = null;
   private listeners = new Set<StorageEventCallback>();
 
-  constructor(private channelName: string = "bebarter-storage-sync") {
+  constructor(private channelName: string = "boilerplate-storage-sync") {
     this.initializeChannel();
   }
 

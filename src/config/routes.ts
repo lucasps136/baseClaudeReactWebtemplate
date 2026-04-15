@@ -28,7 +28,7 @@ export const routes = {
 
   // Protected routes (authentication required)
   protected: {
-    dashboard: "/dashboard",
+    home: "/home",
     profile: "/profile",
     settings: "/settings",
     billing: "/billing",
@@ -83,7 +83,7 @@ export const routes = {
 export const routeGroups = {
   // Routes that require authentication
   protected: [
-    routes.protected.dashboard,
+    routes.protected.home,
     routes.protected.profile,
     routes.protected.settings,
     routes.protected.billing,
@@ -130,9 +130,9 @@ export const isProtectedApiRoute = (pathname: string): boolean => {
  * Default redirects after certain actions
  */
 export const redirects = {
-  afterLogin: routes.protected.dashboard,
+  afterLogin: routes.protected.home,
   afterLogout: routes.public.home,
-  afterRegister: routes.protected.dashboard,
+  afterRegister: routes.protected.home,
   unauthorized: routes.auth.login,
   adminRequired: routes.errors.forbidden,
 } as const;

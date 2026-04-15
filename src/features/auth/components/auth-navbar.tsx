@@ -53,7 +53,7 @@ export function AuthNavbar({
               pets
             </span>
             <span className="font-heading font-black text-2xl text-primary tracking-tighter">
-              Bebarter
+              Boilerplate
             </span>
           </div>
         </div>

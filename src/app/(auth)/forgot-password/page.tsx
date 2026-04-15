@@ -5,9 +5,9 @@ import { AuthNavbar } from "@/features/auth/components/auth-navbar";
 import { ForgotPasswordForm } from "@/features/auth/components/forgot-password-form";
 
 export const metadata: Metadata = {
-  title: "Forgot Password | Bebarter",
+  title: "Forgot Password | Boilerplate",
   description:
-    "Reset your Bebarter account password — we'll send you a secure link to get back in.",
+    "Reset your Boilerplate account password — we'll send you a secure link to get back in.",
 };
 
 export default function ForgotPasswordPage(): JSX.Element {
@@ -42,7 +42,7 @@ export default function ForgotPasswordPage(): JSX.Element {
                     pets
                   </span>
                   <p className="font-heading text-4xl font-black text-primary">
-                    Bebarter
+                    Boilerplate
                   </p>
                   <p className="text-on-surface-variant mt-2">
                     Finding your way back
